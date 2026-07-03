@@ -27,11 +27,13 @@ export function Hero({
     content.picker?.kind === "goal" ? { goal: selected } : { lang: selected };
   const selectedLabel =
     content.picker?.options.find((o) => String(o.value) === selected)?.label ?? "";
-  // WhatsApp-mode prefill reflects the picker choice (falls back to context in form mode).
+  // WhatsApp-mode prefill: a static content-provided message wins (picker-less
+  // heroes); otherwise reflect the picker choice.
   const waMessage =
-    content.picker?.kind === "goal"
+    content.ctaWaMessage ??
+    (content.picker?.kind === "goal"
       ? `Hi! I'd like to know more about French for ${selectedLabel}.`
-      : `Hi! I want to learn ${selectedLabel}. Can you share batch details and fees?`;
+      : `Hi! I want to learn ${selectedLabel}. Can you share batch details and fees?`);
   const { href, external } = resolveCta({ context: contextLabel, waMessage, ...ctaParam });
 
   return (

@@ -57,6 +57,8 @@ export interface HeroContent {
     options: HeroPickerOption[];
   };
   ctaLabel: string;
+  /** Static WhatsApp prefill when the hero has no picker (falls back to picker-derived). */
+  ctaWaMessage?: string;
   underCtaLine?: string;
   credibilityLine?: string;
   liveCard?: { label: string; participants: string };
@@ -148,6 +150,40 @@ export interface FaqItem {
 export interface SectionHeadingContent {
   eyebrow?: string;
   heading: AccentHeading;
+}
+
+/** "The Stakes" comparison — one locked (general) bar vs one glowing (French) bar. */
+export interface StakesBar {
+  label: string;
+  value: string; // e.g. "514+" — also drives the bar width
+  amount: number; // numeric CRS for proportional bar width
+}
+export interface StakesContent {
+  eyebrow: string;
+  heading: AccentHeading;
+  general: StakesBar; // muted / locked (periwinkle)
+  french: StakesBar; // gold / open
+  caption: string;
+  subline: string;
+  ctaLabel: string;
+  waMessage?: string;
+}
+
+/** "The Exams" card — two accepted (check), one not-accepted (cross). */
+export interface ExamCard {
+  title: string;
+  variant: "accept" | "reject";
+  body?: string;
+  bullets?: { term: string; detail: string }[];
+}
+export interface ExamsContent {
+  eyebrow: string;
+  heading: AccentHeading;
+  intro: string;
+  cards: ExamCard[];
+  closing: string;
+  closingCtaLabel: string;
+  closingWaMessage?: string;
 }
 
 export interface FinalCtaContent {
