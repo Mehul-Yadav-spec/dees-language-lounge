@@ -41,12 +41,16 @@ export function GoalsCarousel({
       <SectionHeading eyebrow={heading.eyebrow} heading={heading.heading} className="mb-12" />
 
       <div className="relative">
+        {/* Spacing uses Embla's padding pattern (NOT flex gap): each slide
+            carries its gap as padding-left, cancelled by a negative margin on
+            the track. Flex gap breaks on loop wrap-around (no gap between the
+            last slide and the looped-back first). Gutter is wider on mobile. */}
         <div className="overflow-hidden" ref={emblaRef}>
-          <div className="flex gap-6">
+          <div className="flex -ml-8 md:-ml-6">
             {slides.map((slide) => (
               <div
                 key={slide.title}
-                className="relative min-w-0 flex-[0_0_85%] sm:flex-[0_0_60%] lg:flex-[0_0_calc(33.333%-1rem)]"
+                className="relative min-w-0 pl-8 md:pl-6 flex-[0_0_82%] sm:flex-[0_0_60%] lg:flex-[0_0_33.333%]"
               >
                 <article className="relative aspect-[4/5] overflow-hidden rounded-card border border-hairline bg-surface md:aspect-square">
                   {slide.image ? (
