@@ -17,12 +17,12 @@ export function Teachers({
   trustLine?: string;
 }) {
   return (
-    <section className="mx-auto max-w-container-wide px-5 py-section md:px-16">
+    <section className="mx-auto max-w-container-wide px-5 section-y md:px-16">
       <SectionHeading heading={heading.heading} eyebrow={heading.eyebrow} className="mb-6" />
-      {intro ? <p className="mx-auto mb-12 max-w-3xl text-center text-lg text-muted">{intro}</p> : <div className="mb-6" />}
+      {intro ? <p className="mx-auto mb-7 lg:mb-12 max-w-3xl text-center text-lg text-muted">{intro}</p> : <div className="mb-6" />}
 
       {/* Mobile: snap-scroll w/ peek. Desktop: 4-col grid. */}
-      <div className="hide-scrollbar -mx-5 flex snap-x snap-mandatory gap-6 overflow-x-auto px-5 md:mx-0 md:grid md:grid-cols-4 md:overflow-visible md:px-0">
+      <div className="hide-scrollbar -mx-5 flex snap-x snap-mandatory gap-4 md:gap-6 overflow-x-auto px-5 md:mx-0 md:grid md:grid-cols-4 md:overflow-visible md:px-0">
         {teachers.map((teacher) => (
           <div
             key={teacher.name}

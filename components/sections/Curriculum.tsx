@@ -20,13 +20,13 @@ export function Curriculum({
   variant?: "grid" | "detail";
 }) {
   return (
-    <section className="mx-auto max-w-container-wide px-5 py-section md:px-16">
-      <SectionHeading heading={heading.heading} eyebrow={heading.eyebrow} className={intro ? "mb-6" : "mb-12"} />
-      {intro ? <p className="mx-auto mb-12 max-w-3xl text-center text-lg text-muted">{intro}</p> : null}
+    <section className="mx-auto max-w-container-wide px-5 section-y md:px-16">
+      <SectionHeading heading={heading.heading} eyebrow={heading.eyebrow} className={intro ? "mb-6" : "mb-7 lg:mb-12"} />
+      {intro ? <p className="mx-auto mb-7 lg:mb-12 max-w-3xl text-center text-lg text-muted">{intro}</p> : null}
 
       <div
         className={cn(
-          "mb-10 grid gap-6",
+          "mb-10 grid gap-4 md:gap-6",
           variant === "grid"
             ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
             : "grid-cols-1 md:grid-cols-2",

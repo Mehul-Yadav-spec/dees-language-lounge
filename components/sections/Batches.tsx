@@ -17,10 +17,10 @@ export function Batches({
   footnote?: string;
 }) {
   return (
-    <section className="mx-auto max-w-container-wide px-5 py-section md:px-16">
-      <SectionHeading heading={heading.heading} className="mb-14" />
+    <section className="mx-auto max-w-container-wide px-5 section-y md:px-16">
+      <SectionHeading heading={heading.heading} className="mb-7 lg:mb-14" />
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 md:gap-6 lg:grid-cols-3">
         {batches.map((batch, i) => (
           <div
             key={batch.title}

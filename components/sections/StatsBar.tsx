@@ -5,7 +5,7 @@ import type { Stat } from "@/content/types";
 export function StatsBar({ stats }: { stats: Stat[] }) {
   return (
     <section className="w-full border-y border-hairline bg-white/[0.02] py-12">
-      <div className="mx-auto grid max-w-container-wide grid-cols-2 gap-8 px-5 text-center md:grid-cols-4 md:px-16">
+      <div className="mx-auto grid max-w-container-wide grid-cols-2 gap-4 px-5 md:gap-8 text-center md:grid-cols-4 md:px-16">
         {stats.map((stat) => (
           <div key={stat.label} className="flex flex-col gap-2">
             <span className="text-4xl font-bold text-gold drop-shadow-[0_0_15px_rgba(197,163,107,0.4)] md:text-5xl">

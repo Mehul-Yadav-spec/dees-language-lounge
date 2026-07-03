@@ -12,9 +12,9 @@ export function FeatureGrid({
   features: Feature[];
 }) {
   return (
-    <section className="mx-auto max-w-container-wide px-5 py-section md:px-16">
-      <SectionHeading heading={heading.heading} eyebrow={heading.eyebrow} className="mb-12" />
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+    <section className="mx-auto max-w-container-wide px-5 section-y md:px-16">
+      <SectionHeading heading={heading.heading} eyebrow={heading.eyebrow} className="mb-7 lg:mb-12" />
+      <div className="grid grid-cols-1 gap-4 md:gap-6 md:grid-cols-2">
         {features.map((feature) => (
           <div
             key={feature.title}

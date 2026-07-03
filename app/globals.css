@@ -68,6 +68,13 @@ body {
   .focus-gold {
     @apply outline-none focus-visible:ring-1 focus-visible:ring-gold focus-visible:ring-offset-0;
   }
+
+  /* Responsive section vertical rhythm — the ONE place section padding is
+     defined. Mobile 48px → md 64px → lg 96px (desktop unchanged). Every
+     section uses .section-y instead of a fixed py value. */
+  .section-y {
+    @apply py-12 md:py-16 lg:py-24;
+  }
 }
 
 @layer utilities {

@@ -37,8 +37,8 @@ export function GoalsCarousel({
   }, [emblaApi, onSelect]);
 
   return (
-    <section className="mx-auto max-w-container-wide px-5 py-section md:px-16">
-      <SectionHeading eyebrow={heading.eyebrow} heading={heading.heading} className="mb-12" />
+    <section className="mx-auto max-w-container-wide px-5 section-y md:px-16">
+      <SectionHeading eyebrow={heading.eyebrow} heading={heading.heading} className="mb-7 lg:mb-12" />
 
       <div className="relative">
         {/* Spacing uses Embla's padding pattern (NOT flex gap): each slide

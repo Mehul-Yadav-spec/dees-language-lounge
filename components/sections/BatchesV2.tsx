@@ -20,11 +20,11 @@ export function BatchesV2({
   footnote?: string;
 }) {
   return (
-    <section className="mx-auto max-w-container-wide px-5 py-section md:px-16">
-      <SectionHeading heading={heading.heading} className={intro ? "mb-4" : "mb-14"} />
-      {intro ? <p className="mx-auto mb-14 max-w-2xl text-center text-muted">{intro}</p> : null}
+    <section className="mx-auto max-w-container-wide px-5 section-y md:px-16">
+      <SectionHeading heading={heading.heading} className={intro ? "mb-4" : "mb-7 lg:mb-14"} />
+      {intro ? <p className="mx-auto mb-7 lg:mb-14 max-w-2xl text-center text-muted">{intro}</p> : null}
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 md:gap-6 lg:grid-cols-3">
         {batches.map((batch) => (
           <div key={batch.title} className={batch.featured ? "order-first lg:order-none" : ""}>
             <BatchCardV2 batch={batch} ctaLabel={ctaLabel} />

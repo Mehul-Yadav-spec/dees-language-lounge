@@ -14,8 +14,8 @@ export function Roadmap({
   steps: RoadmapStep[];
 }) {
   return (
-    <section className="mx-auto max-w-container-wide px-5 py-section md:px-16">
-      <SectionHeading heading={heading.heading} eyebrow={heading.eyebrow} className="mb-16 md:mb-24" />
+    <section className="mx-auto max-w-container-wide px-5 section-y md:px-16">
+      <SectionHeading heading={heading.heading} eyebrow={heading.eyebrow} className="mb-8 md:mb-16 lg:mb-24" />
 
       <div className="relative mx-auto max-w-5xl space-y-14 md:space-y-28">
         {/* Vertical line: left on mobile, centered on desktop. */}

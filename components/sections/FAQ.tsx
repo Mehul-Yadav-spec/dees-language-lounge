@@ -17,8 +17,8 @@ export function FAQ({
   const [open, setOpen] = useState<number | null>(0);
 
   return (
-    <section className="mx-auto max-w-4xl px-5 py-section md:px-16">
-      <SectionHeading heading={heading.heading} className="mb-14" />
+    <section className="mx-auto max-w-4xl px-5 section-y md:px-16">
+      <SectionHeading heading={heading.heading} className="mb-7 lg:mb-14" />
 
       <div className="space-y-4">
         {items.map((item, i) => {

@@ -13,7 +13,7 @@ export function FinalCTABand({
   context: string;
 }) {
   return (
-    <section className="w-full overflow-hidden py-section">
+    <section className="w-full overflow-hidden section-y">
       <GlowContainer className="mx-auto max-w-3xl px-5 text-center md:px-16" glowClassName="h-[300px] w-[800px]">
         <div className="flex flex-col items-center gap-6">
           <AccentTitle

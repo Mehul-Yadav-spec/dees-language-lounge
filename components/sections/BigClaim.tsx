@@ -11,7 +11,7 @@ export function BigClaim({
   footnote?: string;
 }) {
   return (
-    <GlowContainer className="mx-auto max-w-container-wide px-5 py-section text-center md:px-16">
+    <GlowContainer className="mx-auto max-w-container-wide px-5 section-y text-center md:px-16">
       <AccentTitle
         heading={heading}
         accentStyle="gradient"

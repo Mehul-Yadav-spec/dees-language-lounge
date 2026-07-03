@@ -13,7 +13,7 @@ export default function FreeResourcesPage() {
   return (
     <main>
       <GlowContainer className="mx-auto max-w-container px-5 py-24 md:px-16 md:py-28">
-        <div className="mb-14 flex flex-col items-center gap-6 text-center">
+        <div className="mb-7 lg:mb-14 flex flex-col items-center gap-6 text-center">
           <PillBadge icon="auto_stories">{freeResources.eyebrow}</PillBadge>
           <AccentTitle
             as="h1"

@@ -17,11 +17,11 @@ export function TestimonialsV2({
   testimonials: Testimonial[];
 }) {
   return (
-    <section className="w-full border-y border-hairline bg-surface py-section">
+    <section className="w-full border-y border-hairline bg-surface section-y">
       <div className="mx-auto max-w-container-wide px-5 md:px-16">
-        <SectionHeading heading={heading.heading} className="mb-14" />
+        <SectionHeading heading={heading.heading} className="mb-7 lg:mb-14" />
 
-        <div className="hide-scrollbar -mx-5 flex snap-x snap-mandatory gap-6 overflow-x-auto px-5 md:mx-0 md:grid md:grid-cols-3 md:overflow-visible md:px-0">
+        <div className="hide-scrollbar -mx-5 flex snap-x snap-mandatory gap-4 md:gap-6 overflow-x-auto px-5 md:mx-0 md:grid md:grid-cols-3 md:overflow-visible md:px-0">
           {testimonials.map((t) => (
             <figure
               key={t.name}
