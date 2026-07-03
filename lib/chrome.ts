@@ -1,18 +1,17 @@
-import { footer as defaultFooter } from "@/content/site";
 import { homePromo } from "@/content/home";
-import { fcPromo, fcFooter } from "@/content/frenchCanada";
-import type { PromoBarContent, FooterContent } from "@/content/types";
+import { fcPromo, fcComplianceNote } from "@/content/frenchCanada";
+import type { PromoBarContent } from "@/content/types";
 
-// Resolves the promo bar + footer for a given route. Keeps the shared layout
-// generic while letting /french-canada carry its own promo and its
-// compliance-line footer (Variant A). Everything else uses the school defaults.
+// Resolves route-specific chrome. The footer is now ONE shared component with
+// identical content everywhere (content/site.ts); the only per-route difference
+// is the additive compliance note on /french-canada.
 
 export function promoForPath(path: string): PromoBarContent {
   if (path.startsWith("/french-canada")) return fcPromo;
   return homePromo;
 }
 
-export function footerForPath(path: string): FooterContent {
-  if (path.startsWith("/french-canada")) return fcFooter;
-  return defaultFooter;
+export function complianceNoteForPath(path: string): string | undefined {
+  if (path.startsWith("/french-canada")) return fcComplianceNote;
+  return undefined;
 }

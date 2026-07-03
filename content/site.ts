@@ -45,14 +45,6 @@ export const nav: NavItem[] = [
       { label: "IELTS English", href: "/courses/ielts" },
     ],
   },
-  {
-    label: "Free Resources",
-    dropdown: [
-      { label: "Free Level Test", href: "/free-resources" },
-      { label: "CRS Points Guide", href: "/free-resources" },
-      { label: "TEF vs TCF Guide", href: "/free-resources" },
-    ],
-  },
   { label: "About Us", href: "/about" },
   { label: "Contact", href: "/contact" },
 ];
@@ -67,7 +59,6 @@ export const footer: FooterContent = {
       title: "Company",
       links: [
         { label: "About Us", href: "/about" },
-        { label: "Mentors", href: "/about" },
         { label: "Contact", href: "/contact" },
       ],
     },

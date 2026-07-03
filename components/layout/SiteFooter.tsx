@@ -2,10 +2,11 @@
 
 import { usePathname } from "next/navigation";
 import { Footer } from "./Footer";
-import { footerForPath } from "@/lib/chrome";
+import { complianceNoteForPath } from "@/lib/chrome";
 
-// Route-aware footer wrapper (Variant-A gets its compliance-line footer).
+// One shared footer for every page (content from content/site.ts). Only the
+// additive compliance note varies by route (/french-canada).
 export function SiteFooter() {
   const pathname = usePathname() || "/";
-  return <Footer content={footerForPath(pathname)} />;
+  return <Footer complianceNote={complianceNoteForPath(pathname)} />;
 }

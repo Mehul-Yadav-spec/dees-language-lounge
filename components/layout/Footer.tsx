@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { footer as defaultFooter, site } from "@/content/site";
 import { NewsletterForm } from "@/components/forms/NewsletterForm";
-import { cn } from "@/lib/cn";
 import type { FooterContent } from "@/content/types";
 
 const socialIcons: { key: keyof typeof site.socials; label: string; path: string }[] = [
@@ -11,10 +10,17 @@ const socialIcons: { key: keyof typeof site.socials; label: string; path: string
   { key: "x", label: "X", path: "M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" },
 ];
 
-// Footer with black→bronze fade, low-opacity wordmark watermark, newsletter,
-// link columns, socials, legal + optional compliance line. `content` lets the
-// /french-canada page override the blurb/columns and add its compliance line.
-export function Footer({ content = defaultFooter }: { content?: FooterContent }) {
+// The ONE shared footer, rendered on every page via the root layout: black→
+// bronze fade, low-opacity wordmark watermark, newsletter, link columns,
+// socials, legal row. Content is the same site-wide (content/site.ts). The only
+// per-route variation is the additive `complianceNote` (passed on /french-canada).
+export function Footer({
+  content = defaultFooter,
+  complianceNote,
+}: {
+  content?: FooterContent;
+  complianceNote?: string;
+}) {
   return (
     <footer className="relative w-full overflow-hidden border-t border-gold/10 bg-footer-fade pt-20 pb-12">
       {/* Large low-opacity wordmark watermark — clipped, never causes overflow. */}
@@ -79,11 +85,11 @@ export function Footer({ content = defaultFooter }: { content?: FooterContent })
           ))}
         </div>
 
-        {/* Legal + optional compliance line */}
+        {/* Legal + optional per-route compliance note */}
         <div className="mt-10 space-y-3 border-t border-hairline pt-8">
           <p className="text-xs uppercase tracking-widest text-white/50">{content.legal}</p>
-          {content.complianceLine ? (
-            <p className={cn("max-w-3xl text-xs leading-relaxed text-muted")}>{content.complianceLine}</p>
+          {complianceNote ? (
+            <p className="max-w-3xl text-xs leading-relaxed text-muted">{complianceNote}</p>
           ) : null}
         </div>
       </div>
