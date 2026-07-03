@@ -175,12 +175,21 @@ export interface StakesContent {
   waMessage?: string;
 }
 
+/** One row in an exam card: a bold white label + muted remainder. */
+export interface ExamBullet {
+  /** Bold white lead-in (e.g. "Format:"; for the reject card, the term). */
+  label: string;
+  /** Muted remainder. Omit for the emphasized closing bullet. */
+  text?: string;
+  /** The emphasized "We prepare you for this exam" closing line. */
+  emphasis?: boolean;
+}
+
 /** "The Exams" card — two accepted (check), one not-accepted (cross). */
 export interface ExamCard {
   title: string;
   variant: "accept" | "reject";
-  body?: string;
-  bullets?: { term: string; detail: string }[];
+  bullets: ExamBullet[];
 }
 export interface ExamsContent {
   eyebrow: string;
@@ -200,6 +209,40 @@ export interface FinalCtaContent {
   waMessage?: string;
 }
 
+// ── About page ────────────────────────────────────────────────
+export interface AboutHeroContent {
+  eyebrow: string;
+  heading: AccentHeading;
+  subhead: string;
+  ctaLabel: string;
+  ctaWaMessage?: string;
+}
+export interface AboutStoryContent {
+  eyebrow: string;
+  heading: AccentHeading;
+  paragraphs: string[];
+  /** The key sentence pulled out of the prose as a styled inset line. */
+  rule?: AccentHeading;
+}
+export interface AboutFounderContent {
+  eyebrow: string;
+  name: string;
+  role: string;
+  paragraphs: string[];
+  pullQuote: string;
+  image: { src: string; alt: string };
+}
+export interface AboutHonestyPoint {
+  lead: string;
+  rest: string;
+}
+export interface AboutHonestyContent {
+  eyebrow: string;
+  heading: AccentHeading;
+  intro: string;
+  points: AboutHonestyPoint[];
+}
+
 export interface FooterColumn {
   title: string;
   links: { label: string; href: string }[];
@@ -209,5 +252,4 @@ export interface FooterContent {
   blurb: string;
   columns: FooterColumn[];
   legal: string;
-  complianceLine?: string;
 }

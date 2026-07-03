@@ -20,7 +20,6 @@ import type {
   Testimonial,
   FaqItem,
   FinalCtaContent,
-  FooterContent,
   AccentHeading,
 } from "./types";
 
@@ -77,20 +76,32 @@ export const fcExams: ExamsContent = {
     {
       title: "TEF Canada",
       variant: "accept",
-      body: "Computer-based, all four sections in one sitting. Speaking is recorded and scored later; results in ~3–4 weeks. Production sections are scored on a wide points band — often the more forgiving option for borderline CLB 7 candidates. We prepare you for this exam.",
+      bullets: [
+        { label: "Format:", text: "computer-based, all four sections in one sitting" },
+        { label: "Speaking:", text: "recorded on the day, scored later" },
+        { label: "Results:", text: "in ~3–4 weeks" },
+        { label: "Scoring:", text: "wide points band on writing & speaking — often the more forgiving option at the CLB 7 borderline" },
+        { label: "We prepare you for this exam", emphasis: true },
+      ],
     },
     {
       title: "TCF Canada",
       variant: "accept",
-      body: "Computer or paper-based depending on the centre. Four mandatory tests, ~2h47m total. Writing and speaking are graded on a tight 0–20 scale — a single point can separate CLB 6 from CLB 7, so exam strategy matters as much as French. We prepare you for this exam.",
+      bullets: [
+        { label: "Format:", text: "computer or paper-based, depending on the centre" },
+        { label: "Structure:", text: "four mandatory tests, ~2h47m total" },
+        { label: "Scoring:", text: "writing & speaking graded 0–20 — a single point can separate CLB 6 from CLB 7" },
+        { label: "What that means:", text: "exam strategy matters as much as your French" },
+        { label: "We prepare you for this exam", emphasis: true },
+      ],
     },
     {
       title: "What does NOT count",
       variant: "reject",
       bullets: [
-        { term: "TEFAQ / TCF Québec", detail: "only for Quebec's own immigration programs, not Express Entry" },
-        { term: "DELF / DALF", detail: "a prestigious lifetime diploma, but NOT accepted for Express Entry (even a DALF C1 holder must still sit TEF/TCF Canada)" },
-        { term: 'Generic TEF / TCF "tout public"', detail: "wrong version, not valid for immigration" },
+        { label: "TEFAQ / TCF Québec", text: "only for Quebec's own immigration programs, not Express Entry" },
+        { label: "DELF / DALF", text: "a prestigious lifetime diploma, but NOT accepted for Express Entry (even a DALF C1 holder must still sit TEF/TCF Canada)" },
+        { label: 'Generic TEF / TCF "tout public"', text: "wrong version, not valid for immigration" },
       ],
     },
   ],
@@ -356,38 +367,8 @@ export const fcFinalCta: FinalCtaContent = {
   waMessage: "Hi! I'm ready to start French for Canada PR. Help me pick my batch.",
 };
 
-// Variant-A footer: Canada-pathways blurb + required compliance line.
-export const fcFooter: FooterContent = {
-  blurb:
-    "Live online French classes built for Canada's French-language pathways — TEF, TCF, DELF and beyond. Taught by trainers who explain in your language, at hours that fit your life in Canada.",
-  columns: [
-    {
-      title: "Company",
-      links: [
-        { label: "About Us", href: "/about" },
-        { label: "Contact", href: "/contact" },
-        { label: "Careers", href: "/contact" },
-      ],
-    },
-    {
-      title: "Programs",
-      links: [
-        { label: "TEF Canada", href: "/french-canada" },
-        { label: "TCF Canada", href: "/french-canada" },
-        { label: "DELF / DALF", href: "/french-canada" },
-        { label: "French for Careers", href: "/french-canada" },
-      ],
-    },
-    {
-      title: "Resources",
-      links: [
-        { label: "Free Level Test", href: "/free-resources" },
-        { label: "CRS Points Guide", href: "/free-resources" },
-        { label: "TEF vs TCF Guide", href: "/free-resources" },
-      ],
-    },
-  ],
-  legal: "© 2026 Dees Language Lounge. All rights reserved.",
-  complianceLine:
-    "Dees Language Lounge is a language school and does not provide immigration advice or representation. Draw cut-offs and CRS figures reflect published IRCC data at time of writing and change frequently.",
-};
+// /french-canada uses the ONE shared footer (content/site.ts). The only
+// difference is this additive compliance note near the legal row, passed to the
+// shared <Footer> as `complianceNote` — no separate footer variant.
+export const fcComplianceNote =
+  "Dees Language Lounge is a language school and does not provide immigration advice or representation. Draw cut-offs and CRS figures reflect published IRCC data at time of writing and change frequently.";

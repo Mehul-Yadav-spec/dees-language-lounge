@@ -11,11 +11,11 @@ import type { ExamsContent, ExamCard } from "@/content/types";
  */
 export function ExamsSection({ content }: { content: ExamsContent }) {
   return (
-    <section className="mx-auto max-w-container-wide px-5 py-section md:px-16">
+    <section className="mx-auto max-w-container-wide px-5 section-y md:px-16">
       <SectionHeading eyebrow={content.eyebrow} heading={content.heading} className="mb-6" />
-      <p className="mx-auto mb-12 max-w-3xl text-center text-lg text-muted">{content.intro}</p>
+      <p className="mx-auto mb-7 lg:mb-12 max-w-3xl text-center text-lg text-muted">{content.intro}</p>
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 md:gap-6 md:grid-cols-3">
         {content.cards.map((card) => (
           <ExamCardView key={card.title} card={card} />
         ))}
@@ -50,20 +50,30 @@ function ExamCardView({ card }: { card: ExamCard }) {
         <h3 className={cn("text-xl font-bold", accept ? "text-ink" : "text-periwinkle")}>{card.title}</h3>
       </div>
 
-      {card.body ? <p className="text-muted">{card.body}</p> : null}
-
-      {card.bullets ? (
-        <ul className="space-y-4">
-          {card.bullets.map((b) => (
-            <li key={b.term} className="flex items-start gap-3">
-              <Icon name="close" className="mt-0.5 shrink-0 text-[18px] text-periwinkle" />
+      {/* One row per bullet — gold ✓ (accept) / periwinkle ✗ (reject) marker,
+          bold white label, muted remainder. The closing "We prepare you for
+          this exam" bullet is emphasized (gold marker + white bold). */}
+      <ul className="space-y-4">
+        {card.bullets.map((b) =>
+          b.emphasis ? (
+            <li key={b.label} className="mt-1 flex items-start gap-3">
+              <Icon name="check" filled className="mt-0.5 shrink-0 text-[18px] text-gold" />
+              <span className="font-semibold text-ink">{b.label}</span>
+            </li>
+          ) : (
+            <li key={b.label} className="flex items-start gap-3">
+              <Icon
+                name={accept ? "check" : "close"}
+                className={cn("mt-0.5 shrink-0 text-[18px]", accept ? "text-gold" : "text-periwinkle")}
+              />
               <span className="text-muted">
-                <span className="font-semibold text-ink">{b.term}</span> — {b.detail}
+                <span className="font-semibold text-ink">{b.label}</span>
+                {b.text ? (accept ? <> {b.text}</> : <> — {b.text}</>) : null}
               </span>
             </li>
-          ))}
-        </ul>
-      ) : null}
+          ),
+        )}
+      </ul>
     </div>
   );
 }
