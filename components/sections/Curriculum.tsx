@@ -8,18 +8,21 @@ import type { CurriculumCard, SectionHeadingContent } from "@/content/types";
 //  - "detail"→ larger list cards with a footnote, 1/2 columns (french-canada).
 export function Curriculum({
   heading,
+  intro,
   cards,
   closing,
   variant = "grid",
 }: {
   heading: SectionHeadingContent;
+  intro?: string;
   cards: CurriculumCard[];
   closing?: string;
   variant?: "grid" | "detail";
 }) {
   return (
     <section className="mx-auto max-w-container-wide px-5 py-section md:px-16">
-      <SectionHeading heading={heading.heading} eyebrow={heading.eyebrow} className="mb-12" />
+      <SectionHeading heading={heading.heading} eyebrow={heading.eyebrow} className={intro ? "mb-6" : "mb-12"} />
+      {intro ? <p className="mx-auto mb-12 max-w-3xl text-center text-lg text-muted">{intro}</p> : null}
 
       <div
         className={cn(
