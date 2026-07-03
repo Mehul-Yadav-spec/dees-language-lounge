@@ -1,15 +1,15 @@
 import type { Metadata } from "next";
 import { Hero } from "@/components/sections/Hero";
 import { StatsBar } from "@/components/sections/StatsBar";
-import { RecognitionStrip } from "@/components/sections/RecognitionStrip";
-import { GoalsCarousel } from "@/components/sections/GoalsCarousel";
+import { StakesSection } from "@/components/sections/StakesSection";
+import { ExamsSection } from "@/components/sections/ExamsSection";
 import { FeatureGrid } from "@/components/sections/FeatureGrid";
 import { BigClaim } from "@/components/sections/BigClaim";
 import { Roadmap } from "@/components/sections/Roadmap";
 import { Curriculum } from "@/components/sections/Curriculum";
 import { Teachers } from "@/components/sections/Teachers";
-import { Batches } from "@/components/sections/Batches";
-import { Testimonials } from "@/components/sections/Testimonials";
+import { BatchesV2 } from "@/components/sections/BatchesV2";
+import { TestimonialsV2 } from "@/components/sections/TestimonialsV2";
 import { FAQ } from "@/components/sections/FAQ";
 import { FinalCTABand } from "@/components/sections/FinalCTABand";
 import { CourseJsonLd, FaqJsonLd } from "@/components/seo/JsonLd";
@@ -17,15 +17,15 @@ import { buildMetadata, pageSeo } from "@/content/seo";
 import {
   fcHero,
   fcStats,
-  fcRecognition,
-  fcGoalsHeading,
-  fcGoals,
+  fcStakes,
+  fcExams,
   fcFeaturesHeading,
   fcFeatures,
   fcBigClaim,
   fcRoadmapHeading,
   fcRoadmap,
   fcCurriculumHeading,
+  fcCurriculumIntro,
   fcCurriculum,
   fcCurriculumClosing,
   fcTeachersHeading,
@@ -33,7 +33,9 @@ import {
   fcTeachers,
   fcTeachersTrustLine,
   fcBatchesHeading,
+  fcBatchesIntro,
   fcBatches,
+  fcBatchesFootnote,
   fcTestimonialsHeading,
   fcTestimonials,
   fcFaqHeading,
@@ -57,13 +59,14 @@ export default function FrenchCanadaPage() {
 
       <Hero content={fcHero} contextLabel={CTX} />
       <StatsBar stats={fcStats} />
-      <RecognitionStrip content={fcRecognition} />
-      <GoalsCarousel heading={fcGoalsHeading} slides={fcGoals} />
+      <StakesSection content={fcStakes} />
+      <ExamsSection content={fcExams} />
       <FeatureGrid heading={fcFeaturesHeading} features={fcFeatures} />
       <BigClaim heading={fcBigClaim.heading} footnote={fcBigClaim.footnote} />
       <Roadmap heading={fcRoadmapHeading} steps={fcRoadmap} />
       <Curriculum
         heading={fcCurriculumHeading}
+        intro={fcCurriculumIntro}
         cards={fcCurriculum}
         closing={fcCurriculumClosing}
         variant="detail"
@@ -74,13 +77,14 @@ export default function FrenchCanadaPage() {
         teachers={fcTeachers}
         trustLine={fcTeachersTrustLine}
       />
-      <Batches
+      <BatchesV2
         heading={fcBatchesHeading}
+        intro={fcBatchesIntro}
         batches={fcBatches}
-        ctaLabel={fcFinalCta.ctaLabel}
-        footnote="Not sure which batch fits? That's what the free assessment is for."
+        ctaLabel="Reserve on WhatsApp"
+        footnote={fcBatchesFootnote}
       />
-      <Testimonials heading={fcTestimonialsHeading} testimonials={fcTestimonials} />
+      <TestimonialsV2 heading={fcTestimonialsHeading} testimonials={fcTestimonials} />
       <FAQ heading={fcFaqHeading} items={fcFaq} />
       <FinalCTABand content={fcFinalCta} context={CTX} />
     </main>
