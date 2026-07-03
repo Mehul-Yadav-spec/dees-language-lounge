@@ -1,15 +1,17 @@
 // PLACEHOLDER — replace [bracketed] stats, teacher profiles, batch dates & seat
-// counts, promo-bar CRS numbers, and testimonials with real, verifiable data
-// before launch. This is Variant A (the Canada-PR landing page): it is SUPPOSED
-// to be immigration-focused (TEF/TCF · CLB 7 · PR). Never promise PR or a timeline.
+// counts, promo-bar/Stakes CRS numbers, and testimonials (incl. photos) with
+// real, verifiable data before launch. Variant A (Canada-PR landing page),
+// **WhatsApp CTA edition**: no assessment offer; every CTA opens wa.me with a
+// section-specific prefill. Refresh CRS numbers every 2–3 weeks from IRCC.
+// Never promise PR, an ITA, or a guaranteed timeline.
 
 import type {
   PromoBarContent,
   HeroContent,
   Stat,
-  RecognitionContent,
+  StakesContent,
+  ExamsContent,
   SectionHeadingContent,
-  GoalSlide,
   Feature,
   RoadmapStep,
   CurriculumCard,
@@ -19,32 +21,25 @@ import type {
   FaqItem,
   FinalCtaContent,
   FooterContent,
+  AccentHeading,
 } from "./types";
 
 export const fcPromo: PromoBarContent = {
-  id: "fc-2026-07",
-  // Update the two CRS numbers after every draw (every 2–3 weeks) — freshness signal.
-  text: "🇨🇦 Latest French Express Entry draw: CRS 400 — general draws sit at 514+. New live cohort starts July 21. Limited seats.",
-  mobileText: "🇨🇦 French draw CRS 400 vs 514+ general — new cohort July 21.",
+  id: "fc-wa-2026-07",
+  text: "🇨🇦 Latest French Express Entry draw: CRS 400 — general draws sit at 514+. New TEF/TCF cohort starts July 21. Limited seats. Message us on WhatsApp.",
+  mobileText: "🇨🇦 French draw CRS 400 vs 514+ — new cohort July 21. Message us.",
 };
 
 export const fcHero: HeroContent = {
-  eyebrow: "Built for TEF & TCF Canada",
+  eyebrow: "Built for TEF Canada & TCF Canada",
   heading: { before: "Turn", accent: "French", after: "into Canada PR — faster than you think." },
   subhead:
-    "Live online classes built around the TEF/TCF Canada exam — taught by trainers who explain French through English and Hindi, at times that fit Canadian evenings. Reach CLB 7 in all four skills and qualify for draws cutting off 100+ points below general.",
-  picker: {
-    label: "I'm learning for",
-    kind: "goal",
-    options: [
-      { label: "Canada PR", value: "canada-pr" },
-      { label: "DELF–DALF", value: "study-abroad" },
-      { label: "Career", value: "career" },
-    ],
-  },
-  ctaLabel: "Book a free level assessment",
+    "Live online classes built around the TEF/TCF Canada exam — taught by certified trainers who explain French through English and Hindi, at times that fit Canadian evenings. Reach CLB 7 in all four skills and qualify for draws cutting off 100+ points below general.",
+  ctaLabel: "Chat with us on WhatsApp",
+  ctaWaMessage:
+    "Hi! I want to reach CLB 7 for the French draw. My current level is beginner. What's the realistic timeline?",
   underCtaLine:
-    "Free 30-minute assessment · Know your exact starting level and a realistic timeline to CLB 7 — no commitment.",
+    "Real humans, real answers — your level, your timeline, your batch, usually within minutes. No forms, no pressure.",
   credibilityLine: "92% of our students reach CLB 7 on their first attempt.",
   liveCard: { label: "Live: TEF Speaking Drill", participants: "6 participants" },
   image: {
@@ -60,85 +55,103 @@ export const fcStats: Stat[] = [
   { value: "4.9/5", label: "Average student rating" },
 ];
 
-export const fcRecognition: RecognitionContent = {
-  caption: "Preparing learners for Canada's French-language pathways — aligned to the exams IRCC accepts.",
-  logos: ["TEF Canada", "TCF Canada", "DELF / DALF"],
+export const fcStakes: StakesContent = {
+  eyebrow: "THE MATH NOBODY TELLS YOU",
+  heading: { before: "Two queues. One is", accent: "open." },
+  general: { label: "General draw · CRS 514+", value: "CRS 514+", amount: 514 },
+  french: { label: "French draw · CRS 400", value: "CRS 400", amount: 400 },
+  caption:
+    "Stuck around CRS 420–470? The general queue is effectively closed. Strong French (NCLC 7 in all four skills) unlocks the French-language draws — and adds up to 50 bilingual CRS points on top. It's the single biggest lever left on the board.",
+  subline:
+    "On a PGWP or work permit with an expiry date? Your window is real — and so is the plan. Message us your date and we'll tell you honestly what's achievable.",
+  ctaLabel: "Message us your permit date",
+  waMessage: "Hi! My permit expires in [month/year]. Is CLB 7 realistic for me in time?",
 };
 
-export const fcGoalsHeading: SectionHeadingContent = {
-  heading: { before: "Your partner in achieving your", accent: "goals" },
-};
-
-export const fcGoals: GoalSlide[] = [
-  {
-    title: "Land your Canada PR",
-    body: "French-language draws have invited candidates at CRS cut-offs more than 100 points below general draws — and they're the only category IRCC has confirmed will grow. CLB 7 in all four skills is the door. We get you through it.",
-    image: {
-      src: "https://lh3.googleusercontent.com/aida-public/AB6AXuATlxQWY8Qmx_3iTxDpF_8B7pHZ3tkcFTy-_lm4GmWea7DRWsz_ZTdK8yJp_ZEw0PAHPCesk0hdyR1TUvJRZe5Q57evEaiSmNMtowofiByWvOLy1LJiK7CKvvX_TcsXOrFS2JiVkELFRCa41OfrW5Ty5zw7U78Lt9lzkMarBUAf8Grd3kfQVwo35Tf--5PmkPXirZc19xv_syJvqVqXIsOUD-QRaDgQzlH7WjTJrvjnt0HFDT3GYKT4e0Dfevk86jREcE4fKg_m0uU",
-      alt: "New permanent resident arriving in Canada",
+export const fcExams: ExamsContent = {
+  eyebrow: "KNOW BEFORE YOU BOOK",
+  heading: { before: "Only two exams", accent: "count", after: "for PR" },
+  intro:
+    "IRCC accepts exactly two French tests for Express Entry — and every year, people lose months and hundreds of dollars booking the wrong one. Here's the full picture:",
+  cards: [
+    {
+      title: "TEF Canada",
+      variant: "accept",
+      body: "Computer-based, all four sections in one sitting. Speaking is recorded and scored later; results in ~3–4 weeks. Production sections are scored on a wide points band — often the more forgiving option for borderline CLB 7 candidates. We prepare you for this exam.",
     },
-  },
-  {
-    title: "Beat the clock on your permit",
-    body: "On a PGWP or work permit with an expiry date? You don't have years — you have a window. Our exam-focused track is built to get you test-ready in months, not semesters, with a timeline mapped to your date.",
-  },
-  {
-    title: "Pass your DELF/DALF or grow your career",
-    body: "A lifetime-valid French diploma for university, bilingual roles, or your next promotion — same live format, same exam-first method.",
-  },
-];
+    {
+      title: "TCF Canada",
+      variant: "accept",
+      body: "Computer or paper-based depending on the centre. Four mandatory tests, ~2h47m total. Writing and speaking are graded on a tight 0–20 scale — a single point can separate CLB 6 from CLB 7, so exam strategy matters as much as French. We prepare you for this exam.",
+    },
+    {
+      title: "What does NOT count",
+      variant: "reject",
+      bullets: [
+        { term: "TEFAQ / TCF Québec", detail: "only for Quebec's own immigration programs, not Express Entry" },
+        { term: "DELF / DALF", detail: "a prestigious lifetime diploma, but NOT accepted for Express Entry (even a DALF C1 holder must still sit TEF/TCF Canada)" },
+        { term: 'Generic TEF / TCF "tout public"', detail: "wrong version, not valid for immigration" },
+      ],
+    },
+  ],
+  closing:
+    "Both accepted exams map to the same NCLC scale, cost roughly CAD $400–450, and results are valid for 2 years. Not sure which suits you? Message us — the right choice depends on your profile, and we'll tell you straight.",
+  closingCtaLabel: "Ask which exam fits you",
+  closingWaMessage: "Hi! Should I take TEF Canada or TCF Canada? My level is roughly A2.",
+};
 
+// Failure-traps grid (rebuilt) — reuses FeatureGrid.
 export const fcFeaturesHeading: SectionHeadingContent = {
-  heading: { before: "Everything you need to pass — in class and", accent: "beyond." },
+  eyebrow: "AND HOW WE TRAIN AGAINST IT",
+  heading: { before: "The exam has", accent: "traps", after: ". We drill every one." },
 };
 
 export const fcFeatures: Feature[] = [
   {
-    icon: "record_voice_over",
-    title: "Live classes, real speaking",
-    body: "Speaking is where most candidates lose CLB 7 — and it's the one skill no app can grade. Every week you speak, get corrected, and speak again, live.",
+    icon: "warning",
+    title: "One weak skill sinks everything",
+    body: "IRCC counts your lowest score. Every year, candidates clear three skills and land CLB 6 in one — and the whole profile drops below the line. We diagnose your weakest skill first and train it hardest.",
   },
   {
-    icon: "menu_book",
-    title: "Exam-aligned curriculum (TEF/TCF)",
-    body: "No generic French. Every module maps to a real test section — the once-only listening, the timed writing tasks, the oral role-plays — so you train exactly what's scored.",
-    featured: true,
+    icon: "hearing",
+    title: "The audio plays ONCE",
+    body: "TEF Canada's listening section gives you one play. No replays, no mercy. We train one-play listening from week one, so exam day sounds familiar, not terrifying.",
+  },
+  {
+    icon: "record_voice_over",
+    title: "Speaking is where points die",
+    body: "The oral is a live, graded conversation — the one skill no app can teach. You'll do graded mock orals every single week until the real one feels routine.",
   },
   {
     icon: "translate",
-    title: "Teachers who explain in your language",
-    body: "Our trainers teach French through English and Hindi, and know exactly where speakers of Indian languages stumble — so grammar clicks in minutes. Comfortable in English only? Every class works fully in English too.",
-  },
-  {
-    icon: "checklist",
-    title: "All four skills, no weak links",
-    body: "IRCC counts your lowest skill. One CLB 6 blocks the whole profile. We diagnose your weakest skill first and train it hardest — so nothing drags you under the line.",
+    title: "Trainers who explain in your language",
+    body: "Our trainers teach French through English and Hindi, and know exactly where speakers of Indian languages stumble — so grammar clicks in minutes, not months. Every class works fully in English too.",
   },
 ];
 
-export const fcBigClaim = {
-  heading: { before: "92% hit", accent: "CLB 7", after: "on first try." },
+export const fcBigClaim: { heading: AccentHeading; footnote: string } = {
+  heading: { before: "92% of our students hit", accent: "CLB 7", after: "on their first attempt." },
   footnote: "Dees Language Lounge student outcomes. Individual results depend on starting level and study time.",
 };
 
 export const fcRoadmapHeading: SectionHeadingContent = {
-  heading: { before: "The Learning", accent: "Roadmap" },
+  heading: { before: "Your journey to", accent: "Canada PR" },
 };
 
 export const fcRoadmap: RoadmapStep[] = [
   {
     number: 1,
-    title: "Free level assessment",
-    body: "A 30-minute session that finds your true starting level (A0 to B1+) and gives you an honest, personalised timeline to CLB 7 — including whether your permit window is realistic.",
+    title: "Say hello on WhatsApp",
+    body: "Tell us your current level (even if it's zero), your permit timeline, and your target. A real person replies with an honest plan: which track, which batch, and whether your window is realistic. If it isn't, we'll say so.",
     image: {
       src: "https://lh3.googleusercontent.com/aida/AP1WRLumjICWVbp6Gah-q7Hqbz2vA2ttzBdvLP4Mz5fDE2ZcQD3QAmk30trDo1pO6cWL1l66VpgvnM3DQUFEBXzakJK-WN-Gz9E8Cwsx3D4pDhyxIw2z3Y9tMyv9iZTvpK5FZJksTNCPBvjArZF4IznjkyrIrJJZsOKutMJszcLDGCVzJb36wrEntRPS57aih36djjEA-v-GOdLvE64tQwu8XUwiigfUSGarOPx57ezCBs9UCB4f6zibK1dla_k",
-      alt: "Free TEF/TCF level assessment call",
+      alt: "Student messaging Dees Language Lounge on WhatsApp",
     },
   },
   {
     number: 2,
     title: "Join your live cohort",
-    body: "Small groups, live trainers, classes scheduled for Canadian evenings and weekends (EST/PST-friendly). Every class recorded, weekly mock orals from month one.",
+    body: "Small groups, certified trainers, classes scheduled for Canadian evenings and weekends (EST/PST-friendly). Weekly graded mock orals from month one, every class recorded.",
     image: {
       src: "https://lh3.googleusercontent.com/aida/AP1WRLumjICWVbp6Gah-q7Hqbz2vA2ttzBdvLP4Mz5fDE2ZcQD3QAmk30trDo1pO6cWL1l66VpgvnM3DQUFEBXzakJK-WN-Gz9E8Cwsx3D4pDhyxIw2z3Y9tMyv9iZTvpK5FZJksTNCPBvjArZF4IznjkyrIrJJZsOKutMJszcLDGCVzJb36wrEntRPS57aih36djjEA-v-GOdLvE64tQwu8XUwiigfUSGarOPx57ezCBs9UCB4f6zibK1dla_k",
       alt: "Live TEF/TCF cohort class",
@@ -147,7 +160,7 @@ export const fcRoadmap: RoadmapStep[] = [
   {
     number: 3,
     title: "Pass TEF/TCF and claim your points",
-    body: "Sit the exam with graded mock tests behind you — then take your CLB 7 into the French draw and your bilingual bonus.",
+    body: "Sit the exam with graded mock tests behind you — then take your CLB 7 into the French draw and your 50-point bilingual bonus.",
     image: {
       src: "https://lh3.googleusercontent.com/aida/AP1WRLumjICWVbp6Gah-q7Hqbz2vA2ttzBdvLP4Mz5fDE2ZcQD3QAmk30trDo1pO6cWL1l66VpgvnM3DQUFEBXzakJK-WN-Gz9E8Cwsx3D4pDhyxIw2z3Y9tMyv9iZTvpK5FZJksTNCPBvjArZF4IznjkyrIrJJZsOKutMJszcLDGCVzJb36wrEntRPS57aih36djjEA-v-GOdLvE64tQwu8XUwiigfUSGarOPx57ezCBs9UCB4f6zibK1dla_k",
       alt: "Candidate passing the TEF Canada exam",
@@ -160,108 +173,127 @@ export const fcCurriculumHeading: SectionHeadingContent = {
   heading: { before: "Trained for the", accent: "exam", after: ", not just the language" },
 };
 
+export const fcCurriculumIntro =
+  "Generic French gets you to B1. Exam-specific training gets you from B1 to CLB 7. Every module below maps to a scored section of the test.";
+
 export const fcCurriculum: CurriculumCard[] = [
   {
-    title: "TEF Canada",
+    title: "TEF Canada track",
     lines: [
-      "Listening (Compréhension orale): audio plays ONCE — we drill one-play listening from week one",
-      "Reading (Compréhension écrite): speed-reading under exam timing",
-      "Writing (Expression écrite): two timed tasks with templates and graded feedback",
-      "Speaking (Expression orale): two live role-plays, rehearsed weekly in mock orals",
+      "Listening: one-play drills from week one, native-speed audio, question-type strategy",
+      "Reading: speed-reading emails, notices and articles under exam timing",
+      "Writing: both timed tasks with templates, connectors, and graded feedback",
+      "Speaking: the two live role-plays — ask, convince, argue — rehearsed in weekly mock orals",
     ],
-    footnote: "Weekly graded mock tests with skill-by-skill CLB scoring",
+    footnote: "Weekly graded full mocks with skill-by-skill CLB scoring",
   },
   {
-    title: "TCF Canada",
+    title: "TCF Canada track",
     lines: [
-      "Listening & Reading: computer-based format practice with real timing",
-      "Writing (3 tasks): structure and scoring drills — one point separates CLB 6 from CLB 7",
-      "Speaking (3 tasks): live examiner-style practice, recorded and reviewed",
+      "Listening & Reading: computer-based format practice at real question rhythm and timing",
+      "Writing (3 tasks): structure and scoring drills — where a single point separates CLB 6 from CLB 7",
+      "Speaking (3 tasks): examiner-style live practice, recorded and reviewed",
     ],
-    footnote: "Weekly graded mock tests with skill-by-skill CLB scoring",
+    footnote: "Weekly graded full mocks with skill-by-skill CLB scoring",
   },
 ];
 
 export const fcCurriculumClosing =
-  "Levels A0 → B2/CLB 7, in structured stages. Your free assessment tells you exactly which stage you start at.";
+  "Levels A0 → CLB 7 in structured stages. Message us your level and we'll tell you exactly which stage you start at.";
 
 export const fcTeachersHeading: SectionHeadingContent = {
   heading: { before: "Learn from trainers who've", accent: "been there" },
 };
 
 export const fcTeachersIntro =
-  "Our faculty consists of veteran French examiners and TEF/TCF specialists who understand the high stakes of the Canada PR process.";
+  "Certified French trainers (DELF/DALF/TEF credentials, C1/C2) who learned French as a second language themselves — and know the TEF/TCF scoring grids inside out. They explain through English and Hindi, and they've sat where you're sitting.";
 
 // PLACEHOLDER — replace with Deepa's real trainers, photos and REAL credentials.
 export const fcTeachers: Teacher[] = [
   { name: "Valérie D.", credential: "DALF C2", blurb: "8 yrs teaching · 200+ students to CLB 7 · English/Hindi" },
-  { name: "Antoine L.", credential: "Native Speaker", blurb: "6 yrs teaching · Exam Specialist · English/French" },
-  { name: "Sophie M.", credential: "TEF Evaluator", blurb: "10 yrs teaching · 300+ success stories · English/French" },
+  { name: "Antoine L.", credential: "TEF CLB 9", blurb: "6 yrs teaching · Exam Specialist · English/French" },
+  { name: "Sophie M.", credential: "TEF Evaluator", blurb: "10 yrs teaching · 300+ students to CLB 7 · English/French" },
   { name: "Julien B.", credential: "DALF C2", blurb: "5 yrs teaching · Mock Test Expert · English/Hindi" },
 ];
 
 export const fcTeachersTrustLine =
-  "Every trainer is credential-verified. Meet yours in your free assessment.";
+  "Credentials verified. Ask to meet your trainer on WhatsApp before you enrol — we'll happily introduce you.";
 
 export const fcBatchesHeading: SectionHeadingContent = {
   heading: { before: "Reserve your", accent: "seat" },
 };
 
-// PLACEHOLDER — real dates and real seat counts only. Fake scarcity gets shared.
+export const fcBatchesIntro =
+  "Small live cohorts, Canadian-friendly hours. When a batch fills, it closes — we don't squeeze in extra seats.";
+
+// PLACEHOLDER — real dates and real seat counts only. examName drives the
+// whiteboard art on BatchCardV2.
 export const fcBatches: Batch[] = [
   {
-    title: "TEF Canada Intensive — Batch 12",
-    dates: "Starts Nov 15, 2026",
-    schedule: "Tue & Thu 7–9 PM EST + Sat mock test",
-    level: "A2 → B2/CLB 7 Track",
-    faculty: "Valérie D.",
-    seatsLeft: "3 seats left",
+    title: "TEF Canada Beginners — Batch 12",
+    examName: "TEF Canada",
+    covered: "Grammar foundations, everyday conversation, exam format from month one.",
+    level: "A0 → CLB 7 full track",
+    dates: "Starts July 21, 2026 · Ends May 2027",
+    schedule: "Tue & Thu 7–9 PM EST + Sat mock",
+    faculty: "[Name]",
+    seatsLeft: "4 of 12 seats left",
     language: "french",
   },
   {
-    title: "TEF Canada Intensive — Batch 13",
-    dates: "Starts Nov 22, 2026",
-    schedule: "Mon & Wed 7–9 PM EST + Sat mock test",
-    level: "A2 → B2/CLB 7 Track",
-    faculty: "Antoine L.",
-    seatsLeft: "2 seats left",
+    title: "TEF Canada Fast Track — Batch 7",
+    examName: "TEF Canada",
+    covered: "For B1+ learners · intensive exam strategy: one-play listening drills, timed writing, weekly graded mock orals.",
+    level: "B1+ → exam-ready",
+    dates: "Starts July 24, 2026 · Ends Nov 2026",
+    schedule: "Mon & Wed 8–10 PM EST + Sat mock",
+    faculty: "[Name]",
+    seatsLeft: "3 of 12 seats left",
     featured: true,
     language: "french",
   },
   {
-    title: "TCF Canada Intensive — Batch 08",
-    dates: "Starts Dec 1, 2026",
-    schedule: "Sat & Sun 10 AM–12 PM EST + Wed mock test",
-    level: "B1 → C1 Track",
-    faculty: "Sophie M.",
-    seatsLeft: "4 seats left",
+    title: "TCF Canada Prep — Batch 4",
+    examName: "TCF Canada",
+    covered: "A2+ learners · all four TCF tasks, computer-based format practice, weekly graded mocks.",
+    level: "A2+ → exam-ready",
+    dates: "Starts July 28, 2026 · Ends Jan 2027",
+    schedule: "Weekends 10 AM–1 PM EST",
+    faculty: "[Name]",
+    seatsLeft: "6 of 12 seats left",
     language: "french",
   },
 ];
+
+export const fcBatchesFootnote =
+  "None of these timings fit? Message us — new cohorts open every month, and we'll match you to the next one.";
 
 export const fcTestimonialsHeading: SectionHeadingContent = {
   heading: { before: "Rated 4.9/5 by our", accent: "learners" },
 };
 
-// PLACEHOLDER — replace with real, permissioned student testimonials.
+// PLACEHOLDER — replace with real, permissioned students AND photos.
 export const fcTestimonials: Testimonial[] = [
   {
-    name: "Sarah M.",
-    role: "Canada PR Program",
-    outcome: "CLB 7 in 4 months",
-    quote: "The structured approach to TEF was exactly what I needed. I hit CLB 7 in 4 months and just received my ITA!",
+    name: "PGWP holder, Toronto",
+    role: "TEF · CLB 7 · ITA in a French draw",
+    outcome: "CLB 7 all four",
+    quote: "My permit had 14 months left and my CRS was stuck at 438. I started from zero French. Cleared TEF with CLB 7 in all four skills and got my ITA in a French draw.",
+    image: { src: "/images/testimonials/marketing-manager.svg", alt: "Portrait of a Dees Language Lounge student" },
   },
   {
-    name: "David K.",
-    role: "Professional Program",
-    outcome: "Speaking score jump",
-    quote: "I tried apps for a year with no progress. Two months with Dees and my speaking score jumped significantly.",
+    name: "Software engineer, Brampton",
+    role: "Weekly mock orals",
+    outcome: "Exam felt familiar",
+    quote: "Grammar finally made sense because my trainer explained it through Hindi. But the real difference was the weekly mock orals — the exam felt familiar.",
+    image: { src: "/images/testimonials/engineer.svg", alt: "Portrait of a Dees Language Lounge student" },
   },
   {
-    name: "James L.",
-    role: "Career Program",
-    outcome: "Exam-ready",
-    quote: "The mock orals were a game changer. I felt so prepared for the actual exam pressure. Highly recommend!",
+    name: "Nurse, Surrey",
+    role: "Evening batches · one-play listening",
+    outcome: "Ready on exam day",
+    quote: "Evening batches meant I could study after shifts. The one-play listening drills saved me — the real TEF audio plays once, and I was ready.",
+    image: { src: "/images/testimonials/design-student.svg", alt: "Portrait of a Dees Language Lounge student" },
   },
 ];
 
@@ -273,44 +305,55 @@ export const fcFaq: FaqItem[] = [
   {
     question: "Can I really learn enough French in time?",
     answer:
-      "Honestly: it depends where you start, and we'll tell you in your free assessment. From zero, CLB 7 typically takes 10–14 months of consistent study; from A2/B1, often 4–6 months of exam-focused prep. What we won't do is promise a timeline we can't back — if your window is too tight, we'll say so and show you the fastest realistic plan.",
+      "Honestly: it depends where you start. From zero, CLB 7 typically takes 10–14 months of consistent study; from A2/B1, often 4–6 months of exam-focused prep. Message us your level and your deadline — if your window is too tight, we'll tell you straight and show you the fastest realistic plan instead of selling you false hope.",
   },
   {
     question: "Isn't French too hard?",
     answer:
-      "You don't need to be fluent — you need CLB 7, a specific, teachable target. It's roughly B2: structured opinions, clear writing, confident everyday speech. Thousands of first-generation learners clear it every year with exam-focused training.",
+      "You don't need fluency — you need CLB 7, a specific, teachable target (roughly B2: structured opinions, clear writing, confident everyday speech). Thousands of first-generation learners clear it every year with exam-focused training.",
   },
   {
     question: "Why not just use free apps or YouTube?",
     answer:
-      "Apps are great to B1 — then they stall. The exam is won in speaking and listening: the TEF audio plays once, and the oral is a live graded conversation. No app corrects your speech or simulates the exam. That's exactly what our live classes do.",
+      "Apps stall at B1 — and the exam is won in speaking and listening. The TEF audio plays once; the oral is a live graded conversation. No app corrects your speech or simulates that. Our live classes do exactly that, every week.",
+  },
+  {
+    question: "TEF Canada or TCF Canada — which should I take?",
+    answer:
+      "Both count equally for IRCC. TEF's production sections are scored on a wider band (often kinder to borderline candidates); TCF's tight 0–20 scale rewards precise exam strategy. The right pick depends on your profile — message us and we'll recommend one, with reasons.",
   },
   {
     question: "What if Canada changes the French category?",
     answer:
-      "Fair question. French draws are currently the only Express Entry category IRCC has publicly committed to growing, with francophone targets rising through 2028 — but policy can change, and we won't pretend otherwise. What doesn't change: CLB 7 French also earns up to 50 bilingual CRS points, opens LMIA-exempt Francophone Mobility work permits, and boosts PNP options. The skill keeps its value across pathways.",
+      "Fair question. French draws are currently the only Express Entry category IRCC has publicly committed to growing, with francophone targets rising through 2028 — but policy can change, and we won't pretend otherwise. What doesn't change: CLB 7 French also earns up to 50 bilingual CRS points, opens Francophone Mobility work permits, and strengthens PNP options. The skill keeps its value across pathways.",
   },
   {
     question: "Is this legit, or another consultant scam?",
     answer:
-      "We're a language school, not an immigration consultancy — we never sell PR promises, and we're not licensed to give immigration advice. What we do: teach French, prepare you for TEF/TCF, and publish our real outcomes. Transparent pricing, named trainers with credentials, and a free assessment before you pay anything.",
+      "We're a language school, not an immigration consultancy — we never sell PR promises and we're not licensed to give immigration advice. What we do: teach French, prepare you for TEF/TCF, and publish real outcomes. Named trainers, transparent fees, and you can meet your trainer before paying anything.",
   },
   {
-    question: "I work full-time — how does scheduling work?",
+    question: "I work full-time in Canada — how does scheduling work?",
     answer:
       "Cohorts run on Canadian evenings and weekends (EST/PST-friendly), every class is recorded, and batches are small enough that missing a week doesn't mean falling behind.",
   },
   {
     question: "Do I need to know Hindi to join?",
     answer:
-      "Not at all. Classes run in English with French; our trainers can explain through Hindi when it helps, which many of our students love — but every cohort is fully accessible in English.",
+      "Not at all. Classes run in English plus French; our trainers can explain through Hindi when it helps — many students love that — but every cohort is fully accessible in English.",
+  },
+  {
+    question: "How do I enrol?",
+    answer:
+      "One WhatsApp message. Tell us your level, your timeline and your target exam — we'll confirm your batch, fees and start date. No forms, no call centres.",
   },
 ];
 
 export const fcFinalCta: FinalCtaContent = {
   heading: { before: "Ready to turn", accent: "French", after: "into your PR shortcut?" },
-  body: "Your level, your timeline, your plan — free, in 30 minutes.",
-  ctaLabel: "Book a free level assessment",
+  body: "One message: your level, your deadline, your plan — sorted on WhatsApp today.",
+  ctaLabel: "Chat with us on WhatsApp",
+  waMessage: "Hi! I'm ready to start French for Canada PR. Help me pick my batch.",
 };
 
 // Variant-A footer: Canada-pathways blurb + required compliance line.
