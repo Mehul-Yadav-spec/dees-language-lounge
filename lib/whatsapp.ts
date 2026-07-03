@@ -13,15 +13,19 @@ export function hasWhatsapp(): boolean {
 }
 
 export interface WhatsAppContext {
-  /** e.g. "French (Canada PR)" or a page name. */
+  /** A full, verbatim prefilled message. Takes precedence over `context`. */
+  message?: string;
+  /** e.g. "French" or a section name — used to build a default message. */
   context?: string;
 }
 
 export function whatsappLink(ctx: WhatsAppContext = {}): string {
   const number = whatsappNumber();
-  const base = ctx.context
-    ? `Hi! I'd like to book a free level assessment for ${ctx.context}.`
-    : "Hi! I'd like to book a free level assessment.";
+  const base =
+    ctx.message ??
+    (ctx.context
+      ? `Hi! I'd like to know more about ${ctx.context}.`
+      : "Hi! I'd like to know more about your language courses.");
   const text = encodeURIComponent(base);
   // If the number is unset, fall back to wa.me without a number (opens app to pick).
   return number ? `https://wa.me/${number}?text=${text}` : `https://wa.me/?text=${text}`;

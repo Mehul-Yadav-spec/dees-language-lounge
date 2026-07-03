@@ -10,6 +10,8 @@ import { whatsappLink } from "./whatsapp";
 export interface CtaContext {
   /** Human-readable context for the WhatsApp prefilled message. */
   context?: string;
+  /** Full verbatim WhatsApp prefill message (overrides context in wa mode). */
+  waMessage?: string;
   /** Language prefill for the form (/book-assessment?lang=). */
   lang?: string;
   /** Batch prefill for the form (/book-assessment?batch=). */
@@ -25,7 +27,7 @@ export interface ResolvedCta {
 
 export function resolveCta(ctx: CtaContext = {}): ResolvedCta {
   if (site.ctaMode === "whatsapp") {
-    return { href: whatsappLink({ context: ctx.context }), external: true };
+    return { href: whatsappLink({ message: ctx.waMessage, context: ctx.context }), external: true };
   }
 
   // 'form' mode → /book-assessment with optional prefill params.

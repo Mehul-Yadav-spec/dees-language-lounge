@@ -47,7 +47,11 @@ export function Navbar() {
           </ul>
 
           <div className="hidden md:block">
-            <CTAButton label="Book free assessment" size="md" context="Navbar" />
+            <CTAButton
+              label={site.ctaLabel}
+              size="md"
+              waMessage="Hi! I'd like to know more about your language courses."
+            />
           </div>
 
           <button

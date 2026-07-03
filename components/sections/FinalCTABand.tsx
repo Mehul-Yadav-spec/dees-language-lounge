@@ -23,7 +23,13 @@ export function FinalCTABand({
           />
           {content.body ? <p className="text-lg text-muted">{content.body}</p> : null}
           <div className="mt-2 w-full sm:w-auto">
-            <CTAButton label={content.ctaLabel} context={context} fullWidth className="sm:w-auto" />
+            <CTAButton
+              label={content.ctaLabel}
+              context={context}
+              waMessage={content.waMessage}
+              fullWidth
+              className="sm:w-auto"
+            />
           </div>
         </div>
       </GlowContainer>

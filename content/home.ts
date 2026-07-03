@@ -1,7 +1,8 @@
 // PLACEHOLDER — replace [bracketed] stats, teacher names/photos/credentials,
-// batch dates & seat counts, and testimonials with the client's real, verifiable
-// data before launch. This is Variant B (the multi-language school homepage):
-// it MUST contain ZERO Canada-PR / CLB 7 / TEF-TCF messaging.
+// batch dates & seat counts, and testimonials (incl. real photos) with the
+// client's real, verifiable data before launch. Variant B homepage,
+// **WhatsApp CTA edition** (ctaMode: 'whatsapp' in content/site.ts): no
+// assessment offer; every CTA opens wa.me with a section-specific prefill.
 
 import type {
   PromoBarContent,
@@ -12,24 +13,26 @@ import type {
   GoalSlide,
   Feature,
   RoadmapStep,
-  CurriculumCard,
+  CurriculumSlide,
   Teacher,
   Batch,
   Testimonial,
   FaqItem,
   FinalCtaContent,
+  AccentHeading,
 } from "./types";
 
 export const homePromo: PromoBarContent = {
-  id: "home-2026-07",
-  text: "New live batches for French, Spanish, German & IELTS start July 21 — book your free level assessment. Limited seats per batch.",
-  mobileText: "New live batches start July 21 — limited seats.",
+  id: "home-wa-2026-07",
+  text: "New live batches for French, Spanish, German & IELTS start July 21 — seats are limited. Message us on WhatsApp to reserve yours.",
+  mobileText: "New batches start July 21 — message us to reserve a seat.",
 };
 
 export const homeHero: HeroContent = {
+  eyebrow: "Live classes · Certified trainers · Real conversation",
   heading: { before: "Speak a new", accent: "language", after: "with confidence." },
   subhead:
-    "Live online classes in French, Spanish, German and IELTS English — small groups, certified trainers who explain in your language, and speaking practice from day one. Learn in weeks, not years.",
+    "Live online classes in French, Spanish, German and IELTS English — taught the way languages are actually learned: small groups, certified trainers who explain in your language, and speaking from your very first class. Wherever you are in the world, world-class training comes to you.",
   picker: {
     label: "I want to learn",
     kind: "language",
@@ -40,7 +43,9 @@ export const homeHero: HeroContent = {
       { label: "IELTS English", value: "ielts" },
     ],
   },
-  ctaLabel: "Book a free level assessment",
+  ctaLabel: "Chat with us on WhatsApp",
+  underCtaLine:
+    "Real humans, real answers — batch dates, fees, and honest guidance on where to start, usually within minutes.",
   credibilityLine: "92% of our students reach their target level on the first attempt.",
   liveCard: { label: "Live: French Conversation Circle", participants: "6 participants" },
   image: {
@@ -48,6 +53,9 @@ export const homeHero: HeroContent = {
     alt: "Professional taking a live online language class",
   },
 };
+
+// Prefill for the hero CTA is computed from the picker (see Hero.tsx), e.g.
+// "Hi! I want to learn French. Can you share batch details and fees?"
 
 export const homeStats: Stat[] = [
   { value: "4", label: "Languages taught live" },
@@ -57,7 +65,7 @@ export const homeStats: Stat[] = [
 ];
 
 export const homeRecognition: RecognitionContent = {
-  caption: "Preparing learners for the world's most recognised language certifications.",
+  caption: "We prepare you for the certifications the world actually recognises.",
   logos: ["DELF/DALF", "DELE", "Goethe-Zertifikat", "IELTS", "TEF/TCF"],
 };
 
@@ -68,7 +76,7 @@ export const homeGoalsHeading: SectionHeadingContent = {
 export const homeGoals: GoalSlide[] = [
   {
     title: "Advance your career",
-    body: "Bilingual professionals stand out — add a certified language to your CV and open doors in MNCs, client-facing roles and beyond.",
+    body: "Bilingual professionals get shortlisted first. Add a certified language to your CV and open doors in MNCs, client-facing roles, translation and beyond.",
     image: {
       src: "https://lh3.googleusercontent.com/aida-public/AB6AXuC67_kcvaGaAAxIQv2ZhbPmVZ8evksnZ-lU_ZT7Hcv19jQZ7Aef5XZAyxD2nBsSAAm6M5QSHzJLxLK_i8u5Rgwn44-jGrXHIc5S60xDYG6dkKoL0reQuc_s1ArzdiCbMX6Gk3e348Tjc3GhY0mO2Eu-blsbWyKZcKKF5jsHId9Pw4JYQDv0CbDweNepO9HGo0vG6n7ewwypBwRZDBzqDUZufU_sZh_jtJmU-APrkgBMac8JCQPD7Kke",
       alt: "Bilingual professional in a client meeting",
@@ -76,7 +84,7 @@ export const homeGoals: GoalSlide[] = [
   },
   {
     title: "Study or work abroad",
-    body: "DELF, DELE, Goethe, IELTS — universities and employers ask for proof. We prepare you for the exact exam.",
+    body: "Universities and employers don't ask if you \"know\" a language — they ask for proof. DELF, DELE, Goethe, IELTS: we train you for the exact exam, not just the language.",
     image: {
       src: "https://lh3.googleusercontent.com/aida-public/AB6AXuBH8MpDRRV6l7eEoWUeJdM7dbBiieQmF9mPZoiJtM75xUBhyCoDSaRFI9-DjH_HwR9tpF8UpPt4nrTVM5GSzQwMQhf992bhic0Uue7QEgec7X9FPc76hpBN4Oelf3WLChrsqrkzw8pcxYpIfD4ScWZkz4rkkXBc4RYNbh9Y-uannWkgr493g8afJoBJEkr8PSLLVLaRGUum4MaJ33ffy1rxa8kyHZB76-fqVYKGOmYdVZcaO3Psr7LT",
       alt: "Student preparing to study abroad",
@@ -84,7 +92,7 @@ export const homeGoals: GoalSlide[] = [
   },
   {
     title: "Travel and connect",
-    body: "Real conversation, culture and confidence — not just textbook drills.",
+    body: "Order confidently in Paris. Make friends in Berlin. Bargain in Barcelona. Real conversation, real culture — not textbook drills.",
     image: {
       src: "https://lh3.googleusercontent.com/aida-public/AB6AXuAy0NF_I-v7lvmEIHgVjzQlEFHLSAKi2kyako0j8V_9Ew7Met3cmNyJnRxvYjgy-nxrsAJV5BmMLhD_iNPTi0FABdQqtiyvLUp2YVVEMcia3lVkHyjGZx6-PkMfl5cgDWOgARPBiN0PolrW6C_tCSvkZAZdqLxgq80Okso0Pe0eEaDq7hNdpPBvA5lPLC7G4N2lsO-zuCNgPPy3vXWMld5UDT-dbvSKzy2JfcfiwW__qwC5RlJ8XAXu",
       alt: "Traveller connecting with locals",
@@ -93,52 +101,55 @@ export const homeGoals: GoalSlide[] = [
 ];
 
 export const homeFeaturesHeading: SectionHeadingContent = {
-  heading: { before: "Everything you need to", accent: "learn", after: "— in class and beyond." },
+  heading: { before: "Why learners", accent: "trust", after: "us" },
 };
 
 export const homeFeatures: Feature[] = [
   {
     icon: "record_voice_over",
     title: "Live classes, real speaking",
-    body: "The skill apps can't teach: every week you speak, get corrected, and speak again.",
+    body: "The skill apps can't teach. Every single week you speak, get corrected by a real trainer, and speak again — because confidence is built out loud, not on mute.",
   },
   {
     icon: "workspace_premium",
-    title: "Certification-aligned curriculum",
-    body: "CEFR levels A1–C1 mapped to DELF/DALF, DELE, Goethe and IELTS.",
+    title: "A curriculum that leads somewhere",
+    body: "No wandering lessons. Every level (A1 → C1) is mapped to an official certification — DELF/DALF, DELE, Goethe, IELTS — so your progress is provable, not just a feeling.",
   },
   {
     icon: "translate",
     title: "Trainers who explain in your language",
-    body: "Grammar through English and Hindi; every class works fully in English too.",
+    body: "Our trainers learned these languages as second languages themselves. They explain grammar through English and Hindi, know exactly where learners stumble, and get you past it faster. Every class works fully in English too.",
   },
   {
     icon: "groups",
-    title: "Small groups, personal attention",
-    body: "Max 12 per batch, every class recorded.",
+    title: "Small groups. Your trainer knows your name.",
+    body: "Maximum 12 per batch. Your weak spots get personal attention, every class is recorded, and nobody gets left behind.",
   },
 ];
+
+export const homeBigClaim: { heading: AccentHeading; footnote: string } = {
+  heading: { before: "92% of our students reach their", accent: "target level", after: "on the first attempt." },
+  footnote: "Dees Language Lounge student outcomes.",
+};
 
 export const homeRoadmapHeading: SectionHeadingContent = {
   heading: { before: "Your journey starts", accent: "here" },
 };
 
-// PR-free roadmap per Homepage-Content-VariantB-Final.md (replaces the rendered
-// "roadmap to CLB 7" / "TEF/TCF strategies" / "Claim your PR" steps).
 export const homeRoadmap: RoadmapStep[] = [
   {
     number: 1,
-    title: "Free level assessment",
-    body: "A 30-minute session that finds your true starting level and gives you a personalised plan — which language, which batch, and a realistic timeline to your goal.",
+    title: "Say hello on WhatsApp",
+    body: "Tell us your goal and your current level — even if it's zero. A real person (not a bot) replies with honest guidance: which language track, which batch, what timeline is realistic. No forms, no pressure, no spam.",
     image: {
       src: "https://lh3.googleusercontent.com/aida/AP1WRLt6O41NB4uDrnjso_cQennzHzOqMN19MSA5A3_MdN7UzGkJ80UIO1XBalFdgyccCsSFqCC9GQKr8FAvguytRd8Li7ySiCUBzvF2bodhmnWKk6C3IAxLX0MAnfSfaui-s5b7kCke_sXrzYERL2qR52acPkNw4cyuot6nQIfPw7-NSryjL2jbKhpFrMrRzEi6DatUNX88Wjn8MZQ_AvI5EtnUipjour9Yzx5xmMLCpkjwQ8s25gw132ACq7c",
-      alt: "Student in a free level assessment call",
+      alt: "Student messaging Dees Language Lounge on WhatsApp",
     },
   },
   {
     number: 2,
     title: "Join your live batch",
-    body: "Small groups, certified trainers, evening and weekend slots. Speaking practice from the very first class, and every session recorded.",
+    body: "Small groups, certified trainers, evening and weekend slots. You'll speak in your very first class — and every session is recorded, so life never knocks you off track.",
     image: {
       src: "https://lh3.googleusercontent.com/aida/AP1WRLuPg3Xsx6dUFAdCNbPbUqEAY8K3nUDcEkWTy7Spg0S9YD3RHSiap2RjX7YTlX2tZGS_BrGSMUqDugU7wdqCEo2nRc8dCbq1wAcuJMb8nP9pLJ-DceNtVBUQOCY_hdckenq8QKSsaJfhuiFm-odKEwGmhyzJx1qjPGREz2jyaLSuT08kG4JRm_kaA9OlhwdFHSfxtdwDNmWqdQKMdTOz2k-pQB8vL_wcJ-TqgB3H7HtCCeKhvGAbJsWG60g",
       alt: "Live online cohort class in session",
@@ -147,7 +158,7 @@ export const homeRoadmap: RoadmapStep[] = [
   {
     number: 3,
     title: "Certify your level",
-    body: "Sit your DELF, DELE, Goethe or IELTS exam with graded mock tests behind you — and add a globally recognised certificate to your name.",
+    body: "Sit your DELF, DELE, Goethe or IELTS exam with graded mock tests behind you — and add a certificate the whole world recognises to your name.",
     image: {
       src: "https://lh3.googleusercontent.com/aida/AP1WRLumjICWVbp6Gah-q7Hqbz2vA2ttzBdvLP4Mz5fDE2ZcQD3QAmk30trDo1pO6cWL1l66VpgvnM3DQUFEBXzakJK-WN-Gz9E8Cwsx3D4pDhyxIw2z3Y9tMyv9iZTvpK5FZJksTNCPBvjArZF4IznjkyrIrJJZsOKutMJszcLDGCVzJb36wrEntRPS57aih36djjEA-v-GOdLvE64tQwu8XUwiigfUSGarOPx57ezCBs9UCB4f6zibK1dla_k",
       alt: "Student receiving a language certificate",
@@ -160,19 +171,56 @@ export const homeCurriculumHeading: SectionHeadingContent = {
   heading: { before: "Structured for", accent: "certification", after: ", level by level" },
 };
 
-export const homeCurriculum: CurriculumCard[] = [
-  { title: "French", flag: "🇫🇷", lines: ["A1–C1 · DELF/DALF track · weekly mock orals"] },
-  { title: "Spanish", flag: "🇪🇸", lines: ["A1–C1 · DELE track · speaking-first method"] },
-  { title: "German", flag: "🇩🇪", lines: ["A1–C1 · Goethe-Zertifikat track · grammar made simple"] },
-  { title: "IELTS English", flag: "🇬🇧", lines: ["Academic & General · band-score strategy · weekly mock tests"] },
+// Rich carousel slides — one language each, no background image.
+export const homeCurriculumSlides: CurriculumSlide[] = [
+  {
+    flag: "🇫🇷",
+    name: "French",
+    levelsTrack: "Levels A1 → C1 · Tracks: DELF/DALF · TEF/TCF Canada",
+    whatYouCover:
+      "Pronunciation and core grammar from zero; everyday conversation (introductions, travel, work situations); listening trained on native-speed audio — including one-play drills for the TEF format; structured writing (emails, opinion pieces, exam tasks with templates and connectors); weekly live mock orals with graded feedback; full exam strategy for DELF or TEF/TCF, section by section.",
+    outcome: "A certification recognised by universities, employers and governments worldwide.",
+    link: { label: "Preparing for Canada? See the TEF/TCF track →", href: "/french-canada" },
+  },
+  {
+    flag: "🇪🇸",
+    name: "Spanish",
+    levelsTrack: "Levels A1 → C1 · Track: DELE",
+    whatYouCover:
+      "Speaking-first method from class one; core grammar made practical (ser vs estar, past tenses, subjunctive — demystified); everyday and travel conversation; listening across Latin American and European accents; DELE task training — reading, writing, listening and the oral interview; weekly conversation circles.",
+    outcome: "The DELE — the lifetime-valid Spanish diploma issued by Instituto Cervantes.",
+  },
+  {
+    flag: "🇩🇪",
+    name: "German",
+    levelsTrack: "Levels A1 → C1 · Track: Goethe-Zertifikat",
+    whatYouCover:
+      "German grammar made simple — cases, word order and verb placement taught through patterns, not memorisation; practical conversation for work, study and daily life; listening and reading at exam pace; Goethe exam training for all four modules with graded mocks; vocabulary built for careers and university.",
+    outcome: "The Goethe-Zertifikat — the German credential employers and universities ask for by name.",
+  },
+  {
+    flag: "🇬🇧",
+    name: "IELTS English",
+    levelsTrack: "Formats: Academic & General Training · Goal: your target band",
+    whatYouCover:
+      "Band-score strategy for all four modules; Writing Task 1 & 2 structures with examiner-style feedback; speaking practice with cue-card drills and live mock interviews; listening and reading under real exam timing; weekly full-length graded mock tests; error-pattern analysis so your band moves, not just your effort.",
+    outcome: "The IELTS score your university, employer or visa application requires.",
+  },
 ];
 
 export const homeCurriculumClosing =
-  "Not sure which level you are? That's what the free assessment finds out.";
+  "Not sure which level you are? Message us — we'll place you honestly, even if that means telling you to start smaller.";
+
+// Prefill for the curriculum closing CTA.
+export const homeCurriculumClosingWaMessage =
+  "Hi! I'm not sure what level I am in French. Can you help?";
 
 export const homeTeachersHeading: SectionHeadingContent = {
   heading: { before: "Learn from trainers who've", accent: "been there" },
 };
+
+export const homeTeachersIntro =
+  "Every Dees trainer holds a verified international certification — and learned their language as a second language, just like you. They remember what confused them at A1. That's why their students move faster.";
 
 // PLACEHOLDER — Stitch-invented profiles. Replace with Deepa's real trainers,
 // photos (with permission) and real credentials before launch.
@@ -180,7 +228,7 @@ export const homeTeachers: Teacher[] = [
   {
     name: "Sarah Dubois",
     credential: "DALF C1",
-    blurb: "A veteran DELF examiner with over 8 years helping professionals master French for international careers.",
+    blurb: "8 yrs teaching · 200+ students certified · English/Hindi/French",
     image: {
       src: "https://lh3.googleusercontent.com/aida-public/AB6AXuAY12xoy8b9ecZ3T88L1zs4m_1EQFrpRhfST9bf6dZ1JGLjUzlSOQaXnOjwc-ZAUuwAil4jPndYsp9V85LHXSyw4WR0K64qHjUdHQmSpd8ftrPuTZnkb7HCgwwqYtS16HT3LBsyCzEOapw4CbhOkwsS865EGOmXVN4GEPo0-QZXW2OKGWg38LX3QEbQD_QbaWUOvV9MUyspNaeGRDjVYaIyOEkkImvCI60eHATCoCeubEOiTkUKDzJF",
       alt: "Portrait of French trainer Sarah Dubois",
@@ -189,7 +237,7 @@ export const homeTeachers: Teacher[] = [
   {
     name: "Carlos Mendez",
     credential: "DELE C1",
-    blurb: "A native speaker from Madrid specialising in conversational Spanish and DELE preparation.",
+    blurb: "7 yrs teaching · 180+ students certified · English/Hindi/Spanish",
     image: {
       src: "https://lh3.googleusercontent.com/aida-public/AB6AXuANrLE4HjUqQn719JyqEXzpwer-NixZjrpNs-37Bvg3VA142xpUr1dm3nsUu2UYieeTCyGmw3GdiHF_mCLkYrgSEA8UJ1uEfk-0mIo7AGJwsujZ9p5htsKEO9yIvG86ZaCnL4FZwQZ-HhsrHG_P6TldgvXAyaCs_A3QN6-xkE0b5lyjvDRxpa1DJeQ3kPZMpRrWnYmckbV5asMLFJyBwSSddwyL5dqlTBxfaNu-QmwiPmCmDUqcO485",
       alt: "Portrait of Spanish trainer Carlos Mendez",
@@ -198,7 +246,7 @@ export const homeTeachers: Teacher[] = [
   {
     name: "Anna Schmidt",
     credential: "Goethe C1",
-    blurb: "A linguist and native speaker bringing a structured yet natural approach to German grammar and accent.",
+    blurb: "9 yrs teaching · 220+ students certified · English/German",
     image: {
       src: "https://lh3.googleusercontent.com/aida-public/AB6AXuD4FT5COJwS-3m2l0OQkpXspGST-7QEcrz_Ab21YeA6kiP5LbhswMLkOqHPW4mSNzOV_yn69qlTA3GEOapK-owkhiBhwCpObqAb8bzPZQfL-2yHSRFtu-oiP1uiaIFi7z1hRyCyBjW5rA3RPw3-dlKUSjnJU-VfqKse2Y3zvxJ6B-oubd8JQSV8DuOc5B0VMmXKb3kYUBWNhkwbgWyiDEF1rMjEq8f49daXbZqjkm6H82RiH-oTz9BO",
       alt: "Portrait of German trainer Anna Schmidt",
@@ -207,7 +255,7 @@ export const homeTeachers: Teacher[] = [
   {
     name: "David Chen",
     credential: "IELTS 8.5",
-    blurb: "A high-performance IELTS coach who has helped 100+ students reach band 7.5 or higher.",
+    blurb: "6 yrs teaching · 150+ students certified · English",
     image: {
       src: "https://lh3.googleusercontent.com/aida-public/AB6AXuAU0kSCr3WWncVwyB0319_VY5FHj38QAiw0eDxQXsvfN9vcO-g5N-ZMOoWitU5KUXcw_uy42HL_1C4HFV5HEbY8J1pKGVEO0rC3jCxvYFz0rvcahqrRdM0xvnPMKGf0GhYp6j99_-IE19ALG2s3PG6esO3CCY5pkCG5TATtBZuKRk289v3YFqF3KOX7pmEGvZynf98goHSEDPmMvqejNCCR90j0PhnEg5V3nOt-eQi78B3jmBba5zrL",
       alt: "Portrait of IELTS coach David Chen",
@@ -216,67 +264,85 @@ export const homeTeachers: Teacher[] = [
 ];
 
 export const homeTeachersTrustLine =
-  "Every trainer is credential-verified. Meet yours in your free assessment.";
+  "Credentials verified. Ask to meet your trainer on WhatsApp before you enrol — we'll happily introduce you.";
 
 export const homeBatchesHeading: SectionHeadingContent = {
   heading: { before: "Reserve your", accent: "seat" },
 };
 
-// PLACEHOLDER — use real dates and real seat counts only before launch.
+export const homeBatchesIntro =
+  "Our next live French batches — TEF/TCF Canada exam track. Small groups; when a batch fills, it closes. We don't squeeze in extra seats.";
+
+// PLACEHOLDER — real dates and real seat counts only. examName drives the
+// whiteboard art on BatchCardV2.
 export const homeBatches: Batch[] = [
   {
-    title: "French A1 Beginners — Batch 8",
-    covered: "Grammar fundamentals, everyday conversation, DELF A1 prep",
-    dates: "July 21, 2026 – Oct 15, 2026",
-    schedule: "Tue & Thu, 7–9 PM EST",
-    faculty: "Sarah Dubois",
+    title: "TEF Canada Beginners — Batch 12",
+    examName: "TEF Canada",
+    covered: "Grammar foundations, everyday conversation, exam format from month one.",
+    level: "A0 → CLB 7 full track",
+    dates: "Starts July 21, 2026",
+    schedule: "Tue & Thu 7–9 PM EST + Sat mock test",
+    faculty: "[Name]",
     seatsLeft: "4 of 12 seats left",
     language: "french",
   },
   {
-    title: "Spanish A1 Beginners — Batch 3",
-    covered: "Basic verb conjugation, essential travel phrases, DELE A1 introduction",
-    dates: "July 24, 2026 – Oct 30, 2026",
-    schedule: "Mon & Wed, 8–10 PM EST",
-    faculty: "Carlos Mendez",
-    seatsLeft: "6 of 12 seats left",
+    title: "TEF Canada Fast Track — Batch 7",
+    examName: "TEF Canada",
+    covered: "For B1+ learners · intensive exam strategy: one-play listening drills, timed writing, weekly graded mock orals.",
+    level: "B1+ → exam-ready",
+    dates: "Starts July 24, 2026",
+    schedule: "Mon & Wed 8–10 PM EST + Sat mock test",
+    faculty: "[Name]",
+    seatsLeft: "3 of 12 seats left",
     featured: true,
-    language: "spanish",
+    language: "french",
   },
   {
-    title: "IELTS Fast Track — Batch 15",
-    covered: "Intensive band 8+ strategies for Reading, Writing, Listening and Speaking",
-    dates: "July 25, 2026 – Aug 24, 2026",
+    title: "TCF Canada Prep — Batch 4",
+    examName: "TCF Canada",
+    covered: "For A2+ learners · all four TCF tasks, computer-based format practice, weekly graded mocks.",
+    level: "A2+ → exam-ready",
+    dates: "Starts July 28, 2026",
     schedule: "Weekends, 10 AM–1 PM EST",
-    faculty: "David Chen",
-    seatsLeft: "2 of 12 seats left",
-    language: "ielts",
+    faculty: "[Name]",
+    seatsLeft: "6 of 12 seats left",
+    language: "french",
   },
 ];
+
+export const homeBatchesFootnote =
+  "Learning Spanish, German or IELTS instead? Message us — batches for all languages run every month.";
+export const homeBatchesFootnoteWaMessage = "Hi! When does the next Spanish batch start?";
 
 export const homeTestimonialsHeading: SectionHeadingContent = {
   heading: { before: "Rated 4.9/5 by our", accent: "learners" },
 };
 
-// PLACEHOLDER — replace with real, permissioned student testimonials.
+// PLACEHOLDER — replace with real, permissioned student testimonials AND photos.
+// Placeholder portraits live in /public/images/testimonials/ (swap for real photos).
 export const homeTestimonials: Testimonial[] = [
   {
     name: "Marketing Manager",
     role: "DELF B1 in 7 months",
     outcome: "DELF B1",
-    quote: "The structured approach and live correction made all the difference. I felt completely prepared for the DELF exam.",
+    quote: "The structured approach and live correction made all the difference. I walked into the DELF exam already knowing what it would feel like.",
+    image: { src: "/images/testimonials/marketing-manager.svg", alt: "Portrait of a Dees Language Lounge student" },
   },
   {
     name: "Design Student",
     role: "DELE A2",
     outcome: "DELE A2",
-    quote: "Finally, classes that focus on speaking rather than just filling out workbook exercises. Highly recommend!",
+    quote: "Finally, classes about speaking, not filling workbooks. My trainer knew my weak spots by week two.",
+    image: { src: "/images/testimonials/design-student.svg", alt: "Portrait of a Dees Language Lounge student" },
   },
   {
     name: "Engineer",
     role: "IELTS 8.0 first attempt",
     outcome: "IELTS 8.0",
-    quote: "The mock speaking tests and detailed feedback helped me secure the band I needed for my visa application.",
+    quote: "The mock tests and detailed feedback got me the band I needed for my visa. First attempt.",
+    image: { src: "/images/testimonials/engineer.svg", alt: "Portrait of a Dees Language Lounge student" },
   },
 ];
 
@@ -288,27 +354,27 @@ export const homeFaq: FaqItem[] = [
   {
     question: "How long does it take to learn a language?",
     answer:
-      "Honestly: it depends on the language, your starting level and your weekly hours — and we'll tell you precisely in your free assessment. As a guide, a focused learner reaches A2 in 3–5 months and B1 in 8–12 months. No \"fluent in 30 days\" promises — nobody honest can make them.",
+      "Honestly: it depends on the language, your starting level and your weekly hours. As a guide, a focused learner reaches A2 (confident basics) in 3–5 months and B1 (independent conversation) in 8–12 months. What we'll never tell you is \"fluent in 30 days\" — nobody honest can. Message us your goal and we'll give you a straight answer for your case.",
   },
   {
     question: "I'm a complete beginner — is that okay?",
     answer:
-      "It's our most common starting point. Beginner batches assume zero knowledge, and you'll speak simple sentences in your first week.",
+      "It's our most common starting point. Beginner batches assume zero knowledge, and you'll speak your first full sentences in week one.",
   },
   {
     question: "Why live classes instead of free apps?",
     answer:
-      "Apps are a good supplement — but they can't correct your pronunciation, hold a conversation with you, or push you past the intermediate plateau. Speaking is a live skill; it needs a live class.",
+      "Apps are a fine supplement — but they can't correct your pronunciation, hold a conversation, or push you past the intermediate plateau. Speaking is a live skill. It needs a live class.",
   },
   {
     question: "Which language should I choose?",
     answer:
-      "Depends on your goal: French and German open Europe and global careers; Spanish is the world's second-most spoken native language; IELTS is the gateway to English-speaking universities and jobs. Tell us your goal in the free assessment and we'll give you a straight recommendation.",
+      "Depends on your goal: French and German open Europe and global careers; Spanish is the world's second-most spoken native language; IELTS is the gateway to English-speaking universities and jobs abroad. Tell us your goal on WhatsApp and we'll give you a straight recommendation — even if it's \"you don't need us yet.\"",
   },
   {
     question: "Do I get a certificate?",
     answer:
-      "You'll receive our course completion certificate at each level — and more importantly, we prepare you for the official exams (DELF/DALF, DELE, Goethe, IELTS) recognised worldwide.",
+      "You'll receive our completion certificate at every level — and far more importantly, we prepare you for the official exams (DELF/DALF, DELE, Goethe, IELTS) that universities and employers worldwide actually recognise.",
   },
   {
     question: "I work full-time — how does scheduling work?",
@@ -318,12 +384,18 @@ export const homeFaq: FaqItem[] = [
   {
     question: "Do I need to know Hindi to join?",
     answer:
-      "Not at all. Classes run in English plus the target language; our trainers can explain through Hindi when it helps — but every batch is fully accessible in English.",
+      "Not at all. Classes run in English plus your target language; our trainers can explain through Hindi when it helps — but every batch is fully accessible in English.",
+  },
+  {
+    question: "How do I enrol?",
+    answer:
+      "One WhatsApp message. Tell us your language and goal, we'll confirm your batch, fees and start date — and you're in. No forms, no call centres.",
   },
 ];
 
 export const homeFinalCta: FinalCtaContent = {
   heading: { before: "Ready to", accent: "speak", after: "a new language?" },
-  body: "Your level, your plan, your first class — start with a free 30-minute assessment.",
-  ctaLabel: "Book a free level assessment",
+  body: "One message is all it takes — your goal, your level, your batch, sorted on WhatsApp today.",
+  ctaLabel: "Chat with us on WhatsApp",
+  waMessage: "Hi! I'm ready to start. Help me pick my batch.",
 };

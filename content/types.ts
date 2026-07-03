@@ -95,6 +95,21 @@ export interface CurriculumCard {
   footnote?: string;
 }
 
+/** Rich curriculum slide for the carousel (one language per slide, no image). */
+export interface CurriculumSlide {
+  flag: string;
+  /** Language name — rendered as the gold serif accent in the slide title. */
+  name: string;
+  /** "Levels / Track" line, shown in gold. */
+  levelsTrack: string;
+  /** Detailed "What you'll cover" paragraph. */
+  whatYouCover: string;
+  /** "Outcome" line. */
+  outcome: string;
+  /** Optional inline text link (e.g. French → /french-canada). */
+  link?: { label: string; href: string };
+}
+
 export interface Teacher {
   name: string;
   credential: string;
@@ -112,6 +127,8 @@ export interface Batch {
   seatsLeft: string;
   featured?: boolean;
   language?: LanguageKey;
+  /** Exam name shown on the BatchCardV2 whiteboard art (e.g. "TEF Canada"). */
+  examName?: string;
 }
 
 export interface Testimonial {
@@ -119,6 +136,8 @@ export interface Testimonial {
   role: string;
   outcome: string;
   quote: string;
+  /** Square portrait photo (TestimonialsV2). */
+  image?: { src: string; alt: string };
 }
 
 export interface FaqItem {
@@ -135,6 +154,8 @@ export interface FinalCtaContent {
   heading: AccentHeading;
   body?: string;
   ctaLabel: string;
+  /** Optional verbatim WhatsApp prefill (whatsapp CTA mode). */
+  waMessage?: string;
 }
 
 export interface FooterColumn {

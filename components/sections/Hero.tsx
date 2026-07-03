@@ -25,7 +25,14 @@ export function Hero({
 
   const ctaParam =
     content.picker?.kind === "goal" ? { goal: selected } : { lang: selected };
-  const { href, external } = resolveCta({ context: contextLabel, ...ctaParam });
+  const selectedLabel =
+    content.picker?.options.find((o) => String(o.value) === selected)?.label ?? "";
+  // WhatsApp-mode prefill reflects the picker choice (falls back to context in form mode).
+  const waMessage =
+    content.picker?.kind === "goal"
+      ? `Hi! I'd like to know more about French for ${selectedLabel}.`
+      : `Hi! I want to learn ${selectedLabel}. Can you share batch details and fees?`;
+  const { href, external } = resolveCta({ context: contextLabel, waMessage, ...ctaParam });
 
   return (
     <GlowContainer className="mx-auto max-w-container-wide px-5 pb-20 pt-16 md:px-16 md:pb-24 md:pt-24">

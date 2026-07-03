@@ -8,12 +8,17 @@ import type { NavItem, FooterContent } from "./types";
  *   'whatsapp' → every CTA opens a wa.me deep-link with page/section context
  * Switching later is this one-line change. Both paths are fully built.
  */
+// Single switch for the whole booking flow (kickoff Functionality #1).
+const CTA_MODE: "form" | "whatsapp" = "whatsapp";
+
 export const site = {
   name: "Dees Language Lounge",
   wordmark: "Dees Language Lounge",
   monogram: "D",
-  ctaMode: "form" as "form" | "whatsapp",
-  ctaLabel: "Book a free level assessment",
+  ctaMode: CTA_MODE,
+  // Mode-aware default label used by shared chrome (nav, drawer). Section CTAs
+  // pass their own label from /content.
+  ctaLabel: CTA_MODE === "whatsapp" ? "Chat on WhatsApp" : "Book a free level assessment",
 
   // The one conversion destination when ctaMode === 'form'.
   bookingPath: "/book-assessment",
@@ -56,7 +61,7 @@ export const nav: NavItem[] = [
 // The /french-canada page passes its own footer override with the compliance line.
 export const footer: FooterContent = {
   blurb:
-    "Live online classes in French, Spanish, German and IELTS English — small groups, certified trainers, real conversation. Learn for your career, your studies, or the joy of it.",
+    "Live online classes in French, Spanish, German and IELTS English — small groups, certified trainers, real conversation. Wherever you are in the world, learn a language properly.",
   columns: [
     {
       title: "Company",
@@ -69,7 +74,7 @@ export const footer: FooterContent = {
     {
       title: "Courses",
       links: [
-        { label: "French (TEF/TCF Canada)", href: "/french-canada" },
+        { label: "French", href: "/french-canada" },
         { label: "Spanish", href: "/courses/spanish" },
         { label: "German", href: "/courses/german" },
         { label: "IELTS English", href: "/courses/ielts" },
