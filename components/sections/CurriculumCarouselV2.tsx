@@ -53,14 +53,17 @@ export function CurriculumCarouselV2({
 
       <div className="relative">
         <div className="overflow-hidden" ref={emblaRef}>
-          {/* Gap rides on each slide as padding (loop-safe), like GoalsCarousel. */}
-          <div className="flex -ml-8 md:-ml-6">
+          {/* Gap rides on each slide as padding (loop-safe), like GoalsCarousel.
+              items-stretch (default) makes every slide fill the flex row's height
+              = the tallest slide, so slides stay equal height and the dots/arrows
+              below never jump between slides of different content length. */}
+          <div className="flex items-stretch -ml-8 md:-ml-6">
             {slides.map((slide) => (
               <div
                 key={slide.name}
-                className="relative min-w-0 pl-8 md:pl-6 flex-[0_0_88%] sm:flex-[0_0_70%] lg:flex-[0_0_66%]"
+                className="relative flex min-w-0 pl-8 md:pl-6 flex-[0_0_88%] sm:flex-[0_0_70%] lg:flex-[0_0_66%]"
               >
-                <article className="flex h-full flex-col gap-6 rounded-card border border-hairline bg-surface p-8 md:p-12">
+                <article className="flex w-full flex-col gap-6 rounded-card border border-hairline bg-surface p-8 md:p-12">
                   <h3 className="font-bold text-ink">
                     <span className="mr-2 text-3xl">{slide.flag}</span>
                     <span className="text-2xl md:text-3xl">Learn </span>
@@ -70,8 +73,19 @@ export function CurriculumCarouselV2({
                   <p className="text-eyebrow uppercase tracking-widest text-gold">{slide.levelsTrack}</p>
 
                   <div>
-                    <p className="mb-2 text-sm font-bold uppercase tracking-widest text-muted">What you&apos;ll cover</p>
-                    <p className="leading-relaxed text-muted">{slide.whatYouCover}</p>
+                    <p className="mb-3 text-sm font-bold uppercase tracking-widest text-muted">What you&apos;ll cover</p>
+                    <ul className="space-y-3">
+                      {slide.covers.map((cover) => (
+                        <li key={cover.pain} className="flex items-start gap-3">
+                          <Icon name="check" className="mt-1 shrink-0 text-[18px] text-gold" />
+                          <p className="leading-relaxed">
+                            <span className="font-medium text-ink">&ldquo;{cover.pain}&rdquo;</span>{" "}
+                            <span className="text-gold">→</span>{" "}
+                            <span className="text-muted">{cover.solution}</span>
+                          </p>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
 
                   <div className="mt-auto border-t border-hairline pt-5">

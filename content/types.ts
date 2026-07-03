@@ -97,6 +97,12 @@ export interface CurriculumCard {
   footnote?: string;
 }
 
+/** One "What you'll cover" row: a learner pain phrase + how we solve it. */
+export interface CurriculumCover {
+  pain: string;
+  solution: string;
+}
+
 /** Rich curriculum slide for the carousel (one language per slide, no image). */
 export interface CurriculumSlide {
   flag: string;
@@ -104,8 +110,8 @@ export interface CurriculumSlide {
   name: string;
   /** "Levels / Track" line, shown in gold. */
   levelsTrack: string;
-  /** Detailed "What you'll cover" paragraph. */
-  whatYouCover: string;
+  /** "What you'll cover" pain-point pairs. */
+  covers: CurriculumCover[];
   /** "Outcome" line. */
   outcome: string;
   /** Optional inline text link (e.g. French → /french-canada). */

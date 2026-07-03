@@ -171,14 +171,20 @@ export const homeCurriculumHeading: SectionHeadingContent = {
   heading: { before: "Structured for", accent: "certification", after: ", level by level" },
 };
 
-// Rich carousel slides — one language each, no background image.
+// Rich carousel slides — one language each, no background image. "What you'll
+// cover" is now pain-point pairs: a learner frustration + how we fix it.
 export const homeCurriculumSlides: CurriculumSlide[] = [
   {
     flag: "🇫🇷",
     name: "French",
     levelsTrack: "Levels A1 → C1 · Tracks: DELF/DALF · TEF/TCF Canada",
-    whatYouCover:
-      "Pronunciation and core grammar from zero; everyday conversation (introductions, travel, work situations); listening trained on native-speed audio — including one-play drills for the TEF format; structured writing (emails, opinion pieces, exam tasks with templates and connectors); weekly live mock orals with graded feedback; full exam strategy for DELF or TEF/TCF, section by section.",
+    covers: [
+      { pain: "I can read French but freeze when someone speaks", solution: "listening trained on native-speed audio, including one-play drills" },
+      { pain: "I've studied for years and still can't hold a conversation", solution: "live speaking in every single class, from week one" },
+      { pain: "Grammar rules never stick", solution: "explained through English/Hindi with patterns, not memorisation" },
+      { pain: "Writing feels impossible under time pressure", solution: "exam-task templates, connectors, and graded feedback" },
+      { pain: "I don't know if I'm actually improving", solution: "weekly mock orals scored against the real exam grid" },
+    ],
     outcome: "A certification recognised by universities, employers and governments worldwide.",
     link: { label: "Preparing for Canada? See the TEF/TCF track →", href: "/french-canada" },
   },
@@ -186,24 +192,39 @@ export const homeCurriculumSlides: CurriculumSlide[] = [
     flag: "🇪🇸",
     name: "Spanish",
     levelsTrack: "Levels A1 → C1 · Track: DELE",
-    whatYouCover:
-      "Speaking-first method from class one; core grammar made practical (ser vs estar, past tenses, subjunctive — demystified); everyday and travel conversation; listening across Latin American and European accents; DELE task training — reading, writing, listening and the oral interview; weekly conversation circles.",
+    covers: [
+      { pain: "Ser vs estar and the subjunctive break my brain", solution: "taught through patterns and real usage, demystified" },
+      { pain: "I understand Spanish in class but not real people", solution: "listening across Latin American AND European accents" },
+      { pain: "Apps got me vocabulary but no conversation", solution: "speaking-first method from your very first class" },
+      { pain: "I want proof, not just progress", solution: "full DELE task training — reading, writing, listening, oral interview" },
+      { pain: "I'm scared of speaking badly in front of others", solution: "small groups and weekly conversation circles built for mistakes" },
+    ],
     outcome: "The DELE — the lifetime-valid Spanish diploma issued by Instituto Cervantes.",
   },
   {
     flag: "🇩🇪",
     name: "German",
     levelsTrack: "Levels A1 → C1 · Track: Goethe-Zertifikat",
-    whatYouCover:
-      "German grammar made simple — cases, word order and verb placement taught through patterns, not memorisation; practical conversation for work, study and daily life; listening and reading at exam pace; Goethe exam training for all four modules with graded mocks; vocabulary built for careers and university.",
+    covers: [
+      { pain: "Der/die/das and the cases feel random", solution: "cases and word order taught through patterns, not tables to memorise" },
+      { pain: "German word order scrambles everything I say", solution: "sentence-building drills until structure becomes instinct" },
+      { pain: "I know words but can't speak in real situations", solution: "practical conversation for work, study and daily life" },
+      { pain: "Exam German feels different from textbook German", solution: "Goethe training for all four modules with graded mocks" },
+      { pain: "I need German for my career, not small talk", solution: "vocabulary built for careers and university" },
+    ],
     outcome: "The Goethe-Zertifikat — the German credential employers and universities ask for by name.",
   },
   {
     flag: "🇬🇧",
     name: "IELTS English",
     levelsTrack: "Formats: Academic & General Training · Goal: your target band",
-    whatYouCover:
-      "Band-score strategy for all four modules; Writing Task 1 & 2 structures with examiner-style feedback; speaking practice with cue-card drills and live mock interviews; listening and reading under real exam timing; weekly full-length graded mock tests; error-pattern analysis so your band moves, not just your effort.",
+    covers: [
+      { pain: "My English is fine but my band score isn't", solution: "band-score strategy for all four modules — the exam is a technique, and we teach it" },
+      { pain: "Writing Task 2 always drags me down", solution: "essay structures with examiner-style feedback on every draft" },
+      { pain: "I panic in the speaking interview", solution: "cue-card drills and live mock interviews until it feels routine" },
+      { pain: "I run out of time in reading", solution: "timed drills at real exam pace, every week" },
+      { pain: "I keep making the same mistakes", solution: "error-pattern analysis so your band moves, not just your effort" },
+    ],
     outcome: "The IELTS score your university, employer or visa application requires.",
   },
 ];
