@@ -28,3 +28,9 @@ create index if not exists leads_type_idx on public.leads (type);
 -- Enable Row Level Security. No policies = no anon/public access.
 -- The service role key bypasses RLS and is used ONLY on the server.
 alter table public.leads enable row level security;
+
+-- Grant table privileges to the server-side service role. Required when the
+-- project was created with "Automatically expose new tables" OFF (recommended
+-- for security), because that skips the default grants for new tables. This
+-- grants ONLY service_role — anon/public stay locked out (no client writes).
+grant all privileges on table public.leads to service_role;

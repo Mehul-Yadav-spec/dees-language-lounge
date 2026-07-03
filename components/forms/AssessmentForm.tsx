@@ -78,7 +78,10 @@ export function AssessmentForm({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(parsed.data),
       });
-      if (!res.ok) throw new Error("Request failed");
+      const result = await res.json().catch(() => null);
+      // Only a truly persisted lead counts as success — never show "Request
+      // received" when the API degraded (ok: true, persisted: false).
+      if (!res.ok || !result?.persisted) throw new Error("Request failed");
       setStatus("done");
     } catch {
       setStatus("error");

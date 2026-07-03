@@ -46,7 +46,10 @@ export function ContactForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(parsed.data),
       });
-      if (!res.ok) throw new Error("Request failed");
+      const result = await res.json().catch(() => null);
+      // Only a truly persisted lead counts as success — never show "Thanks"
+      // when the API degraded (ok: true, persisted: false) and the lead was lost.
+      if (!res.ok || !result?.persisted) throw new Error("Request failed");
       setStatus("done");
     } catch {
       setStatus("error");
