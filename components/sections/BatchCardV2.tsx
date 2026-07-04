@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { CTAButton } from "@/components/ui/CTAButton";
 import { Icon } from "@/components/ui/Icon";
 import { BatchCardArt } from "./BatchCardArt";
@@ -5,8 +6,9 @@ import { cn } from "@/lib/cn";
 import type { Batch } from "@/content/types";
 
 /**
- * BatchCardV2 — adds the BatchCardArt illustration header (whiteboard shows the
- * batch's exam name) with an "Online" tag pill overlapping its bottom-left.
+ * BatchCardV2 — header shows a real 2:1 photo when the batch has an `image`,
+ * otherwise falls back to the BatchCardArt illustration (whiteboard with the
+ * batch's exam name). An "Online" tag pill overlaps the header's bottom-left.
  * Everything else (covered, dates, schedule, trainer, seats-left, featured
  * glow, WhatsApp CTA) matches BatchCard.
  */
@@ -27,9 +29,28 @@ export function BatchCardV2({ batch, ctaLabel }: { batch: Batch; ctaLabel: strin
           : "border border-hairline",
       )}
     >
-      {/* Illustration header with rounded top corners + "Online" pill */}
+      {/* Header (photo when provided, else the SVG illustration) with rounded
+          top corners + "Online" pill. Both are 2:1 so card height is identical. */}
       <div className="relative border-b border-hairline bg-canvas/40">
-        <BatchCardArt examName={batch.examName ?? "Live Class"} />
+        {batch.image ? (
+          <div className="relative aspect-[2/1] w-full overflow-hidden">
+            <Image
+              src={batch.image.src}
+              alt={batch.image.alt}
+              fill
+              sizes="(max-width: 1024px) 100vw, 33vw"
+              className="object-cover"
+              style={{ objectPosition: batch.image.position ?? "center" }}
+            />
+            {/* Soft bottom fade so the Online pill stays legible over any photo */}
+            <div
+              aria-hidden="true"
+              className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-canvas/80 to-transparent"
+            />
+          </div>
+        ) : (
+          <BatchCardArt examName={batch.examName ?? "Live Class"} />
+        )}
         <span className="absolute bottom-2 left-3 inline-flex items-center gap-1.5 rounded-pill border border-hairline bg-canvas/90 px-3 py-1 text-eyebrow uppercase tracking-widest text-gold backdrop-blur">
           <span className="h-1.5 w-1.5 rounded-full bg-[#10B981]" />
           Online

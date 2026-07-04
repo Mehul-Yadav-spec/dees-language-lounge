@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Hero } from "@/components/sections/Hero";
 import { StatsBar } from "@/components/sections/StatsBar";
 import { RecognitionStrip } from "@/components/sections/RecognitionStrip";
-import { GoalsCarousel } from "@/components/sections/GoalsCarousel";
+import { GoalsCarouselV3 } from "@/components/sections/GoalsCarouselV3";
 import { FeatureGrid } from "@/components/sections/FeatureGrid";
 import { BigClaim } from "@/components/sections/BigClaim";
 import { Roadmap } from "@/components/sections/Roadmap";
@@ -59,7 +59,7 @@ export default function HomePage() {
       <Hero content={homeHero} contextLabel={CTX} />
       <StatsBar stats={homeStats} />
       <RecognitionStrip content={homeRecognition} />
-      <GoalsCarousel heading={homeGoalsHeading} slides={homeGoals} />
+      <GoalsCarouselV3 heading={homeGoalsHeading} slides={homeGoals} />
       <FeatureGrid heading={homeFeaturesHeading} features={homeFeatures} />
       <BigClaim heading={homeBigClaim.heading} footnote={homeBigClaim.footnote} />
       <Roadmap heading={homeRoadmapHeading} steps={homeRoadmap} />

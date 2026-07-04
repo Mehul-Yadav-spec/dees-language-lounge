@@ -74,6 +74,10 @@ export interface GoalSlide {
   title: string;
   body: string;
   image?: { src: string; alt: string };
+  /** CSS object-position for the square crop (GoalsCarouselV3). Defaults to
+   * "center top" so upper-half subjects stay framed; override per image
+   * (e.g. "center 30%") if a face sits too high. */
+  imagePosition?: string;
 }
 
 export interface Feature {
@@ -135,8 +139,12 @@ export interface Batch {
   seatsLeft: string;
   featured?: boolean;
   language?: LanguageKey;
-  /** Exam name shown on the BatchCardV2 whiteboard art (e.g. "TEF Canada"). */
+  /** Exam name shown on the BatchCardV2 whiteboard art (e.g. "TEF Canada").
+   * Used only as the fallback illustration when `image` is not set. */
   examName?: string;
+  /** Optional photo header (BatchCardV2). When set, a real 2:1 photo replaces
+   * the SVG classroom art. `position` sets CSS object-position (default center). */
+  image?: { src: string; alt: string; position?: string };
 }
 
 export interface Testimonial {
