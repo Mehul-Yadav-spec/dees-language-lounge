@@ -42,7 +42,7 @@ export const fcHero: HeroContent = {
   credibilityLine: "92% of our students reach CLB 7 on their first attempt.",
   liveCard: { label: "Live: TEF Speaking Drill", participants: "6 participants" },
   image: {
-    src: "https://lh3.googleusercontent.com/aida-public/AB6AXuAd6o1zpVk4mMuFTxh8ac4_Pydpm2Q-m_DgFCYmuzGVAp4TLs8xoGV27Xm2NVH_oh0h7qui64r1kXhdJZ-IPymBhAdsPqWh1K5RBnpRu3KJaewvJ4O3VGg84w7I7JyXkFVjiaLLy9OjxYHgvSJ7yq3Otsr-4K4jHG6TSk_HfW-_DMH6Z8Jkt5HE_-oyYXFGqV33r-GnkxK1HBx_sIHtVEJ6LRgb0JdJZt3ILw2r1MWl1OzuqfIoOZqaKBFXnAxHmliUYEnc6uYa1rM",
+    src: "/images/hero/fc-hero.jpg",
     alt: "Professional preparing for the TEF Canada exam online",
   },
 };
@@ -155,7 +155,7 @@ export const fcRoadmap: RoadmapStep[] = [
     title: "Say hello on WhatsApp",
     body: "Tell us your current level (even if it's zero), your permit timeline, and your target. A real person replies with an honest plan: which track, which batch, and whether your window is realistic. If it isn't, we'll say so.",
     image: {
-      src: "https://lh3.googleusercontent.com/aida/AP1WRLumjICWVbp6Gah-q7Hqbz2vA2ttzBdvLP4Mz5fDE2ZcQD3QAmk30trDo1pO6cWL1l66VpgvnM3DQUFEBXzakJK-WN-Gz9E8Cwsx3D4pDhyxIw2z3Y9tMyv9iZTvpK5FZJksTNCPBvjArZF4IznjkyrIrJJZsOKutMJszcLDGCVzJb36wrEntRPS57aih36djjEA-v-GOdLvE64tQwu8XUwiigfUSGarOPx57ezCBs9UCB4f6zibK1dla_k",
+      src: "/images/roadmap/fc-whatsapp.jpg",
       alt: "Student messaging Dees Language Lounge on WhatsApp",
     },
   },
@@ -164,7 +164,7 @@ export const fcRoadmap: RoadmapStep[] = [
     title: "Join your live cohort",
     body: "Small groups, certified trainers, classes scheduled for Canadian evenings and weekends (EST/PST-friendly). Weekly graded mock orals from month one, every class recorded.",
     image: {
-      src: "https://lh3.googleusercontent.com/aida/AP1WRLumjICWVbp6Gah-q7Hqbz2vA2ttzBdvLP4Mz5fDE2ZcQD3QAmk30trDo1pO6cWL1l66VpgvnM3DQUFEBXzakJK-WN-Gz9E8Cwsx3D4pDhyxIw2z3Y9tMyv9iZTvpK5FZJksTNCPBvjArZF4IznjkyrIrJJZsOKutMJszcLDGCVzJb36wrEntRPS57aih36djjEA-v-GOdLvE64tQwu8XUwiigfUSGarOPx57ezCBs9UCB4f6zibK1dla_k",
+      src: "/images/roadmap/fc-live-class.jpg",
       alt: "Live TEF/TCF cohort class",
     },
   },
@@ -173,7 +173,7 @@ export const fcRoadmap: RoadmapStep[] = [
     title: "Pass TEF/TCF and claim your points",
     body: "Sit the exam with graded mock tests behind you — then take your CLB 7 into the French draw and your 50-point bilingual bonus.",
     image: {
-      src: "https://lh3.googleusercontent.com/aida/AP1WRLumjICWVbp6Gah-q7Hqbz2vA2ttzBdvLP4Mz5fDE2ZcQD3QAmk30trDo1pO6cWL1l66VpgvnM3DQUFEBXzakJK-WN-Gz9E8Cwsx3D4pDhyxIw2z3Y9tMyv9iZTvpK5FZJksTNCPBvjArZF4IznjkyrIrJJZsOKutMJszcLDGCVzJb36wrEntRPS57aih36djjEA-v-GOdLvE64tQwu8XUwiigfUSGarOPx57ezCBs9UCB4f6zibK1dla_k",
+      src: "/images/roadmap/fc-certificate.jpg",
       alt: "Candidate passing the TEF Canada exam",
     },
   },
@@ -243,6 +243,7 @@ export const fcBatches: Batch[] = [
   {
     title: "TEF Canada Beginners — Batch 12",
     examName: "TEF Canada",
+    image: { src: "/images/batches/tef-beginners.jpg", alt: "TEF Canada beginners cohort" },
     covered: "Grammar foundations, everyday conversation, exam format from month one.",
     level: "A0 → CLB 7 full track",
     dates: "Starts July 21, 2026 · Ends May 2027",
@@ -254,6 +255,7 @@ export const fcBatches: Batch[] = [
   {
     title: "TEF Canada Fast Track — Batch 7",
     examName: "TEF Canada",
+    image: { src: "/images/batches/tef-fasttrack.jpg", alt: "TEF Canada fast-track cohort" },
     covered: "For B1+ learners · intensive exam strategy: one-play listening drills, timed writing, weekly graded mock orals.",
     level: "B1+ → exam-ready",
     dates: "Starts July 24, 2026 · Ends Nov 2026",
@@ -266,6 +268,7 @@ export const fcBatches: Batch[] = [
   {
     title: "TCF Canada Prep — Batch 4",
     examName: "TCF Canada",
+    image: { src: "/images/batches/tcf-prep.jpg", alt: "TCF Canada prep cohort" },
     covered: "A2+ learners · all four TCF tasks, computer-based format practice, weekly graded mocks.",
     level: "A2+ → exam-ready",
     dates: "Starts July 28, 2026 · Ends Jan 2027",

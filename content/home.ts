@@ -49,7 +49,7 @@ export const homeHero: HeroContent = {
   credibilityLine: "92% of our students reach their target level on the first attempt.",
   liveCard: { label: "Live: French Conversation Circle", participants: "6 participants" },
   image: {
-    src: "https://lh3.googleusercontent.com/aida-public/AB6AXuApfaoBKa2ZmAJT81lSP1xLQB9ZSJ-P7RM52qUecOn9yJkFX4vnUeisgqBc4OkCeVB4AiH31l1oFF0b08N3fftzcnUp6zlLrX-iHPKMuTX0_LIHvXXdqAjqTS81wn-mXUsJoYDlkKKXtOcY2Gqcl_N8B8x8nUsHtofSX1qldwwx3wb6k35NXOyB0bgPStpASrZ0N8iQTuwD5QTNKeZ79KloRBkfyIYEwMJW1fe2IksV5_Ah4PaArEAj",
+    src: "/images/hero/home-hero.jpg",
     alt: "Professional taking a live online language class",
   },
 };
@@ -78,7 +78,7 @@ export const homeGoals: GoalSlide[] = [
     title: "Advance your career",
     body: "Bilingual professionals get shortlisted first. Add a certified language to your CV and open doors in MNCs, client-facing roles, translation and beyond.",
     image: {
-      src: "https://lh3.googleusercontent.com/aida-public/AB6AXuC67_kcvaGaAAxIQv2ZhbPmVZ8evksnZ-lU_ZT7Hcv19jQZ7Aef5XZAyxD2nBsSAAm6M5QSHzJLxLK_i8u5Rgwn44-jGrXHIc5S60xDYG6dkKoL0reQuc_s1ArzdiCbMX6Gk3e348Tjc3GhY0mO2Eu-blsbWyKZcKKF5jsHId9Pw4JYQDv0CbDweNepO9HGo0vG6n7ewwypBwRZDBzqDUZufU_sZh_jtJmU-APrkgBMac8JCQPD7Kke",
+      src: "/images/goals/career.jpg",
       alt: "Bilingual professional in a client meeting",
     },
   },
@@ -86,7 +86,7 @@ export const homeGoals: GoalSlide[] = [
     title: "Study or work abroad",
     body: "Universities and employers don't ask if you \"know\" a language — they ask for proof. DELF, DELE, Goethe, IELTS: we train you for the exact exam, not just the language.",
     image: {
-      src: "https://lh3.googleusercontent.com/aida-public/AB6AXuBH8MpDRRV6l7eEoWUeJdM7dbBiieQmF9mPZoiJtM75xUBhyCoDSaRFI9-DjH_HwR9tpF8UpPt4nrTVM5GSzQwMQhf992bhic0Uue7QEgec7X9FPc76hpBN4Oelf3WLChrsqrkzw8pcxYpIfD4ScWZkz4rkkXBc4RYNbh9Y-uannWkgr493g8afJoBJEkr8PSLLVLaRGUum4MaJ33ffy1rxa8kyHZB76-fqVYKGOmYdVZcaO3Psr7LT",
+      src: "/images/goals/study-abroad.jpg",
       alt: "Student preparing to study abroad",
     },
   },
@@ -94,7 +94,7 @@ export const homeGoals: GoalSlide[] = [
     title: "Travel and connect",
     body: "Order confidently in Paris. Make friends in Berlin. Bargain in Barcelona. Real conversation, real culture — not textbook drills.",
     image: {
-      src: "https://lh3.googleusercontent.com/aida-public/AB6AXuAy0NF_I-v7lvmEIHgVjzQlEFHLSAKi2kyako0j8V_9Ew7Met3cmNyJnRxvYjgy-nxrsAJV5BmMLhD_iNPTi0FABdQqtiyvLUp2YVVEMcia3lVkHyjGZx6-PkMfl5cgDWOgARPBiN0PolrW6C_tCSvkZAZdqLxgq80Okso0Pe0eEaDq7hNdpPBvA5lPLC7G4N2lsO-zuCNgPPy3vXWMld5UDT-dbvSKzy2JfcfiwW__qwC5RlJ8XAXu",
+      src: "/images/goals/travel.jpg",
       alt: "Traveller connecting with locals",
     },
   },
@@ -142,7 +142,7 @@ export const homeRoadmap: RoadmapStep[] = [
     title: "Say hello on WhatsApp",
     body: "Tell us your goal and your current level — even if it's zero. A real person (not a bot) replies with honest guidance: which language track, which batch, what timeline is realistic. No forms, no pressure, no spam.",
     image: {
-      src: "https://lh3.googleusercontent.com/aida/AP1WRLt6O41NB4uDrnjso_cQennzHzOqMN19MSA5A3_MdN7UzGkJ80UIO1XBalFdgyccCsSFqCC9GQKr8FAvguytRd8Li7ySiCUBzvF2bodhmnWKk6C3IAxLX0MAnfSfaui-s5b7kCke_sXrzYERL2qR52acPkNw4cyuot6nQIfPw7-NSryjL2jbKhpFrMrRzEi6DatUNX88Wjn8MZQ_AvI5EtnUipjour9Yzx5xmMLCpkjwQ8s25gw132ACq7c",
+      src: "/images/roadmap/whatsapp.jpg",
       alt: "Student messaging Dees Language Lounge on WhatsApp",
     },
   },
@@ -151,7 +151,7 @@ export const homeRoadmap: RoadmapStep[] = [
     title: "Join your live batch",
     body: "Small groups, certified trainers, evening and weekend slots. You'll speak in your very first class — and every session is recorded, so life never knocks you off track.",
     image: {
-      src: "https://lh3.googleusercontent.com/aida/AP1WRLuPg3Xsx6dUFAdCNbPbUqEAY8K3nUDcEkWTy7Spg0S9YD3RHSiap2RjX7YTlX2tZGS_BrGSMUqDugU7wdqCEo2nRc8dCbq1wAcuJMb8nP9pLJ-DceNtVBUQOCY_hdckenq8QKSsaJfhuiFm-odKEwGmhyzJx1qjPGREz2jyaLSuT08kG4JRm_kaA9OlhwdFHSfxtdwDNmWqdQKMdTOz2k-pQB8vL_wcJ-TqgB3H7HtCCeKhvGAbJsWG60g",
+      src: "/images/roadmap/live-class.jpg",
       alt: "Live online cohort class in session",
     },
   },
@@ -160,7 +160,7 @@ export const homeRoadmap: RoadmapStep[] = [
     title: "Certify your level",
     body: "Sit your DELF, DELE, Goethe or IELTS exam with graded mock tests behind you — and add a certificate the whole world recognises to your name.",
     image: {
-      src: "https://lh3.googleusercontent.com/aida/AP1WRLumjICWVbp6Gah-q7Hqbz2vA2ttzBdvLP4Mz5fDE2ZcQD3QAmk30trDo1pO6cWL1l66VpgvnM3DQUFEBXzakJK-WN-Gz9E8Cwsx3D4pDhyxIw2z3Y9tMyv9iZTvpK5FZJksTNCPBvjArZF4IznjkyrIrJJZsOKutMJszcLDGCVzJb36wrEntRPS57aih36djjEA-v-GOdLvE64tQwu8XUwiigfUSGarOPx57ezCBs9UCB4f6zibK1dla_k",
+      src: "/images/roadmap/certificate.jpg",
       alt: "Student receiving a language certificate",
     },
   },
@@ -300,6 +300,7 @@ export const homeBatches: Batch[] = [
   {
     title: "TEF Canada Beginners — Batch 12",
     examName: "TEF Canada",
+    image: { src: "/images/batches/tef-beginners.jpg", alt: "TEF Canada beginners cohort" },
     covered: "Grammar foundations, everyday conversation, exam format from month one.",
     level: "A0 → CLB 7 full track",
     dates: "Starts July 21, 2026",
@@ -311,6 +312,7 @@ export const homeBatches: Batch[] = [
   {
     title: "TEF Canada Fast Track — Batch 7",
     examName: "TEF Canada",
+    image: { src: "/images/batches/tef-fasttrack.jpg", alt: "TEF Canada fast-track cohort" },
     covered: "For B1+ learners · intensive exam strategy: one-play listening drills, timed writing, weekly graded mock orals.",
     level: "B1+ → exam-ready",
     dates: "Starts July 24, 2026",
@@ -323,6 +325,7 @@ export const homeBatches: Batch[] = [
   {
     title: "TCF Canada Prep — Batch 4",
     examName: "TCF Canada",
+    image: { src: "/images/batches/tcf-prep.jpg", alt: "TCF Canada prep cohort" },
     covered: "For A2+ learners · all four TCF tasks, computer-based format practice, weekly graded mocks.",
     level: "A2+ → exam-ready",
     dates: "Starts July 28, 2026",
