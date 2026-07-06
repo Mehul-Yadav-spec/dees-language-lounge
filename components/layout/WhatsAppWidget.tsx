@@ -1,11 +1,16 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { whatsappLink } from "@/lib/whatsapp";
+import { isPortalPath } from "@/lib/chrome";
 
-// Floating WhatsApp button on every page. Bottom-right, iOS safe-area aware,
-// sits above content but is small enough never to cover the final CTA/footer.
+// Floating WhatsApp button on every marketing page. Bottom-right, iOS safe-area
+// aware. Hidden in the authenticated portal (which has its own support model).
 export function WhatsAppWidget() {
+  const pathname = usePathname() || "/";
   const href = whatsappLink({ context: "the website" });
+
+  if (isPortalPath(pathname)) return null;
 
   return (
     <a

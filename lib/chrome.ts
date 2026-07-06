@@ -15,3 +15,10 @@ export function complianceNoteForPath(path: string): string | undefined {
   if (path.startsWith("/french-canada")) return fcComplianceNote;
   return undefined;
 }
+
+// The authenticated portal renders its own shell (sidebar + top bar), so the
+// marketing chrome (promo bar, nav, footer, WhatsApp widget) must not appear on
+// these routes.
+export function isPortalPath(path: string): boolean {
+  return path === "/dashboard" || path.startsWith("/student");
+}
