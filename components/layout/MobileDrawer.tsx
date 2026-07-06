@@ -27,6 +27,9 @@ export function MobileDrawer({
     };
   }, [open]);
 
+  // Login shows on every public page except the auth pages themselves.
+  const showLogin = currentPath !== "/login" && currentPath !== "/forgot-password";
+
   return (
     <div
       className={cn(
@@ -61,8 +64,17 @@ export function MobileDrawer({
           </ul>
         </nav>
 
-        <div className="shrink-0 border-t border-hairline p-5">
+        <div className="shrink-0 space-y-3 border-t border-hairline p-5">
           <CTAButton label={site.ctaLabel} fullWidth context="Mobile menu" onClickTrack={onClose} />
+          {showLogin ? (
+            <Link
+              href="/login"
+              onClick={onClose}
+              className="flex min-h-[48px] w-full items-center justify-center rounded-pill border border-gold/50 bg-transparent px-8 py-3 text-xs font-semibold uppercase tracking-widest text-gold transition-all hover:bg-gold/10 focus-gold"
+            >
+              Login
+            </Link>
+          ) : null}
         </div>
       </div>
     </div>

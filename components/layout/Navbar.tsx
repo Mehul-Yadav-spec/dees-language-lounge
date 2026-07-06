@@ -19,6 +19,9 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
+  // The Login button shows on every public page except the auth pages themselves.
+  const showLogin = pathname !== "/login" && pathname !== "/forgot-password";
+
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50);
     onScroll();
@@ -46,7 +49,15 @@ export function Navbar() {
             ))}
           </ul>
 
-          <div className="hidden md:block">
+          <div className="hidden items-center gap-3 md:flex">
+            {showLogin ? (
+              <Link
+                href="/login"
+                className="inline-flex items-center justify-center rounded-pill border border-gold/50 bg-transparent px-6 py-2.5 text-xs font-semibold uppercase tracking-widest text-gold transition-all hover:bg-gold/10 focus-gold"
+              >
+                Login
+              </Link>
+            ) : null}
             <CTAButton
               label={site.ctaLabel}
               size="md"
