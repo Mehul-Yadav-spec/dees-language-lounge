@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabaseServer";
+import { getSessionUser } from "@/lib/portal";
 import { Icon } from "@/components/ui/Icon";
 import { BatchRoster, type RosterRow } from "@/components/admin/BatchRoster";
+import { BatchClasses, type SessionRow } from "@/components/admin/BatchClasses";
 
 interface Batch {
   id: string;
@@ -24,11 +26,15 @@ export default async function BatchDetailPage({ params }: { params: { id: string
   const batch = batchData as unknown as Batch | null;
   if (!batch) notFound();
 
-  const [{ data: enr }, { data: courseEnr }, { data: students }] = await Promise.all([
+  const [user, { data: enr }, { data: courseEnr }, { data: students }, { data: sess }] = await Promise.all([
+    getSessionUser(),
     supabase.from("enrollments").select("id,student_id,student:profiles(full_name,email)").eq("batch_id", params.id),
     supabase.from("enrollments").select("student_id").eq("course_id", batch.course_id),
     supabase.from("profiles").select("id,full_name").eq("role", "student").eq("status", "active").order("full_name"),
+    supabase.from("sessions").select("id,title,starts_at,ends_at,join_url,topic").eq("batch_id", params.id).order("starts_at"),
   ]);
+  const tz = user?.timezone || "UTC";
+  const sessions = (sess ?? []) as SessionRow[];
 
   const roster: RosterRow[] = ((enr ?? []) as unknown as {
     id: string;
@@ -64,11 +70,14 @@ export default async function BatchDetailPage({ params }: { params: { id: string
         <BatchRoster batchId={batch.id} courseId={batch.course_id} roster={roster} available={available} />
       </section>
 
-      <section className="space-y-3">
+      <section className="space-y-4">
         <h2 className="text-xl font-bold text-ink">Classes</h2>
-        <p className="rounded-card border border-hairline bg-surface p-6 text-sm text-muted">
-          Scheduling live sessions, attendance and materials — coming next.
-        </p>
+        <BatchClasses
+          batchId={batch.id}
+          roster={roster.map((r) => ({ studentId: r.studentId, fullName: r.fullName }))}
+          sessions={sessions}
+          tz={tz}
+        />
       </section>
     </div>
   );
