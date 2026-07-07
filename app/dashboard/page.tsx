@@ -7,5 +7,6 @@ export default async function DashboardPage() {
   const user = await getSessionUser();
   if (!user) redirect("/login");
   if (user.mustChangePassword) redirect("/set-password");
+  if (user.role === "admin") redirect("/admin");
   redirect("/student");
 }

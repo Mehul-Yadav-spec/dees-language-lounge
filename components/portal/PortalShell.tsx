@@ -9,12 +9,11 @@ import { createClient } from "@/lib/supabaseClient";
 import { site } from "@/content/site";
 import type { PortalUser } from "@/lib/portal";
 
-const NAV = [
-  { label: "Dashboard", href: "/student", icon: "dashboard" },
-  { label: "Live Classes", href: "/student/live-classes", icon: "live_tv" },
-  { label: "Recordings", href: "/student/recordings", icon: "video_library" },
-  { label: "Resources", href: "/student/resources", icon: "folder_open" },
-];
+export interface NavItem {
+  label: string;
+  href: string;
+  icon: string;
+}
 
 // Short "EST · Toronto"-style label from an IANA timezone.
 function tzLabel(tz: string | null): string {
@@ -31,14 +30,27 @@ function tzLabel(tz: string | null): string {
 }
 
 function initials(user: PortalUser): string {
-  const base = user.fullName || user.email || "S";
+  const base = user.fullName || user.email || "U";
   return base.trim().charAt(0).toUpperCase();
 }
 
-// The one authenticated shell for the student portal: fixed sidebar + top bar,
-// off-canvas drawer on mobile. Pure Hanken (no serif, per portal type rules).
-export function PortalShell({ user, children }: { user: PortalUser; children: React.ReactNode }) {
-  const pathname = usePathname() || "/student";
+// The one authenticated shell, reused across portals via the nav/homeHref props
+// (student, admin, later tutor). Fixed sidebar + top bar; off-canvas drawer on
+// mobile. Pure Hanken (no serif).
+export function PortalShell({
+  user,
+  nav,
+  homeHref,
+  profileHref,
+  children,
+}: {
+  user: PortalUser;
+  nav: NavItem[];
+  homeHref: string;
+  profileHref?: string;
+  children: React.ReactNode;
+}) {
+  const pathname = usePathname() || homeHref;
   const router = useRouter();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -50,12 +62,11 @@ export function PortalShell({ user, children }: { user: PortalUser; children: Re
   }
 
   const isActive = (href: string) =>
-    href === "/student" ? pathname === "/student" : pathname.startsWith(href);
+    href === homeHref ? pathname === homeHref : pathname.startsWith(href);
 
   const sidebar = (
     <div className="flex h-full flex-col p-4">
-      {/* Brand */}
-      <Link href="/student" className="mb-10 flex items-center gap-3 px-2 focus-gold rounded-icon">
+      <Link href={homeHref} className="mb-10 flex items-center gap-3 px-2 focus-gold rounded-icon">
         <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-cta-gradient shadow-glow-logo">
           <span className="font-display text-xl leading-none text-canvas">{site.monogram}</span>
         </span>
@@ -65,9 +76,8 @@ export function PortalShell({ user, children }: { user: PortalUser; children: Re
         </span>
       </Link>
 
-      {/* Nav */}
       <nav className="flex flex-col gap-1">
-        {NAV.map((item) => {
+        {nav.map((item) => {
           const active = isActive(item.href);
           return (
             <Link
@@ -76,9 +86,7 @@ export function PortalShell({ user, children }: { user: PortalUser; children: Re
               onClick={() => setDrawerOpen(false)}
               className={cn(
                 "flex items-center gap-3 rounded-input px-4 py-3 text-sm font-medium transition-all focus-gold",
-                active
-                  ? "bg-gold text-canvas shadow-glow-btn"
-                  : "text-muted hover:bg-white/5 hover:text-gold",
+                active ? "bg-gold text-canvas shadow-glow-btn" : "text-muted hover:bg-white/5 hover:text-gold",
               )}
               aria-current={active ? "page" : undefined}
             >
@@ -93,7 +101,6 @@ export function PortalShell({ user, children }: { user: PortalUser; children: Re
 
   return (
     <div className="min-h-screen bg-canvas">
-      {/* Sidebar — fixed on lg, off-canvas drawer below */}
       <aside
         className={cn(
           "fixed left-0 top-0 z-[70] h-screen w-64 border-r border-hairline bg-surface transition-transform duration-300 lg:translate-x-0",
@@ -102,7 +109,6 @@ export function PortalShell({ user, children }: { user: PortalUser; children: Re
       >
         {sidebar}
       </aside>
-      {/* Mobile overlay */}
       {drawerOpen ? (
         <button
           type="button"
@@ -112,9 +118,7 @@ export function PortalShell({ user, children }: { user: PortalUser; children: Re
         />
       ) : null}
 
-      {/* Content column */}
       <div className="flex min-h-screen flex-col lg:ml-64">
-        {/* Top bar */}
         <header className="sticky top-0 z-50 flex h-20 items-center justify-between border-b border-hairline bg-canvas/80 px-5 backdrop-blur-xl md:px-8">
           <div className="flex items-center gap-3">
             <button
@@ -132,12 +136,10 @@ export function PortalShell({ user, children }: { user: PortalUser; children: Re
           </div>
 
           <div className="flex items-center gap-4 md:gap-6">
-            {/* Inert bell (no notifications in Phase 0) */}
             <span className="text-muted" aria-hidden="true">
               <Icon name="notifications" />
             </span>
 
-            {/* User menu */}
             <div className="relative">
               <button
                 type="button"
@@ -147,7 +149,7 @@ export function PortalShell({ user, children }: { user: PortalUser; children: Re
                 className="flex items-center gap-3 focus-gold rounded-pill"
               >
                 <div className="hidden text-right sm:block">
-                  <p className="text-sm font-bold leading-none text-ink">{user.fullName || "Student"}</p>
+                  <p className="text-sm font-bold leading-none text-ink">{user.fullName || "User"}</p>
                   <p className="mt-1 text-[10px] uppercase tracking-widest text-gold">{user.role}</p>
                 </div>
                 <span className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border-2 border-gold/30 bg-surface font-bold text-gold">
@@ -174,18 +176,20 @@ export function PortalShell({ user, children }: { user: PortalUser; children: Re
                     className="absolute right-0 top-full z-50 mt-2 w-56 overflow-hidden rounded-card border border-hairline bg-surface shadow-glow-card"
                   >
                     <div className="border-b border-hairline p-4">
-                      <p className="text-sm font-bold text-ink">{user.fullName || "Student"}</p>
+                      <p className="text-sm font-bold text-ink">{user.fullName || "User"}</p>
                       <p className="mt-0.5 text-[10px] uppercase tracking-widest text-gold">{user.role}</p>
                     </div>
                     <div className="p-2">
-                      <Link
-                        href="/student/profile"
-                        onClick={() => setMenuOpen(false)}
-                        className="flex items-center gap-3 rounded-input px-3 py-2.5 text-sm text-muted transition-colors hover:bg-white/5 hover:text-gold focus-gold"
-                        role="menuitem"
-                      >
-                        <Icon name="manage_accounts" className="text-lg" /> Profile &amp; Settings
-                      </Link>
+                      {profileHref ? (
+                        <Link
+                          href={profileHref}
+                          onClick={() => setMenuOpen(false)}
+                          className="flex items-center gap-3 rounded-input px-3 py-2.5 text-sm text-muted transition-colors hover:bg-white/5 hover:text-gold focus-gold"
+                          role="menuitem"
+                        >
+                          <Icon name="manage_accounts" className="text-lg" /> Profile &amp; Settings
+                        </Link>
+                      ) : null}
                       <Link
                         href="/change-password"
                         onClick={() => setMenuOpen(false)}

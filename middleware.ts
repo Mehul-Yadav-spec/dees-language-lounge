@@ -36,7 +36,7 @@ export async function middleware(request: NextRequest) {
   // Marketing routes stay fully public. The must_change_password redirect to
   // /set-password is handled in the (portal) layout (needs a profile read).
   const path = request.nextUrl.pathname;
-  const protectedPrefixes = ["/student", "/dashboard", "/set-password", "/change-password"];
+  const protectedPrefixes = ["/student", "/admin", "/dashboard", "/set-password", "/change-password"];
   const isProtected = protectedPrefixes.some((p) => path === p || path.startsWith(p + "/"));
   if (isProtected && !user) {
     const url = request.nextUrl.clone();
