@@ -49,6 +49,15 @@ export default async function BatchDetailPage({ params }: { params: { id: string
     ((recs ?? []) as { session_id: string; status: string }[]).map((r) => [r.session_id, r.status]),
   );
 
+  // Uploaded materials per session (drives the expandable session panel).
+  const { data: matData } = sessions.length
+    ? await supabase.from("resources").select("id,session_id,title,type").in("session_id", sessions.map((s) => s.id))
+    : { data: [] };
+  const materials: Record<string, { id: string; title: string; type: string }[]> = {};
+  for (const m of (matData ?? []) as { id: string; session_id: string; title: string; type: string }[]) {
+    (materials[m.session_id] ??= []).push({ id: m.id, title: m.title, type: m.type });
+  }
+
   const roster: RosterRow[] = ((enr ?? []) as unknown as {
     id: string;
     student_id: string;
@@ -98,6 +107,7 @@ export default async function BatchDetailPage({ params }: { params: { id: string
           sessions={sessions}
           tz={tz}
           recStatus={recStatus}
+          materials={materials}
         />
       </section>
     </div>

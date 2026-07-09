@@ -10,11 +10,14 @@ const STUDENT_NAV: NavItem[] = [
 ];
 
 // Authed shell for the student portal. Middleware already blocks anonymous
-// users; here we also force the first-login password change.
+// users; here we also force the first-login password change and keep non-students
+// out — tutors/admins hitting /student are bounced to their own area.
 export default async function PortalLayout({ children }: { children: React.ReactNode }) {
   const user = await getSessionUser();
   if (!user) redirect("/login");
   if (user.mustChangePassword) redirect("/set-password");
+  if (user.role === "admin") redirect("/admin");
+  if (user.role === "tutor") redirect("/tutor");
 
   return (
     <PortalShell user={user} nav={STUDENT_NAV} homeHref="/student" profileHref="/student/profile">

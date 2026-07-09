@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabaseClient";
 import { Icon } from "@/components/ui/Icon";
 import { computeState } from "@/lib/sessionState";
-import { zonedToUtc, utcToZonedParts, weekdayOfDate, addDaysStr } from "@/lib/datetime";
+import { zonedToUtc, utcToZonedParts, weekdayOfDate, addDaysStr, durationLabel } from "@/lib/datetime";
 
 export interface SessionRow {
   id: string;
@@ -19,6 +19,11 @@ export interface SessionRow {
 export interface RosterStudent {
   studentId: string;
   fullName: string | null;
+}
+export interface MaterialItem {
+  id: string;
+  title: string;
+  type: string;
 }
 
 const inputClass =
@@ -34,6 +39,14 @@ const STATE_LABEL: Record<string, string> = {
   unavailable: "Ended",
 };
 
+const MAT_ICON: Record<string, string> = {
+  pdf: "picture_as_pdf",
+  audio: "audio_file",
+  video: "video_library",
+  interactive: "assignment",
+  link: "link",
+};
+
 function fmt(iso: string, tz: string) {
   return new Intl.DateTimeFormat("en-US", {
     timeZone: tz,
@@ -45,12 +58,20 @@ function fmt(iso: string, tz: string) {
   }).format(new Date(iso));
 }
 
+// Open a material inline via its signed URL (same endpoint the student side uses).
+async function viewMaterial(id: string) {
+  const res = await fetch(`/api/resources/${id}`);
+  const d = await res.json().catch(() => ({}));
+  if (d.url) window.open(d.url, "_blank", "noopener");
+}
+
 export function BatchClasses({
   batchId,
   roster,
   sessions,
   tz,
   recStatus = {},
+  materials = {},
   canSchedule = true,
   attendanceGraceMs = null,
 }: {
@@ -59,6 +80,8 @@ export function BatchClasses({
   sessions: SessionRow[];
   tz: string;
   recStatus?: Record<string, string>;
+  // Uploaded materials per session id (drives the expanded "Materials" list).
+  materials?: Record<string, MaterialItem[]>;
   // Tutors can't schedule/edit/cancel/generate — Deepa owns the calendar.
   canSchedule?: boolean;
   // If set, attendance is editable only within this window after a session ends
@@ -72,11 +95,25 @@ export function BatchClasses({
   const [attendFor, setAttendFor] = useState<SessionRow | null>(null);
   const [uploadFor, setUploadFor] = useState<{ session: SessionRow; kind: "material" | "recording" } | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [tab, setTab] = useState<"upcoming" | "past">("upcoming");
+  const [confirmEndId, setConfirmEndId] = useState<string | null>(null);
 
   async function setStatus(id: string, status: string) {
     setBusyId(id);
     await createClient().from("sessions").update({ status }).eq("id", id);
     setBusyId(null);
+    router.refresh();
+  }
+
+  // End a live class early (truncates ends_at to now via a narrow authorized
+  // route — tutors can't write sessions directly under phase0f). Reflects
+  // everywhere at once: student Join disappears, class moves to Past.
+  async function endClass(id: string) {
+    setBusyId(id);
+    await fetch(`/api/sessions/${id}/end`, { method: "POST" });
+    setBusyId(null);
+    setConfirmEndId(null);
     router.refresh();
   }
 
@@ -94,6 +131,17 @@ export function BatchClasses({
     setBusyId(null);
     router.refresh();
   }
+
+  // Split the flat list into Upcoming vs Past by whether the session has ended,
+  // sorting each explicitly (not relying on the caller's query order, which differs
+  // between the tutor page (asc) and admin page (desc)):
+  //   Upcoming — soonest first;  Past — newest first (just-ended class on top).
+  const now = Date.now();
+  const startMsOf = (s: SessionRow) => Date.parse(s.starts_at);
+  const endMsOf = (s: SessionRow) => (s.ends_at ? Date.parse(s.ends_at) : startMsOf(s) + 2 * 3600_000);
+  const upcoming = sessions.filter((s) => now <= endMsOf(s)).sort((a, b) => startMsOf(a) - startMsOf(b));
+  const past = sessions.filter((s) => now > endMsOf(s)).sort((a, b) => startMsOf(b) - startMsOf(a));
+  const visible = tab === "upcoming" ? upcoming : past;
 
   return (
     <div className="space-y-4">
@@ -121,8 +169,18 @@ export function BatchClasses({
           {canSchedule ? "No sessions yet — schedule the first class." : "No sessions scheduled yet."}
         </p>
       ) : (
-        <div className="space-y-3">
-          {sessions.map((s) => {
+        <div className="space-y-4">
+          <div className="flex gap-1 border-b border-hairline">
+            <TabButton label="Upcoming" count={upcoming.length} active={tab === "upcoming"} onClick={() => { setTab("upcoming"); setExpandedId(null); }} />
+            <TabButton label="Past" count={past.length} active={tab === "past"} onClick={() => { setTab("past"); setExpandedId(null); }} />
+          </div>
+          {visible.length === 0 ? (
+            <p className="rounded-card border border-hairline bg-surface p-6 text-center text-sm text-muted">
+              {tab === "upcoming" ? "No upcoming classes." : "No past classes yet."}
+            </p>
+          ) : (
+          <div className="space-y-3">
+            {visible.map((s) => {
             const cancelled = s.status === "cancelled";
             const rec = (recStatus[s.id] as "processing" | "ready" | "unavailable") ?? null;
             const state = computeState(s.starts_at, s.ends_at, rec, Date.now());
@@ -155,43 +213,162 @@ export function BatchClasses({
               );
             }
 
+            const expanded = expandedId === s.id;
             const canMarkUnavailable = ended && rec !== "ready" && rec !== "unavailable";
             const endMs = s.ends_at ? Date.parse(s.ends_at) : Date.parse(s.starts_at) + 2 * 3600_000;
             const attendanceLocked = attendanceGraceMs != null && Date.now() > endMs + attendanceGraceMs;
+            const canTakeAttendance = state === "live" || ended;
+            const mats = materials[s.id] ?? [];
+            const durMin = s.ends_at ? Math.round((Date.parse(s.ends_at) - Date.parse(s.starts_at)) / 60000) : null;
             return (
-              <div key={s.id} className="flex flex-col gap-3 rounded-card border border-hairline bg-surface p-4 sm:flex-row sm:items-center sm:justify-between">
-                <div className="min-w-0">
-                  <p className="font-bold text-ink">{s.title}</p>
-                  <p className="text-xs text-muted">{fmt(s.starts_at, tz)}</p>
-                </div>
-                <div className="flex flex-wrap items-center justify-end gap-2">
-                  <span className="rounded-pill bg-gold/10 px-2.5 py-0.5 text-[11px] font-bold text-gold">
-                    {STATE_LABEL[state]}
-                  </span>
-                  {canSchedule ? <IconBtn icon="edit" label="Edit session" onClick={() => setEditFor(s)} /> : null}
-                  <IconBtn icon="upload_file" label="Add material" onClick={() => setUploadFor({ session: s, kind: "material" })} />
-                  <IconBtn icon="video_call" label="Add recording" onClick={() => setUploadFor({ session: s, kind: "recording" })} />
-                  {ended ? (
-                    <button
-                      type="button"
-                      onClick={() => setAttendFor(s)}
-                      className="flex items-center gap-1.5 rounded-input border border-gold/40 px-4 py-2 text-xs font-bold uppercase tracking-widest text-gold hover:bg-gold/10 focus-gold"
-                    >
-                      {attendanceLocked ? <Icon name="lock" className="text-sm" /> : null}
-                      Attendance
-                    </button>
-                  ) : null}
-                  {canMarkUnavailable ? (
-                    <IconBtn icon="videocam_off" label="Mark recording unavailable" onClick={() => setRecording(s.id, "unavailable", s.title)} />
-                  ) : null}
-                  {rec === "unavailable" ? (
-                    <IconBtn icon="undo" label="Undo — back to processing" onClick={() => setRecording(s.id, "processing", s.title)} />
-                  ) : null}
-                  {canSchedule ? <IconBtn icon="cancel" label="Cancel session" onClick={() => setStatus(s.id, "cancelled")} /> : null}
-                </div>
+              <div key={s.id} className="overflow-hidden rounded-card border border-hairline bg-surface">
+                {/* Collapsed header — click to expand */}
+                <button
+                  type="button"
+                  onClick={() => setExpandedId(expanded ? null : s.id)}
+                  aria-expanded={expanded}
+                  className="flex w-full items-center justify-between gap-3 p-4 text-left transition-colors hover:bg-canvas/40 focus-gold"
+                >
+                  <div className="min-w-0">
+                    <p className="font-bold text-ink">{s.title}</p>
+                    <p className="text-xs text-muted">{fmt(s.starts_at, tz)}</p>
+                  </div>
+                  <div className="flex items-center gap-2.5">
+                    <span className="rounded-pill bg-gold/10 px-2.5 py-0.5 text-[11px] font-bold text-gold">{STATE_LABEL[state]}</span>
+                    <Icon name={expanded ? "expand_less" : "expand_more"} className="text-lg text-muted" />
+                  </div>
+                </button>
+
+                {/* Expanded detail */}
+                {expanded ? (
+                  <div className="space-y-5 border-t border-hairline px-4 py-4">
+                    <div className="grid grid-cols-2 gap-x-4 gap-y-3 sm:grid-cols-4">
+                      <Meta label="Date & time" value={fmt(s.starts_at, tz)} />
+                      <Meta label="Duration" value={durMin ? durationLabel(durMin) : "—"} />
+                      <Meta label="Topic" value={s.topic || "—"} />
+                      <Meta label="Join link" value="—" link={s.join_url} />
+                    </div>
+
+                    {/* End class early — live only, for the batch tutor or admin */}
+                    {state === "live" ? (
+                      <div>
+                        <p className="mb-2 text-[10px] font-bold uppercase tracking-widest text-gold">Live class</p>
+                        {confirmEndId === s.id ? (
+                          <div className="flex flex-wrap items-center gap-2">
+                            <button
+                              type="button"
+                              disabled={busy}
+                              onClick={() => endClass(s.id)}
+                              className="flex items-center gap-1.5 rounded-input border px-4 py-2 text-xs font-bold uppercase tracking-widest disabled:opacity-60 focus-gold"
+                              style={{ borderColor: "#ffb4ab", color: "#ffb4ab" }}
+                            >
+                              <Icon name="stop_circle" className="text-sm" /> {busy ? "Ending…" : "Confirm end"}
+                            </button>
+                            <button
+                              type="button"
+                              disabled={busy}
+                              onClick={() => setConfirmEndId(null)}
+                              className="rounded-input border border-hairline px-4 py-2 text-xs font-bold uppercase tracking-widest text-muted hover:text-ink disabled:opacity-60 focus-gold"
+                            >
+                              Keep going
+                            </button>
+                          </div>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() => setConfirmEndId(s.id)}
+                            className="flex items-center gap-1.5 rounded-input border border-gold/40 px-4 py-2 text-xs font-bold uppercase tracking-widest text-gold hover:bg-gold/10 focus-gold"
+                          >
+                            <Icon name="stop_circle" className="text-sm" /> End class now
+                          </button>
+                        )}
+                        <p className="mt-1.5 text-xs text-muted">
+                          Ends the class immediately for students — the Join button disappears and recording upload opens.
+                        </p>
+                      </div>
+                    ) : null}
+
+                    {/* Materials */}
+                    <div>
+                      <p className="mb-2 text-[10px] font-bold uppercase tracking-widest text-gold">Materials</p>
+                      {mats.length ? (
+                        <ul className="space-y-1.5">
+                          {mats.map((m) => (
+                            <li key={m.id} className="flex items-center justify-between gap-2 rounded-input border border-hairline bg-canvas px-3 py-2">
+                              <span className="flex min-w-0 items-center gap-2 text-sm text-ink">
+                                <Icon name={MAT_ICON[m.type] ?? "description"} className="text-gold" />
+                                <span className="truncate">{m.title}</span>
+                              </span>
+                              <button type="button" onClick={() => viewMaterial(m.id)} className="shrink-0 text-xs font-bold text-gold hover:underline focus-gold">
+                                View
+                              </button>
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="text-xs text-muted">No materials uploaded yet.</p>
+                      )}
+                      <button type="button" onClick={() => setUploadFor({ session: s, kind: "material" })} className="mt-2 flex items-center gap-1 text-xs font-bold text-gold hover:underline focus-gold">
+                        <Icon name="upload_file" className="text-sm" /> Add material
+                      </button>
+                    </div>
+
+                    {/* Recording */}
+                    <div>
+                      <p className="mb-2 text-[10px] font-bold uppercase tracking-widest text-gold">Recording</p>
+                      <div className="flex flex-wrap items-center gap-3">
+                        <span className="rounded-pill px-2.5 py-0.5 text-[11px] font-bold" style={{ backgroundColor: "#8A93A31a", color: "#8A93A3" }}>
+                          {rec === "ready" ? "Available" : rec === "unavailable" ? "Not available" : ended ? "Processing" : "After class"}
+                        </span>
+                        <button type="button" onClick={() => setUploadFor({ session: s, kind: "recording" })} className="flex items-center gap-1 text-xs font-bold text-gold hover:underline focus-gold">
+                          <Icon name="video_call" className="text-sm" /> Add recording
+                        </button>
+                        {canMarkUnavailable ? (
+                          <button type="button" disabled={busy} onClick={() => setRecording(s.id, "unavailable", s.title)} className="flex items-center gap-1 text-xs font-bold text-muted hover:text-gold focus-gold disabled:opacity-60">
+                            <Icon name="videocam_off" className="text-sm" /> Mark unavailable
+                          </button>
+                        ) : null}
+                        {rec === "unavailable" ? (
+                          <button type="button" disabled={busy} onClick={() => setRecording(s.id, "processing", s.title)} className="flex items-center gap-1 text-xs font-bold text-muted hover:text-gold focus-gold disabled:opacity-60">
+                            <Icon name="undo" className="text-sm" /> Undo
+                          </button>
+                        ) : null}
+                      </div>
+                    </div>
+
+                    {/* Attendance — live & ended; tutor edits within the grace window, admin always */}
+                    {canTakeAttendance ? (
+                      <div>
+                        <p className="mb-2 text-[10px] font-bold uppercase tracking-widest text-gold">Attendance</p>
+                        <button
+                          type="button"
+                          onClick={() => setAttendFor(s)}
+                          className="flex items-center gap-1.5 rounded-input border border-gold/40 px-4 py-2 text-xs font-bold uppercase tracking-widest text-gold hover:bg-gold/10 focus-gold"
+                        >
+                          <Icon name={attendanceLocked ? "lock" : "fact_check"} className="text-sm" />
+                          {attendanceLocked ? "View attendance" : "Take / edit attendance"}
+                        </button>
+                      </div>
+                    ) : null}
+
+                    {/* Admin session actions */}
+                    {canSchedule ? (
+                      <div className="flex flex-wrap gap-2 border-t border-hairline pt-4">
+                        <button type="button" onClick={() => setEditFor(s)} className="flex items-center gap-1 rounded-input border border-hairline px-4 py-2 text-xs font-bold text-muted transition-colors hover:border-gold hover:text-gold focus-gold">
+                          <Icon name="edit" className="text-sm" /> Edit session
+                        </button>
+                        <button type="button" disabled={busy} onClick={() => setStatus(s.id, "cancelled")} className="flex items-center gap-1 rounded-input border border-hairline px-4 py-2 text-xs font-bold text-muted transition-colors hover:border-[#ffb4ab] hover:text-[#ffb4ab] focus-gold disabled:opacity-60">
+                          <Icon name="cancel" className="text-sm" /> Cancel session
+                        </button>
+                      </div>
+                    ) : null}
+                  </div>
+                ) : null}
               </div>
             );
-          })}
+            })}
+          </div>
+          )}
         </div>
       )}
 
@@ -214,17 +391,33 @@ export function BatchClasses({
   );
 }
 
-function IconBtn({ icon, label, onClick }: { icon: string; label: string; onClick: () => void }) {
+function TabButton({ label, count, active, onClick }: { label: string; count: number; active: boolean; onClick: () => void }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      aria-label={label}
-      title={label}
-      className="flex h-9 w-9 items-center justify-center rounded-input border border-hairline text-muted transition-colors hover:border-gold hover:text-gold focus-gold"
+      className={`-mb-px flex items-center gap-2 border-b-2 px-4 py-2.5 text-xs font-bold uppercase tracking-widest transition-colors focus-gold ${
+        active ? "border-gold text-gold" : "border-transparent text-muted hover:text-ink"
+      }`}
     >
-      <Icon name={icon} className="text-base" />
+      {label}
+      <span className={`rounded-pill px-2 py-0.5 text-[10px] ${active ? "bg-gold/15 text-gold" : "bg-canvas text-muted"}`}>{count}</span>
     </button>
+  );
+}
+
+function Meta({ label, value, link }: { label: string; value: string; link?: string | null }) {
+  return (
+    <div className="min-w-0">
+      <p className="text-[10px] uppercase tracking-widest text-muted">{label}</p>
+      {link ? (
+        <a href={link} target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-gold hover:underline focus-gold">
+          Open link
+        </a>
+      ) : (
+        <p className="truncate text-sm font-medium text-ink">{value}</p>
+      )}
+    </div>
   );
 }
 
