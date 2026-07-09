@@ -11,6 +11,7 @@ export interface RecItem {
   title: string;
   monthLabel: string;
   dateLabel: string;
+  endTimeLabel: string;
   duration: string;
   batchTitle: string;
   state: "ready" | "processing" | "unavailable";
@@ -142,7 +143,8 @@ function Card({ it, isNew, onWatch }: { it: RecItem; isNew: boolean; onWatch: ()
         <h3 className="truncate font-bold text-ink">{it.title}</h3>
         <p className="mt-1 text-xs text-muted">
           {it.dateLabel}
-          {ready && it.duration ? ` · ${it.duration}` : processing ? " · Just ended" : ""}
+          {it.endTimeLabel ? ` · ${it.endTimeLabel}` : ""}
+          {ready && it.duration ? ` · ${it.duration}` : processing ? " · Processing" : ""}
         </p>
         {ready ? (
           <button type="button" onClick={onWatch} className="mt-3 text-xs font-bold text-gold hover:underline focus-gold">

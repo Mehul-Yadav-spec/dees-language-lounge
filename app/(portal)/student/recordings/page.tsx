@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabaseServer";
 import { getSessionUser } from "@/lib/portal";
 import { RecordingsView, type RecItem } from "@/components/portal/RecordingsView";
 import { computeState } from "@/lib/sessionState";
-import { monthLabel, fullDate, durationLabel } from "@/lib/datetime";
+import { monthLabel, fullDate, timeLabel, durationLabel } from "@/lib/datetime";
 
 interface Sess {
   id: string;
@@ -51,6 +51,7 @@ export default async function RecordingsPage() {
         title: s.title,
         monthLabel: monthLabel(s.starts_at, tz),
         dateLabel: fullDate(s.starts_at, tz),
+        endTimeLabel: timeLabel(s.ends_at ?? new Date(endMs(s)).toISOString(), tz),
         duration: durationLabel(rec?.duration ?? null),
         batchTitle: s.batch?.title ?? "",
         state,

@@ -60,7 +60,7 @@ export default async function StudentDashboardPage() {
       .order("starts_at", { ascending: true }),
     supabase.from("attendance").select("session_id,status"),
     supabase.from("recordings").select("id,session_id,title,duration,recorded_at,status"),
-    supabase.from("resources").select("id,title,description,type,created_at").order("created_at", { ascending: false }).limit(3),
+    supabase.from("resources").select("id,title,description,type,created_at,session:sessions!inner(status)").order("created_at", { ascending: false }).limit(6),
     supabase.from("recording_views").select("recording_id"),
   ]);
 
@@ -68,7 +68,14 @@ export default async function StudentDashboardPage() {
   const sessions = (sessRes.data ?? []) as unknown as Sess[];
   const attendance = (attRes.data ?? []) as { session_id: string; status: string }[];
   const recordings = (recRes.data ?? []) as { id: string; session_id: string; title: string; duration: number | null; recorded_at: string | null; status: string }[];
-  const resources = (resRes.data ?? []) as { id: string; title: string; description: string | null; type: string; created_at: string }[];
+  // Mirror the Resources page: only session-linked, non-cancelled materials, so the
+  // dashboard preview never teases a resource the full Resources page won't show.
+  const resources = ((resRes.data ?? []) as unknown as {
+    id: string; title: string; description: string | null; type: string; created_at: string;
+    session: { status: string } | null;
+  }[])
+    .filter((r) => r.session && r.session.status !== "cancelled")
+    .slice(0, 3);
   const viewed = new Set((viewRes.data ?? []).map((v: { recording_id: string }) => v.recording_id));
 
   const firstName = (user.fullName || "there").split(" ")[0];
