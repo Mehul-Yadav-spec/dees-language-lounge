@@ -36,7 +36,7 @@ export default async function BatchDetailPage({ params }: { params: { id: string
     // is completed reappears for later batches, including the same course (repeaters).
     supabase.from("enrollments").select("student_id").eq("status", "active"),
     supabase.from("profiles").select("id,full_name").eq("role", "student").eq("status", "active").order("full_name"),
-    supabase.from("sessions").select("id,title,starts_at,ends_at,join_url,topic,status").eq("batch_id", params.id).order("starts_at"),
+    supabase.from("sessions").select("id,title,starts_at,ends_at,join_url,topic,status").eq("batch_id", params.id).order("starts_at", { ascending: false }),
   ]);
   const tz = user?.timezone || "UTC";
   const sessions = (sess ?? []) as SessionRow[];
