@@ -25,15 +25,15 @@ import type {
 
 export const fcPromo: PromoBarContent = {
   id: "fc-wa-2026-07",
-  text: "🇨🇦 Latest French Express Entry draw: CRS 400 — general draws sit at 514+. New TEF/TCF cohort starts July 21. Limited seats. Message us on WhatsApp.",
-  mobileText: "🇨🇦 French draw CRS 400 vs 514+ — new cohort July 21. Message us.",
+  text: "🇨🇦 Latest French Express Entry draw: CRS 409 — the CEC draw needed 517. New TEF/TCF cohort starts July 21. Limited seats. Message us on WhatsApp.",
+  mobileText: "🇨🇦 French draw CRS 409 vs CEC 517 — new cohort July 21. Message us.",
 };
 
 export const fcHero: HeroContent = {
   eyebrow: "Built for TEF Canada & TCF Canada",
   heading: { before: "Turn", accent: "French", after: "into Canada PR — faster than you think." },
   subhead:
-    "Live online classes built around the TEF/TCF Canada exam — taught by certified trainers who explain French through English and Hindi, at times that fit Canadian evenings. Reach CLB 7 in all four skills and qualify for draws cutting off 100+ points below general.",
+    "Live online classes built around the TEF/TCF Canada exam — taught by certified trainers who explain French through English and Hindi, at times that fit Canadian evenings. Reach CLB 7 in all four skills and qualify for draws cutting off 100+ points below the CEC cut-off.",
   ctaLabel: "Chat with us on WhatsApp",
   ctaWaMessage:
     "Hi! I want to reach CLB 7 for the French draw. My current level is beginner. What's the realistic timeline?",
@@ -57,10 +57,10 @@ export const fcStats: Stat[] = [
 export const fcStakes: StakesContent = {
   eyebrow: "THE MATH NOBODY TELLS YOU",
   heading: { before: "Two queues. One is", accent: "open." },
-  general: { label: "General draw · CRS 514+", value: "CRS 514+", amount: 514 },
-  french: { label: "French draw · CRS 400", value: "CRS 400", amount: 400 },
+  general: { label: "CEC draw · CRS 517", value: "CRS 517", amount: 517 },
+  french: { label: "French draw · CRS 409", value: "CRS 409", amount: 409 },
   caption:
-    "Stuck around CRS 420–470? The general queue is effectively closed. Strong French (NCLC 7 in all four skills) unlocks the French-language draws — and adds up to 50 bilingual CRS points on top. It's the single biggest lever left on the board.",
+    "Stuck around CRS 420–470? General all-program draws have been paused since 2024, and the CEC draw now sits at 517. Strong French (NCLC 7 in all four skills) unlocks the French-language draws — which last cut off at 409 — and adds up to 50 bilingual CRS points on top. It's the single biggest lever left on the board.",
   subline:
     "On a PGWP or work permit with an expiry date? Your window is real — and so is the plan. Message us your date and we'll tell you honestly what's achievable.",
   ctaLabel: "Message us your permit date",
