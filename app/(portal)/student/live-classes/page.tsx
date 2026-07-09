@@ -26,6 +26,7 @@ export default async function LiveClassesPage() {
     supabase
       .from("sessions")
       .select("id,title,starts_at,ends_at,join_url,topic,batch_id,batch:batches(title,tutor:profiles(full_name))")
+      .neq("status", "cancelled")
       .order("starts_at", { ascending: true }),
     supabase.from("attendance").select("session_id,status"),
     supabase.from("recordings").select("session_id,status"),

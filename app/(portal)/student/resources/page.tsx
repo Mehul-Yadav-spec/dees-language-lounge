@@ -14,6 +14,7 @@ interface Res {
     id: string;
     title: string;
     starts_at: string;
+    status: string;
     batch: { title: string; course: { title: string } | null } | null;
   } | null;
 }
@@ -28,7 +29,7 @@ export default async function ResourcesPage() {
     supabase
       .from("resources")
       .select(
-        "id,type,title,description,duration,created_at,session:sessions!inner(id,title,starts_at,batch:batches(title,course:courses(title)))",
+        "id,type,title,description,duration,created_at,session:sessions!inner(id,title,starts_at,status,batch:batches(title,course:courses(title)))",
       )
       .order("created_at", { ascending: false }),
     supabase.from("resource_views").select("resource_id"),
@@ -40,7 +41,7 @@ export default async function ResourcesPage() {
   // Group by session, newest session first.
   const map = new Map<string, ResGroup & { startsAt: string }>();
   for (const r of resources) {
-    if (!r.session) continue;
+    if (!r.session || r.session.status === "cancelled") continue;
     const g =
       map.get(r.session.id) ??
       ({

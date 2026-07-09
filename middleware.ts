@@ -36,11 +36,14 @@ export async function middleware(request: NextRequest) {
   // Marketing routes stay fully public. The must_change_password redirect to
   // /set-password is handled in the (portal) layout (needs a profile read).
   const path = request.nextUrl.pathname;
-  const protectedPrefixes = ["/student", "/admin", "/dashboard", "/set-password", "/change-password"];
-  const isProtected = protectedPrefixes.some((p) => path === p || path.startsWith(p + "/"));
+  // The admin login page is public — it must not be gated (else infinite loop).
+  const isAdminLogin = path === "/admin/login";
+  const protectedPrefixes = ["/student", "/admin", "/tutor", "/dashboard", "/set-password", "/change-password"];
+  const isProtected = !isAdminLogin && protectedPrefixes.some((p) => path === p || path.startsWith(p + "/"));
   if (isProtected && !user) {
     const url = request.nextUrl.clone();
-    url.pathname = "/login";
+    // Admin area gets its own branded sign-in; everything else uses the portal login.
+    url.pathname = path.startsWith("/admin") ? "/admin/login" : "/login";
     url.searchParams.set("next", path);
     return NextResponse.redirect(url);
   }

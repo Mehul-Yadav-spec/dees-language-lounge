@@ -2,8 +2,9 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabaseServer";
 import { getServiceClient } from "@/lib/supabase";
 
-// Admin: upload a class recording to a session → private 'recordings' bucket +
-// a recordings row marked 'ready' (the manual stand-in for the Zoom pipeline).
+// Shared admin + tutor route: upload a class recording to a session → private
+// 'recordings' bucket + a recordings row marked 'ready' (the manual stand-in for
+// the Zoom pipeline). Allowed for admins or the tutor of the session's batch.
 export async function POST(req: Request) {
   const supabase = createClient();
   const {
@@ -11,7 +12,6 @@ export async function POST(req: Request) {
   } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "unauthenticated" }, { status: 401 });
   const { data: me } = await supabase.from("profiles").select("role").eq("id", user.id).single();
-  if (me?.role !== "admin") return NextResponse.json({ error: "forbidden" }, { status: 403 });
 
   const form = await req.formData();
   const file = form.get("file");
@@ -23,8 +23,16 @@ export async function POST(req: Request) {
   const svc = getServiceClient();
   if (!svc) return NextResponse.json({ error: "server_not_configured" }, { status: 500 });
 
-  const { data: sess } = await svc.from("sessions").select("title,starts_at,ends_at").eq("id", sessionId).single();
+  const { data: sess } = await svc
+    .from("sessions")
+    .select("title,starts_at,ends_at,batch:batches(tutor_id)")
+    .eq("id", sessionId)
+    .single();
   if (!sess) return NextResponse.json({ error: "bad_session" }, { status: 400 });
+  const batchTutorId = (sess as unknown as { batch: { tutor_id: string | null } | null }).batch?.tutor_id;
+  if (me?.role !== "admin" && batchTutorId !== user.id) {
+    return NextResponse.json({ error: "forbidden" }, { status: 403 });
+  }
   const duration = sess.ends_at ? Math.round((Date.parse(sess.ends_at) - Date.parse(sess.starts_at)) / 60000) : null;
 
   const ext = (file.name.split(".").pop() || "mp4").toLowerCase();

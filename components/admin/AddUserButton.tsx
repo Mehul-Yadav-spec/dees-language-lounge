@@ -3,18 +3,30 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Icon } from "@/components/ui/Icon";
+import { PhoneInput, isValidPhone } from "@/components/admin/PhoneInput";
 
 const inputClass =
   "min-h-[46px] w-full rounded-input border border-hairline bg-canvas px-4 text-ink placeholder:text-muted focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold";
 
 // Admin action: create a student/tutor. On success it reveals the one-time temp
 // password to copy + DM (build doc §10). The new user is forced to reset it.
-export function AddUserButton({ role, label }: { role: "student" | "tutor"; label: string }) {
+// Students are enrolled into the chosen batch on create.
+export function AddUserButton({
+  role,
+  label,
+  batches = [],
+}: {
+  role: "student" | "tutor";
+  label: string;
+  batches?: { id: string; title: string }[];
+}) {
   const router = useRouter();
+  const isStudent = role === "student";
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
+  const [batchId, setBatchId] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | undefined>();
   const [created, setCreated] = useState<{ email: string; tempPassword: string } | null>(null);
@@ -25,6 +37,7 @@ export function AddUserButton({ role, label }: { role: "student" | "tutor"; labe
     setEmail("");
     setFullName("");
     setPhone("");
+    setBatchId("");
     setError(undefined);
     setCreated(null);
     setCopied(false);
@@ -32,12 +45,14 @@ export function AddUserButton({ role, label }: { role: "student" | "tutor"; labe
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
+    if (!isValidPhone(phone)) return setError("Enter a valid WhatsApp number.");
+    if (isStudent && batches.length > 0 && !batchId) return setError("Choose a batch to enrol the student in.");
     setError(undefined);
     setLoading(true);
     const res = await fetch("/api/admin/users", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, fullName, phone, role }),
+      body: JSON.stringify({ email, fullName, phone, role, batchId: isStudent ? batchId || null : null }),
     });
     const d = await res.json().catch(() => ({}));
     setLoading(false);
@@ -118,8 +133,25 @@ export function AddUserButton({ role, label }: { role: "student" | "tutor"; labe
                 </div>
                 <div>
                   <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-gold">WhatsApp number (optional)</label>
-                  <input value={phone} onChange={(e) => setPhone(e.target.value)} inputMode="tel" placeholder="+1 416 555 0187" className={inputClass} />
+                  <PhoneInput value={phone} onChange={setPhone} />
                 </div>
+                {isStudent ? (
+                  <div>
+                    <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-gold">Enrol in batch</label>
+                    {batches.length === 0 ? (
+                      <p className="rounded-input border border-hairline bg-canvas px-4 py-3 text-xs text-muted">
+                        No open batches yet — create one first, then enrol from the batch page.
+                      </p>
+                    ) : (
+                      <select value={batchId} onChange={(e) => setBatchId(e.target.value)} required className={inputClass}>
+                        <option value="">— Select a batch —</option>
+                        {batches.map((b) => (
+                          <option key={b.id} value={b.id}>{b.title}</option>
+                        ))}
+                      </select>
+                    )}
+                  </div>
+                ) : null}
                 {error ? <p className="text-sm" style={{ color: "#ffb4ab" }}>{error}</p> : null}
                 <button type="submit" disabled={loading} className="w-full rounded-pill bg-cta-gradient py-3 text-xs font-bold uppercase tracking-widest text-canvas shadow-glow-btn disabled:opacity-60 focus-gold">
                   {loading ? "Creating…" : "Create account"}

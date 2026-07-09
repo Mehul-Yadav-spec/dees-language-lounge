@@ -22,7 +22,7 @@ export default async function RecordingsPage() {
   const supabase = createClient();
 
   const [sessRes, recRes, viewRes] = await Promise.all([
-    supabase.from("sessions").select("id,title,starts_at,ends_at,batch_id,batch:batches(title)").order("starts_at", { ascending: false }),
+    supabase.from("sessions").select("id,title,starts_at,ends_at,batch_id,batch:batches(title)").neq("status", "cancelled").order("starts_at", { ascending: false }),
     supabase.from("recordings").select("id,session_id,duration,status"),
     supabase.from("recording_views").select("recording_id"),
   ]);

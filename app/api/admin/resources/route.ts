@@ -12,7 +12,6 @@ export async function POST(req: Request) {
   } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "unauthenticated" }, { status: 401 });
   const { data: me } = await supabase.from("profiles").select("role").eq("id", user.id).single();
-  if (me?.role !== "admin") return NextResponse.json({ error: "forbidden" }, { status: 403 });
 
   const form = await req.formData();
   const file = form.get("file");
@@ -28,9 +27,14 @@ export async function POST(req: Request) {
   const svc = getServiceClient();
   if (!svc) return NextResponse.json({ error: "server_not_configured" }, { status: 500 });
 
-  const { data: sess } = await svc.from("sessions").select("batch:batches(course_id)").eq("id", sessionId).single();
-  const courseId = (sess as unknown as { batch: { course_id: string } | null } | null)?.batch?.course_id;
+  // Shared admin + tutor route: allow admins, or the tutor of this session's batch.
+  const { data: sess } = await svc.from("sessions").select("batch:batches(course_id,tutor_id)").eq("id", sessionId).single();
+  const batch = (sess as unknown as { batch: { course_id: string; tutor_id: string | null } | null } | null)?.batch;
+  const courseId = batch?.course_id;
   if (!courseId) return NextResponse.json({ error: "bad_session" }, { status: 400 });
+  if (me?.role !== "admin" && batch?.tutor_id !== user.id) {
+    return NextResponse.json({ error: "forbidden" }, { status: 403 });
+  }
 
   // Default module + lesson for the course (create if missing).
   const { data: mods } = await svc.from("modules").select("id").eq("course_id", courseId).order("position").limit(1);

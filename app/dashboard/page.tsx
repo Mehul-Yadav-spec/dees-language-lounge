@@ -8,5 +8,6 @@ export default async function DashboardPage() {
   if (!user) redirect("/login");
   if (user.mustChangePassword) redirect("/set-password");
   if (user.role === "admin") redirect("/admin");
+  if (user.role === "tutor") redirect("/tutor");
   redirect("/student");
 }

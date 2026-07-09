@@ -56,6 +56,7 @@ export default async function StudentDashboardPage() {
     supabase
       .from("sessions")
       .select("id,title,starts_at,ends_at,join_url,topic,batch:batches(title,tutor:profiles(full_name))")
+      .neq("status", "cancelled")
       .order("starts_at", { ascending: true }),
     supabase.from("attendance").select("session_id,status"),
     supabase.from("recordings").select("id,session_id,title,duration,recorded_at,status"),
@@ -78,9 +79,14 @@ export default async function StudentDashboardPage() {
   const ended = sessions.filter((s) => now > endMs(s));
   const notEnded = sessions.filter((s) => now <= endMs(s));
 
-  // Stats (merged across all batches)
-  const attended = attendance.filter((a) => a.status === "present" || a.status === "late").length;
-  const marked = attendance.length;
+  // Stats (merged across all batches). Attendance is scoped to the sessions the
+  // student can currently see (enrolled + not cancelled) — the same universe as
+  // the Sessions/Classes stats — so leaving a batch or a cancelled class can't
+  // leave orphaned marks skewing the percentage.
+  const visibleSessionIds = new Set(sessions.map((s) => s.id));
+  const relevantAttendance = attendance.filter((a) => visibleSessionIds.has(a.session_id));
+  const attended = relevantAttendance.filter((a) => a.status === "present" || a.status === "late").length;
+  const marked = relevantAttendance.length;
   const attendancePct = marked ? Math.round((attended / marked) * 100) : 0;
   const classesThisWeek = notEnded.filter((s) => startMs(s) <= now + 7 * DAY).length;
   const nextSess = notEnded[0];
@@ -126,7 +132,7 @@ export default async function StudentDashboardPage() {
       {/* Stats */}
       <section className="grid grid-cols-1 gap-4 md:grid-cols-3">
         <StatCard icon="task_alt" label="Sessions Completed" value={`${ended.length} / ${sessions.length}`} sub="Across your batches" />
-        <StatCard icon="person_check" label="Attendance" value={`${attendancePct}%`} sub={`${attended} of ${marked} attended`} />
+        <StatCard icon="person_check" label="Attendance" value={marked ? `${attendancePct}%` : "—"} sub={marked ? `${attended} of ${marked} attended` : "No attendance yet"} />
         <StatCard
           icon="calendar_month"
           label="Classes This Week"

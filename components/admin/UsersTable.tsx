@@ -1,9 +1,14 @@
+import { UserRowActions } from "@/components/admin/UserRowActions";
+
 export interface UserRow {
   id: string;
   full_name: string | null;
   email: string | null;
   phone: string | null;
   status: string;
+  must_change_password?: boolean;
+  last_sign_in_at?: string | null;
+  batch_name?: string | null;
 }
 
 function StatusPill({ status }: { status: string }) {
@@ -16,30 +21,61 @@ function StatusPill({ status }: { status: string }) {
   );
 }
 
-export function UsersTable({ rows, emptyText }: { rows: UserRow[]; emptyText: string }) {
+function lastLogin(iso: string | null | undefined): string {
+  if (!iso) return "Never";
+  return new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric" }).format(new Date(iso));
+}
+
+export function UsersTable({
+  rows,
+  emptyText,
+  showBatch = false,
+}: {
+  rows: UserRow[];
+  emptyText: string;
+  showBatch?: boolean;
+}) {
   if (!rows.length) {
     return <p className="rounded-card border border-hairline bg-surface p-8 text-center text-muted">{emptyText}</p>;
   }
   return (
     <div className="overflow-x-auto rounded-card border border-hairline bg-surface">
-      <table className="w-full min-w-[560px] text-sm">
+      <table className="w-full min-w-[720px] text-sm">
         <thead>
           <tr className="border-b border-hairline text-left text-[11px] uppercase tracking-widest text-muted">
             <th className="px-4 py-3 font-bold">Name</th>
             <th className="px-4 py-3 font-bold">Email</th>
-            <th className="px-4 py-3 font-bold">Phone</th>
+            <th className="px-4 py-3 font-bold">WhatsApp</th>
+            {showBatch ? <th className="px-4 py-3 font-bold">Batch</th> : null}
+            <th className="px-4 py-3 font-bold">Last login</th>
             <th className="px-4 py-3 font-bold">Status</th>
+            <th className="px-4 py-3"></th>
           </tr>
         </thead>
         <tbody>
-          {rows.map((r) => (
-            <tr key={r.id} className="border-b border-hairline/50 last:border-0">
-              <td className="px-4 py-3 font-medium text-ink">{r.full_name || "—"}</td>
-              <td className="px-4 py-3 text-muted">{r.email || "—"}</td>
-              <td className="px-4 py-3 text-muted">{r.phone || "—"}</td>
-              <td className="px-4 py-3"><StatusPill status={r.status} /></td>
-            </tr>
-          ))}
+          {rows.map((r) => {
+            const muted = r.status === "inactive";
+            return (
+              <tr key={r.id} className={`border-b border-hairline/50 last:border-0 ${muted ? "opacity-50" : ""}`}>
+                <td className="px-4 py-3 font-medium text-ink">{r.full_name || "—"}</td>
+                <td className="px-4 py-3 text-muted">{r.email || "—"}</td>
+                <td className="px-4 py-3 text-muted">{r.phone || "—"}</td>
+                {showBatch ? <td className="px-4 py-3 text-muted">{r.batch_name || "—"}</td> : null}
+                <td className="px-4 py-3 text-muted">{lastLogin(r.last_sign_in_at)}</td>
+                <td className="px-4 py-3">
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    <StatusPill status={r.status} />
+                    {r.must_change_password ? (
+                      <span className="rounded-pill px-2 py-0.5 text-[10px] font-bold text-gold" style={{ backgroundColor: "#C5A36B1a" }} title="Must change password on next login">
+                        Temp pw
+                      </span>
+                    ) : null}
+                  </div>
+                </td>
+                <td className="px-4 py-3"><UserRowActions row={r} /></td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>

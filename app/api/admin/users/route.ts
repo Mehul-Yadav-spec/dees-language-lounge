@@ -21,6 +21,7 @@ export async function POST(req: Request) {
   const fullName = String(body?.fullName ?? "").trim();
   const phone = String(body?.phone ?? "").trim();
   const role = body?.role;
+  const batchId = body?.batchId ? String(body.batchId) : null;
   if (!email || !fullName || (role !== "student" && role !== "tutor")) {
     return NextResponse.json({ error: "invalid_input" }, { status: 400 });
   }
@@ -44,6 +45,18 @@ export async function POST(req: Request) {
     .from("profiles")
     .update({ role, must_change_password: true, full_name: fullName, phone: phone || null })
     .eq("id", created.user.id);
+
+  // Enrol a new student into the chosen batch (active). Upsert on (student,course)
+  // keeps the one-batch-per-student invariant consistent with the roster flow.
+  if (role === "student" && batchId) {
+    const { data: batch } = await svc.from("batches").select("course_id").eq("id", batchId).single();
+    if (batch?.course_id) {
+      await svc.from("enrollments").upsert(
+        { student_id: created.user.id, course_id: batch.course_id, batch_id: batchId, mode: "live", status: "active" },
+        { onConflict: "student_id,course_id" },
+      );
+    }
+  }
 
   return NextResponse.json({ ok: true, id: created.user.id, email, tempPassword: password });
 }

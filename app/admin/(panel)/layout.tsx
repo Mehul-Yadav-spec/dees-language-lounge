@@ -13,7 +13,7 @@ const ADMIN_NAV: NavItem[] = [
 // Admin-only shell. Non-admins are bounced to their own area.
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const user = await getSessionUser();
-  if (!user) redirect("/login");
+  if (!user) redirect("/admin/login");
   if (user.mustChangePassword) redirect("/set-password");
   if (user.role !== "admin") redirect("/student");
 

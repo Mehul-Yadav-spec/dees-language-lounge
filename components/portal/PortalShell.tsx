@@ -8,6 +8,7 @@ import { cn } from "@/lib/cn";
 import { createClient } from "@/lib/supabaseClient";
 import { site } from "@/content/site";
 import type { PortalUser } from "@/lib/portal";
+import { TimezoneDialog } from "@/components/portal/TimezoneDialog";
 
 export interface NavItem {
   label: string;
@@ -54,6 +55,7 @@ export function PortalShell({
   const router = useRouter();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [tzOpen, setTzOpen] = useState(false);
 
   async function signOut() {
     await createClient().auth.signOut();
@@ -129,10 +131,18 @@ export function PortalShell({
             >
               <Icon name="menu" className="text-2xl" />
             </button>
-            <span className="hidden items-center gap-2 rounded-pill border border-hairline bg-surface px-3 py-1.5 sm:flex">
-              <span className="h-1.5 w-1.5 rounded-full bg-gold" />
+            <button
+              type="button"
+              onClick={() => setTzOpen(true)}
+              title="Change your timezone"
+              className={cn(
+                "hidden items-center gap-2 rounded-pill border bg-surface px-3 py-1.5 transition-colors hover:border-gold/50 focus-gold sm:flex",
+                user.timezone ? "border-hairline" : "border-gold/40",
+              )}
+            >
+              <Icon name="schedule" className="text-sm text-gold" />
               <span className="text-xs font-medium tracking-widest text-muted">{tzLabel(user.timezone)}</span>
-            </span>
+            </button>
           </div>
 
           <div className="flex items-center gap-4 md:gap-6">
@@ -218,6 +228,10 @@ export function PortalShell({
 
         <main className="flex-1 px-5 py-8 md:px-8">{children}</main>
       </div>
+
+      {tzOpen ? (
+        <TimezoneDialog userId={user.id} currentTz={user.timezone} onClose={() => setTzOpen(false)} />
+      ) : null}
     </div>
   );
 }

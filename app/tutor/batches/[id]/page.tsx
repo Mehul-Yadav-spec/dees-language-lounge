@@ -6,60 +6,65 @@ import { Icon } from "@/components/ui/Icon";
 import { BatchRoster, type RosterRow } from "@/components/admin/BatchRoster";
 import { BatchClasses, type SessionRow } from "@/components/admin/BatchClasses";
 
+const ATTENDANCE_GRACE_MS = 24 * 3600 * 1000; // 24h tutor edit window
+
 interface Batch {
   id: string;
   title: string;
   course_id: string;
+  tutor_id: string | null;
   schedule_text: string | null;
   status: string;
   course: { title: string } | null;
-  tutor: { full_name: string | null } | null;
 }
 
-export default async function BatchDetailPage({ params }: { params: { id: string } }) {
+export default async function TutorBatchDetailPage({ params }: { params: { id: string } }) {
+  const user = await getSessionUser();
   const supabase = createClient();
   const { data: batchData } = await supabase
     .from("batches")
-    .select("id,title,course_id,schedule_text,status,course:courses(title),tutor:profiles(full_name)")
+    .select("id,title,course_id,tutor_id,schedule_text,status,course:courses(title)")
     .eq("id", params.id)
     .single();
   const batch = batchData as unknown as Batch | null;
-  if (!batch) notFound();
+  // RLS already limits reads, but guard explicitly: a tutor only sees their batch.
+  if (!batch || batch.tutor_id !== user?.id) notFound();
 
-  const [user, { data: enr }, { data: courseEnr }, { data: students }, { data: sess }] = await Promise.all([
-    getSessionUser(),
-    supabase.from("enrollments").select("id,student_id,student:profiles(full_name,email)").eq("batch_id", params.id),
-    supabase.from("enrollments").select("student_id").eq("course_id", batch.course_id),
-    supabase.from("profiles").select("id,full_name").eq("role", "student").eq("status", "active").order("full_name"),
-    supabase.from("sessions").select("id,title,starts_at,ends_at,join_url,topic").eq("batch_id", params.id).order("starts_at"),
+  const [{ data: enr }, { data: sess }] = await Promise.all([
+    // Name-only: never pull student email/phone into a tutor's payload.
+    supabase.from("enrollments").select("id,student_id,student:profiles(full_name)").eq("batch_id", params.id),
+    supabase.from("sessions").select("id,title,starts_at,ends_at,join_url,topic,status").eq("batch_id", params.id).order("starts_at"),
   ]);
   const tz = user?.timezone || "UTC";
   const sessions = (sess ?? []) as SessionRow[];
 
+  const { data: recs } = sessions.length
+    ? await supabase.from("recordings").select("session_id,status").in("session_id", sessions.map((s) => s.id))
+    : { data: [] };
+  const recStatus = Object.fromEntries(
+    ((recs ?? []) as { session_id: string; status: string }[]).map((r) => [r.session_id, r.status]),
+  );
+
   const roster: RosterRow[] = ((enr ?? []) as unknown as {
     id: string;
     student_id: string;
-    student: { full_name: string | null; email: string | null } | null;
+    student: { full_name: string | null } | null;
   }[]).map((e) => ({
     enrollmentId: e.id,
     studentId: e.student_id,
     fullName: e.student?.full_name ?? null,
-    email: e.student?.email ?? null,
+    email: null,
   }));
-
-  const taken = new Set((courseEnr ?? []).map((e: { student_id: string }) => e.student_id));
-  const available = ((students ?? []) as { id: string; full_name: string | null }[]).filter((s) => !taken.has(s.id));
 
   return (
     <div className="mx-auto max-w-4xl space-y-8">
       <div>
-        <Link href="/admin/batches" className="text-xs font-bold text-muted hover:text-gold focus-gold">
-          ← Batches
+        <Link href="/tutor/batches" className="text-xs font-bold text-muted hover:text-gold focus-gold">
+          ← My Batches
         </Link>
         <h1 className="mt-2 text-3xl font-bold tracking-tight text-gold md:text-4xl">{batch.title}</h1>
         <div className="mt-2 flex flex-wrap gap-x-6 gap-y-1 text-sm text-muted">
           <span className="flex items-center gap-1"><Icon name="menu_book" className="text-sm text-gold" /> {batch.course?.title ?? "—"}</span>
-          <span className="flex items-center gap-1"><Icon name="person" className="text-sm text-gold" /> {batch.tutor?.full_name ?? "Unassigned"}</span>
           {batch.schedule_text ? <span className="flex items-center gap-1"><Icon name="schedule" className="text-sm text-gold" /> {batch.schedule_text}</span> : null}
           <span className="rounded-pill bg-gold/10 px-2.5 py-0.5 text-[11px] font-bold capitalize text-gold">{batch.status}</span>
         </div>
@@ -67,16 +72,22 @@ export default async function BatchDetailPage({ params }: { params: { id: string
 
       <section className="space-y-4">
         <h2 className="text-xl font-bold text-ink">Roster</h2>
-        <BatchRoster batchId={batch.id} courseId={batch.course_id} roster={roster} available={available} />
+        <BatchRoster batchId={batch.id} courseId={batch.course_id} roster={roster} available={[]} canManage={false} />
       </section>
 
       <section className="space-y-4">
         <h2 className="text-xl font-bold text-ink">Classes</h2>
+        <p className="text-xs text-muted">
+          The class schedule is managed by the admin — message them to add or change a session. You can take attendance and upload materials &amp; recordings here.
+        </p>
         <BatchClasses
           batchId={batch.id}
           roster={roster.map((r) => ({ studentId: r.studentId, fullName: r.fullName }))}
           sessions={sessions}
           tz={tz}
+          recStatus={recStatus}
+          canSchedule={false}
+          attendanceGraceMs={ATTENDANCE_GRACE_MS}
         />
       </section>
     </div>
