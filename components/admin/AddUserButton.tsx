@@ -18,7 +18,7 @@ export function AddUserButton({
 }: {
   role: "student" | "tutor";
   label: string;
-  batches?: { id: string; title: string }[];
+  batches?: { id: string; title: string; courseId: string; courseTitle: string }[];
 }) {
   const router = useRouter();
   const isStudent = role === "student";
@@ -26,7 +26,14 @@ export function AddUserButton({
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
+  const [courseId, setCourseId] = useState("");
   const [batchId, setBatchId] = useState("");
+
+  // Distinct courses that have at least one open/running batch, plus the batches
+  // for the currently selected course (a batch belongs to exactly one course).
+  const courses = Array.from(new Map(batches.map((b) => [b.courseId, b.courseTitle])).entries())
+    .map(([id, title]) => ({ id, title }));
+  const courseBatches = batches.filter((b) => b.courseId === courseId);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | undefined>();
   const [created, setCreated] = useState<{ email: string; tempPassword: string } | null>(null);
@@ -37,6 +44,7 @@ export function AddUserButton({
     setEmail("");
     setFullName("");
     setPhone("");
+    setCourseId("");
     setBatchId("");
     setError(undefined);
     setCreated(null);
@@ -46,7 +54,7 @@ export function AddUserButton({
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     if (!isValidPhone(phone)) return setError("Enter a valid WhatsApp number.");
-    if (isStudent && batches.length > 0 && !batchId) return setError("Choose a batch to enrol the student in.");
+    if (isStudent && batches.length > 0 && (!courseId || !batchId)) return setError("Choose a course and batch to enrol the student in.");
     setError(undefined);
     setLoading(true);
     const res = await fetch("/api/admin/users", {
@@ -136,21 +144,43 @@ export function AddUserButton({
                   <PhoneInput value={phone} onChange={setPhone} />
                 </div>
                 {isStudent ? (
-                  <div>
-                    <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-gold">Enrol in batch</label>
-                    {batches.length === 0 ? (
-                      <p className="rounded-input border border-hairline bg-canvas px-4 py-3 text-xs text-muted">
-                        No open batches yet — create one first, then enrol from the batch page.
-                      </p>
-                    ) : (
-                      <select value={batchId} onChange={(e) => setBatchId(e.target.value)} required className={inputClass}>
-                        <option value="">— Select a batch —</option>
-                        {batches.map((b) => (
-                          <option key={b.id} value={b.id}>{b.title}</option>
-                        ))}
-                      </select>
-                    )}
-                  </div>
+                  batches.length === 0 ? (
+                    <p className="rounded-input border border-hairline bg-canvas px-4 py-3 text-xs text-muted">
+                      No open batches yet — create one first, then enrol from the batch page.
+                    </p>
+                  ) : (
+                    <>
+                      <div>
+                        <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-gold">Course</label>
+                        <select
+                          value={courseId}
+                          onChange={(e) => { setCourseId(e.target.value); setBatchId(""); }}
+                          required
+                          className={inputClass}
+                        >
+                          <option value="">— Select a course —</option>
+                          {courses.map((c) => (
+                            <option key={c.id} value={c.id}>{c.title}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-gold">Enrol in batch</label>
+                        <select
+                          value={batchId}
+                          onChange={(e) => setBatchId(e.target.value)}
+                          required
+                          disabled={!courseId}
+                          className={`${inputClass} disabled:opacity-50`}
+                        >
+                          <option value="">{courseId ? "— Select a batch —" : "Select a course first"}</option>
+                          {courseBatches.map((b) => (
+                            <option key={b.id} value={b.id}>{b.title}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </>
+                  )
                 ) : null}
                 {error ? <p className="text-sm" style={{ color: "#ffb4ab" }}>{error}</p> : null}
                 <button type="submit" disabled={loading} className="w-full rounded-pill bg-cta-gradient py-3 text-xs font-bold uppercase tracking-widest text-canvas shadow-glow-btn disabled:opacity-60 focus-gold">

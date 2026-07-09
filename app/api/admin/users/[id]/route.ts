@@ -37,5 +37,20 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
     if (error) return NextResponse.json({ error: error.message }, { status: 400 });
   }
 
+  // Move a student's active enrolment to a new batch (Course → Batch edit). The
+  // course is derived from the batch, and any other active enrolment is cleared
+  // first so the one-active-batch-per-student invariant holds across a course move.
+  if (typeof body.batchId === "string" && body.batchId) {
+    const { data: batch } = await svc.from("batches").select("course_id").eq("id", body.batchId).single();
+    if (batch?.course_id) {
+      await svc.from("enrollments").delete().eq("student_id", params.id).eq("status", "active").neq("batch_id", body.batchId);
+      const { error: enrErr } = await svc.from("enrollments").upsert(
+        { student_id: params.id, course_id: batch.course_id, batch_id: body.batchId, mode: "live", status: "active" },
+        { onConflict: "student_id,course_id" },
+      );
+      if (enrErr) return NextResponse.json({ error: enrErr.message }, { status: 400 });
+    }
+  }
+
   return NextResponse.json({ ok: true });
 }

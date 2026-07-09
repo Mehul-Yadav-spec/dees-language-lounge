@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Icon } from "@/components/ui/Icon";
 import { PhoneInput, isValidPhone } from "@/components/admin/PhoneInput";
-import type { UserRow } from "@/components/admin/UsersTable";
+import type { UserRow, BatchOption } from "@/components/admin/UsersTable";
 
 const inputClass =
   "min-h-[46px] w-full rounded-input border border-hairline bg-canvas px-4 text-ink placeholder:text-muted focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold";
@@ -13,7 +13,7 @@ type Dialog = "edit" | "reset" | "deactivate" | null;
 
 // Per-row kebab menu: Edit · Reset password · Deactivate/Reactivate. Admin-only
 // endpoints do the work; the reset dialog reveals the new temp password once.
-export function UserRowActions({ row }: { row: UserRow }) {
+export function UserRowActions({ row, batches = [] }: { row: UserRow; batches?: BatchOption[] }) {
   const router = useRouter();
   const btnRef = useRef<HTMLButtonElement>(null);
   const [menuPos, setMenuPos] = useState<{ top: number; right: number } | null>(null);
@@ -59,7 +59,7 @@ export function UserRowActions({ row }: { row: UserRow }) {
         ) : null}
       </div>
 
-      {dialog === "edit" ? <EditDialog row={row} onClose={() => setDialog(null)} onDone={() => { setDialog(null); router.refresh(); }} /> : null}
+      {dialog === "edit" ? <EditDialog row={row} batches={batches} onClose={() => setDialog(null)} onDone={() => { setDialog(null); router.refresh(); }} /> : null}
       {dialog === "reset" ? <ResetDialog row={row} onClose={() => setDialog(null)} /> : null}
       {dialog === "deactivate" ? (
         <DeactivateDialog row={row} onClose={() => setDialog(null)} onDone={() => { setDialog(null); router.refresh(); }} />
@@ -97,22 +97,32 @@ function Modal({ title, onClose, children }: { title: string; onClose: () => voi
   );
 }
 
-function EditDialog({ row, onClose, onDone }: { row: UserRow; onClose: () => void; onDone: () => void }) {
+function EditDialog({ row, batches, onClose, onDone }: { row: UserRow; batches: BatchOption[]; onClose: () => void; onDone: () => void }) {
   const [fullName, setFullName] = useState(row.full_name ?? "");
   const [phone, setPhone] = useState(row.phone ?? "");
+  const [courseId, setCourseId] = useState(row.course_id ?? "");
+  const [batchId, setBatchId] = useState(row.batch_id ?? "");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | undefined>();
+
+  // Only students carry batches (tutors get an empty list) → enrolment fields
+  // appear for students only. Course drives the batch list, same as Add student.
+  const showEnrol = batches.length > 0;
+  const courses = Array.from(new Map(batches.map((b) => [b.courseId, b.courseTitle])).entries())
+    .map(([id, title]) => ({ id, title }));
+  const courseBatches = batches.filter((b) => b.courseId === courseId);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     if (!fullName.trim()) return setError("Name is required.");
     if (!isValidPhone(phone)) return setError("Enter a valid WhatsApp number.");
+    if (showEnrol && (!courseId || !batchId)) return setError("Choose a course and batch.");
     setError(undefined);
     setLoading(true);
     const res = await fetch(`/api/admin/users/${row.id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ fullName, phone }),
+      body: JSON.stringify({ fullName, phone, ...(showEnrol ? { batchId } : {}) }),
     });
     setLoading(false);
     if (!res.ok) {
@@ -133,6 +143,39 @@ function EditDialog({ row, onClose, onDone }: { row: UserRow; onClose: () => voi
           <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-gold">WhatsApp number</label>
           <PhoneInput value={phone} onChange={setPhone} />
         </div>
+        {showEnrol ? (
+          <>
+            <div>
+              <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-gold">Course</label>
+              <select
+                value={courseId}
+                onChange={(e) => { setCourseId(e.target.value); setBatchId(""); }}
+                required
+                className={inputClass}
+              >
+                <option value="">— Select a course —</option>
+                {courses.map((c) => (
+                  <option key={c.id} value={c.id}>{c.title}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-gold">Batch</label>
+              <select
+                value={batchId}
+                onChange={(e) => setBatchId(e.target.value)}
+                required
+                disabled={!courseId}
+                className={`${inputClass} disabled:opacity-50`}
+              >
+                <option value="">{courseId ? "— Select a batch —" : "Select a course first"}</option>
+                {courseBatches.map((b) => (
+                  <option key={b.id} value={b.id}>{b.title}</option>
+                ))}
+              </select>
+            </div>
+          </>
+        ) : null}
         {error ? <p className="text-sm" style={{ color: "#ffb4ab" }}>{error}</p> : null}
         <button type="submit" disabled={loading} className="w-full rounded-pill bg-cta-gradient py-3 text-xs font-bold uppercase tracking-widest text-canvas shadow-glow-btn disabled:opacity-60 focus-gold">
           {loading ? "Saving…" : "Save changes"}

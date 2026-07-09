@@ -5,6 +5,9 @@ import { UsersTable, type UserRow } from "@/components/admin/UsersTable";
 
 interface ActiveEnr {
   student_id: string;
+  course_id: string | null;
+  batch_id: string | null;
+  course: { title: string | null } | null;
   batch: { title: string | null } | null;
 }
 
@@ -17,24 +20,34 @@ export default async function StudentsPage() {
       .select("id,full_name,email,phone,status,must_change_password")
       .eq("role", "student")
       .order("full_name"),
-    supabase.from("enrollments").select("student_id,batch:batches(title)").eq("status", "active"),
-    supabase.from("batches").select("id,title").in("status", ["open", "running"]).order("created_at", { ascending: false }),
+    supabase.from("enrollments").select("student_id,course_id,batch_id,course:courses(title),batch:batches(title)").eq("status", "active"),
+    supabase.from("batches").select("id,title,course_id,course:courses(title)").in("status", ["open", "running"]).order("created_at", { ascending: false }),
     svc ? svc.auth.admin.listUsers({ page: 1, perPage: 1000 }) : Promise.resolve(null),
   ]);
-  const batches = (batchData ?? []) as { id: string; title: string }[];
+  // Each open/running batch carries its course, so the Add-student dialog can offer
+  // a Course → Batch cascade (pick the course, then the class within it).
+  const batches = ((batchData ?? []) as unknown as {
+    id: string; title: string; course_id: string; course: { title: string } | null;
+  }[]).map((b) => ({ id: b.id, title: b.title, courseId: b.course_id, courseTitle: b.course?.title ?? "Course" }));
 
-  const batchByStudent = new Map(
-    ((enr ?? []) as unknown as ActiveEnr[]).map((e) => [e.student_id, e.batch?.title ?? null]),
+  const enrByStudent = new Map(
+    ((enr ?? []) as unknown as ActiveEnr[]).map((e) => [e.student_id, e]),
   );
   const lastLoginById = new Map(
     (authList?.data?.users ?? []).map((u) => [u.id, u.last_sign_in_at ?? null]),
   );
 
-  const rows: UserRow[] = ((data ?? []) as UserRow[]).map((r) => ({
-    ...r,
-    batch_name: batchByStudent.get(r.id) ?? null,
-    last_sign_in_at: lastLoginById.get(r.id) ?? null,
-  }));
+  const rows: UserRow[] = ((data ?? []) as UserRow[]).map((r) => {
+    const e = enrByStudent.get(r.id);
+    return {
+      ...r,
+      course_name: e?.course?.title ?? null,
+      batch_name: e?.batch?.title ?? null,
+      course_id: e?.course_id ?? null,
+      batch_id: e?.batch_id ?? null,
+      last_sign_in_at: lastLoginById.get(r.id) ?? null,
+    };
+  });
 
   return (
     <div className="mx-auto max-w-5xl space-y-6">
@@ -45,7 +58,7 @@ export default async function StudentsPage() {
         </div>
         <AddUserButton role="student" label="Add student" batches={batches} />
       </div>
-      <UsersTable rows={rows} emptyText="No students yet — add your first student." showBatch />
+      <UsersTable rows={rows} emptyText="No students yet — add your first student." showBatch batches={batches} />
     </div>
   );
 }

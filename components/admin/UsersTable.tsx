@@ -8,7 +8,18 @@ export interface UserRow {
   status: string;
   must_change_password?: boolean;
   last_sign_in_at?: string | null;
+  course_name?: string | null;
   batch_name?: string | null;
+  // Current active enrolment (for the Edit dialog's Course → Batch cascade).
+  course_id?: string | null;
+  batch_id?: string | null;
+}
+
+export interface BatchOption {
+  id: string;
+  title: string;
+  courseId: string;
+  courseTitle: string;
 }
 
 function StatusPill({ status }: { status: string }) {
@@ -30,10 +41,12 @@ export function UsersTable({
   rows,
   emptyText,
   showBatch = false,
+  batches = [],
 }: {
   rows: UserRow[];
   emptyText: string;
   showBatch?: boolean;
+  batches?: BatchOption[];
 }) {
   if (!rows.length) {
     return <p className="rounded-card border border-hairline bg-surface p-8 text-center text-muted">{emptyText}</p>;
@@ -46,6 +59,7 @@ export function UsersTable({
             <th className="px-4 py-3 font-bold">Name</th>
             <th className="px-4 py-3 font-bold">Email</th>
             <th className="px-4 py-3 font-bold">WhatsApp</th>
+            {showBatch ? <th className="px-4 py-3 font-bold">Course</th> : null}
             {showBatch ? <th className="px-4 py-3 font-bold">Batch</th> : null}
             <th className="px-4 py-3 font-bold">Last login</th>
             <th className="px-4 py-3 font-bold">Status</th>
@@ -60,6 +74,7 @@ export function UsersTable({
                 <td className="px-4 py-3 font-medium text-ink">{r.full_name || "—"}</td>
                 <td className="px-4 py-3 text-muted">{r.email || "—"}</td>
                 <td className="px-4 py-3 text-muted">{r.phone || "—"}</td>
+                {showBatch ? <td className="px-4 py-3 text-muted">{r.course_name || "—"}</td> : null}
                 {showBatch ? <td className="px-4 py-3 text-muted">{r.batch_name || "—"}</td> : null}
                 <td className="px-4 py-3 text-muted">{lastLogin(r.last_sign_in_at)}</td>
                 <td className="px-4 py-3">
@@ -72,7 +87,7 @@ export function UsersTable({
                     ) : null}
                   </div>
                 </td>
-                <td className="px-4 py-3"><UserRowActions row={r} /></td>
+                <td className="px-4 py-3"><UserRowActions row={r} batches={batches} /></td>
               </tr>
             );
           })}
