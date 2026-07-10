@@ -55,8 +55,7 @@ export async function POST(req: Request) {
     session_id: session.id,
     title: (obj.topic as string) || session.title,
     status: "processing",
-    zoom_meeting_id: meetingId,
-    zoom_recording_id: meetingUuid,
+    zoom_recording_id: meetingUuid, // meeting instance uuid — the worker's handle
     recorded_at: (obj.start_time as string) ?? null,
   });
   if (error && error.code !== "23505") {
