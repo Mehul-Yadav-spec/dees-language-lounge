@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { createClient } from "@/lib/supabaseServer";
 import { getServiceClient } from "@/lib/supabase";
 
@@ -15,7 +16,11 @@ export interface PortalUser {
 
 // Server-side: the current authenticated user joined with their profile row.
 // Returns null when there is no session. Use in portal layouts / server pages.
-export async function getSessionUser(): Promise<PortalUser | null> {
+//
+// Wrapped in React cache() so the layout and page of the SAME request share one
+// execution instead of each doing its own getUser() + profiles + avatar-sign
+// round-trips — a big per-navigation latency saving in the portals.
+export const getSessionUser = cache(async (): Promise<PortalUser | null> => {
   const supabase = createClient();
   const {
     data: { user },
@@ -45,4 +50,4 @@ export async function getSessionUser(): Promise<PortalUser | null> {
     avatarUrl,
     mustChangePassword: profile?.must_change_password ?? false,
   };
-}
+});
