@@ -1,9 +1,7 @@
-import { PortalSkeleton } from "@/components/portal/PortalSkeleton";
+import { DashboardSkeleton } from "@/components/portal/Skeletons";
 
-// Loading boundary at the `student` segment (not the parent group) so the
-// skeleton shows when navigating BETWEEN /student/* pages, not just on first
-// entry. The student pages nest one level deeper than the admin/tutor ones,
-// so they need their own loading.tsx here.
+// /student dashboard skeleton. Nested routes (recordings, live-classes, etc.)
+// override this with their own loading.tsx shaped like that page.
 export default function Loading() {
-  return <PortalSkeleton />;
+  return <DashboardSkeleton />;
 }
