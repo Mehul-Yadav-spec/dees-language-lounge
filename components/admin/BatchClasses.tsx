@@ -58,6 +58,14 @@ function fmt(iso: string, tz: string) {
   }).format(new Date(iso));
 }
 
+// Friendly copy for the server error codes the session routes can return.
+function sessionErr(code: unknown): string {
+  if (code === "zoom_not_configured") return "Zoom isn't connected yet — add the Zoom keys before scheduling.";
+  if (code === "zoom_failed") return "Couldn't create the Zoom meeting. Please try again.";
+  if (code === "too_many") return "Too many sessions at once — reduce the count.";
+  return typeof code === "string" && code ? code : "Something went wrong. Please try again.";
+}
+
 // Open a material inline via its signed URL (same endpoint the student side uses).
 async function viewMaterial(id: string) {
   const res = await fetch(`/api/resources/${id}`);
@@ -99,9 +107,15 @@ export function BatchClasses({
   const [tab, setTab] = useState<"upcoming" | "past">("upcoming");
   const [confirmEndId, setConfirmEndId] = useState<string | null>(null);
 
+  // Cancel/restore go through the admin route so the Zoom meeting is torn down
+  // (cancel) or re-created (restore) in step with the DB — never left dangling.
   async function setStatus(id: string, status: string) {
     setBusyId(id);
-    await createClient().from("sessions").update({ status }).eq("id", id);
+    await fetch(`/api/admin/sessions/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "status", status }),
+    });
     setBusyId(null);
     router.refresh();
   }
@@ -516,7 +530,6 @@ function ScheduleDialog({ batchId, tz, session, onClose, onDone }: { batchId: st
   const [date, setDate] = useState(initial.date);
   const [time, setTime] = useState(initial.time);
   const [duration, setDuration] = useState(initialDuration);
-  const [joinUrl, setJoinUrl] = useState(session?.join_url ?? "");
   const [topic, setTopic] = useState(session?.topic ?? "");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | undefined>();
@@ -533,20 +546,29 @@ function ScheduleDialog({ batchId, tz, session, onClose, onDone }: { batchId: st
     const end = new Date(start.getTime() + Number(duration || 120) * 60000);
     setError(undefined);
     setLoading(true);
+    // Create/edit go through the admin route, which auto-creates (or reschedules)
+    // the Zoom meeting and fills in the join link — no manual link needed.
     const values = {
       title: title.trim(),
       starts_at: start.toISOString(),
       ends_at: end.toISOString(),
-      join_url: joinUrl.trim() || null,
       topic: topic.trim() || null,
     };
-    const sb = createClient();
-    const { error: err } = editing
-      ? await sb.from("sessions").update(values).eq("id", session!.id)
-      : await sb.from("sessions").insert({ ...values, batch_id: batchId, provider: "zoom", status: "scheduled" });
+    const res = editing
+      ? await fetch(`/api/admin/sessions/${session!.id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ action: "reschedule", ...values }),
+        })
+      : await fetch("/api/admin/sessions", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ batchId, sessions: [values] }),
+        });
+    const d = await res.json().catch(() => ({}));
     setLoading(false);
-    if (err) {
-      setError(err.message);
+    if (!res.ok) {
+      setError(sessionErr(d.error));
       return;
     }
     onDone();
@@ -570,20 +592,18 @@ function ScheduleDialog({ batchId, tz, session, onClose, onDone }: { batchId: st
           </div>
         </div>
         <p className="-mt-2 text-[11px] text-muted">Times entered in {tz.replace(/_/g, " ")}.</p>
-        <div className="grid grid-cols-2 gap-3">
-          <div>
-            <label className={labelClass}>Duration (min)</label>
-            <input type="number" min="15" step="15" value={duration} onChange={(e) => setDuration(e.target.value)} className={inputClass} />
-          </div>
-          <div>
-            <label className={labelClass}>Join link</label>
-            <input value={joinUrl} onChange={(e) => setJoinUrl(e.target.value)} placeholder="https://zoom.us/j/…" className={inputClass} />
-          </div>
+        <div>
+          <label className={labelClass}>Duration (min)</label>
+          <input type="number" min="15" step="15" value={duration} onChange={(e) => setDuration(e.target.value)} className={inputClass} />
         </div>
         <div>
           <label className={labelClass}>Today&apos;s topic (optional)</label>
           <input value={topic} onChange={(e) => setTopic(e.target.value)} className={inputClass} />
         </div>
+        <p className="flex items-center gap-1.5 rounded-input border border-gold/30 bg-gold/5 px-3 py-2 text-[11px] text-gold">
+          <Icon name="videocam" className="text-sm" />
+          A Zoom meeting + join link is created automatically.
+        </p>
         {error ? <p className="text-sm" style={{ color: "#ffb4ab" }}>{error}</p> : null}
         <button type="submit" disabled={loading} className="w-full rounded-pill bg-cta-gradient py-3 text-xs font-bold uppercase tracking-widest text-canvas shadow-glow-btn disabled:opacity-60 focus-gold">
           {loading ? "Saving…" : editing ? "Save changes" : "Schedule session"}
@@ -604,7 +624,6 @@ function GenerateDialog({ batchId, tz, existingCount, onClose, onDone }: { batch
   const [time, setTime] = useState("19:00");
   const [duration, setDuration] = useState("120");
   const [count, setCount] = useState("16");
-  const [joinUrl, setJoinUrl] = useState("");
   const [days, setDays] = useState<Set<number>>(new Set([2, 4])); // Tue & Thu default
   const [preview, setPreview] = useState<Date[] | null>(null);
   const [loading, setLoading] = useState(false);
@@ -648,18 +667,22 @@ function GenerateDialog({ batchId, tz, existingCount, onClose, onDone }: { batch
     setLoading(true);
     setError(undefined);
     const dur = Number(duration || 120);
-    const rows = preview.map((d, i) => ({
-      batch_id: batchId,
+    // One Zoom meeting is auto-created per session server-side, so a big batch
+    // can take a few seconds.
+    const sessions = preview.map((d, i) => ({
       title: `Session ${existingCount + i + 1}`,
       starts_at: d.toISOString(),
       ends_at: new Date(d.getTime() + dur * 60000).toISOString(),
-      provider: "zoom",
-      join_url: joinUrl.trim() || null,
-      status: "scheduled",
+      topic: null,
     }));
-    const { error: err } = await createClient().from("sessions").insert(rows);
+    const res = await fetch("/api/admin/sessions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ batchId, sessions }),
+    });
+    const d = await res.json().catch(() => ({}));
     setLoading(false);
-    if (err) return setError(err.message);
+    if (!res.ok) return setError(sessionErr(d.error));
     onDone();
   }
 
@@ -730,10 +753,10 @@ function GenerateDialog({ batchId, tz, existingCount, onClose, onDone }: { batch
               <input type="number" min="1" max="200" value={count} onChange={(e) => setCount(e.target.value)} className={inputClass} />
             </div>
           </div>
-          <div>
-            <label className={labelClass}>Join link (applied to all, optional)</label>
-            <input value={joinUrl} onChange={(e) => setJoinUrl(e.target.value)} placeholder="https://zoom.us/j/…" className={inputClass} />
-          </div>
+          <p className="flex items-center gap-1.5 rounded-input border border-gold/30 bg-gold/5 px-3 py-2 text-[11px] text-gold">
+            <Icon name="videocam" className="text-sm" />
+            Each session gets its own Zoom meeting + join link automatically.
+          </p>
           {error ? <p className="text-sm" style={{ color: "#ffb4ab" }}>{error}</p> : null}
           <button type="submit" className="w-full rounded-pill bg-cta-gradient py-3 text-xs font-bold uppercase tracking-widest text-canvas shadow-glow-btn focus-gold">
             Preview schedule
