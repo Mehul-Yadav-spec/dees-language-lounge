@@ -36,6 +36,7 @@ export async function POST(req: Request) {
   const obj = (event.payload as { object?: Record<string, unknown> })?.object ?? {};
   const meetingId = obj.id != null ? String(obj.id) : "";
   const meetingUuid = String(obj.uuid ?? ""); // instance uuid → idempotency key + worker handle
+  console.log("[zoom-webhook] recording.completed", { meetingId, meetingUuid, topic: obj.topic });
   if (!meetingId || !meetingUuid) return NextResponse.json({ ok: true });
 
   const svc = getServiceClient();
@@ -47,7 +48,11 @@ export async function POST(req: Request) {
     .select("id,title")
     .eq("zoom_meeting_id", meetingId)
     .maybeSingle();
-  if (!session) return NextResponse.json({ ok: true });
+  if (!session) {
+    console.warn("[zoom-webhook] no session matched meeting", meetingId);
+    return NextResponse.json({ ok: true });
+  }
+  console.log("[zoom-webhook] enqueuing recording", { sessionId: session.id, meetingId });
 
   // Enqueue a processing row. On the unique-index conflict (dup webhook) this is
   // a no-op — swallow 23505 and still ack.
