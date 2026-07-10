@@ -1,6 +1,7 @@
-import { PortalSkeleton } from "@/components/portal/PortalSkeleton";
+import { AdminDashboardSkeleton } from "@/components/portal/Skeletons";
 
-// Instant loading placeholder for the admin panel — see PortalSkeleton.
+// /admin dashboard skeleton. List pages (students, batches, etc.) override this
+// with their own table-shaped loading.tsx.
 export default function Loading() {
-  return <PortalSkeleton />;
+  return <AdminDashboardSkeleton />;
 }

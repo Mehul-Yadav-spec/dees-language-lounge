@@ -1,6 +1,5 @@
-import { PortalSkeleton } from "@/components/portal/PortalSkeleton";
+import { TutorHomeSkeleton } from "@/components/portal/Skeletons";
 
-// Instant loading placeholder for the tutor portal — see PortalSkeleton.
 export default function Loading() {
-  return <PortalSkeleton />;
+  return <TutorHomeSkeleton />;
 }
