@@ -58,7 +58,18 @@ export function MediaModal({
         <div className="flex aspect-video items-center justify-center bg-canvas">
           {url ? (
             // eslint-disable-next-line jsx-a11y/media-has-caption
-            <video src={url} controls autoPlay className="h-full w-full" />
+            <video
+              src={url}
+              controls
+              autoPlay
+              // Watch-only: hide the browser's Download button + remote-cast,
+              // disable picture-in-picture, and block right-click "Save video as".
+              // A deterrent, not DRM — access control is the signed, expiring URL.
+              controlsList="nodownload noremoteplayback"
+              disablePictureInPicture
+              onContextMenu={(e) => e.preventDefault()}
+              className="h-full w-full"
+            />
           ) : failed ? (
             <div className="flex flex-col items-center gap-2 text-muted">
               <Icon name="videocam_off" className="text-4xl" />
