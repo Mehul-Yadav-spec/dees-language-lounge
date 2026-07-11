@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Icon } from "@/components/ui/Icon";
 import { createClient } from "@/lib/supabaseClient";
-import { COUNTRY_CODES } from "@/lib/countryCodes";
+import { PhoneInput, isValidPhone } from "@/components/admin/PhoneInput";
 
 function tzList(): string[] {
   const sv = (Intl as unknown as { supportedValuesOf?: (k: string) => string[] }).supportedValuesOf;
@@ -36,9 +36,7 @@ export function ProfileView({
   const fileRef = useRef<HTMLInputElement>(null);
 
   const [name, setName] = useState(fullName ?? "");
-  const parsed = (phone ?? "").trim().split(/\s+/);
-  const [cc, setCc] = useState(parsed[0]?.startsWith("+") ? parsed[0] : "+91");
-  const [num, setNum] = useState(parsed[0]?.startsWith("+") ? parsed.slice(1).join(" ") : (phone ?? ""));
+  const [phoneVal, setPhoneVal] = useState(phone ?? "");
   const [tz, setTz] = useState(timezone ?? "");
   const [status, setStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const [error, setError] = useState<string | undefined>();
@@ -46,8 +44,7 @@ export function ProfileView({
 
   async function onSave(e: React.FormEvent) {
     e.preventDefault();
-    const digits = num.replace(/\D/g, "");
-    if (num && (digits.length < 7 || digits.length > 15)) {
+    if (!isValidPhone(phoneVal)) {
       setError("Enter a valid phone number.");
       return;
     }
@@ -55,7 +52,7 @@ export function ProfileView({
     setStatus("saving");
     const { error: upErr } = await createClient()
       .from("profiles")
-      .update({ full_name: name.trim() || null, phone: num ? `${cc} ${num.trim()}` : null, timezone: tz || null })
+      .update({ full_name: name.trim() || null, phone: phoneVal || null, timezone: tz || null })
       .eq("id", studentId);
     if (upErr) {
       setStatus("error");
@@ -122,20 +119,8 @@ export function ProfileView({
           </div>
 
           <div>
-            <label htmlFor="pf-num" className={labelClass}>WhatsApp number</label>
-            <div className="flex gap-3">
-              <select
-                value={cc}
-                onChange={(e) => setCc(e.target.value)}
-                aria-label="Country code"
-                className="min-h-[48px] w-40 shrink-0 rounded-input border border-hairline bg-canvas px-3 text-ink focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold"
-              >
-                {COUNTRY_CODES.map((c) => (
-                  <option key={c.name} value={c.code}>{c.name} ({c.code})</option>
-                ))}
-              </select>
-              <input id="pf-num" value={num} onChange={(e) => setNum(e.target.value)} inputMode="tel" placeholder="416 555 0187" className={inputClass} />
-            </div>
+            <label className={labelClass}>WhatsApp number</label>
+            <PhoneInput value={phoneVal} onChange={setPhoneVal} className="min-h-[48px]" />
             <p className="mt-1 text-[11px] text-muted">Used by your trainer to reach you.</p>
           </div>
 

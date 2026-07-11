@@ -65,7 +65,14 @@ export function LiveClassesView({
     banner &&
     (bannerState === "live" || bannerState === "joinable" || Date.parse(banner.startsAt) - now <= 4 * 3600_000);
 
-  const toIcs = (r: ClassRow): IcsEvent => ({ id: r.id, title: r.title, startsAt: r.startsAt, endsAt: r.endsAt });
+  const toIcs = (r: ClassRow): IcsEvent => ({
+    id: r.id,
+    title: r.title,
+    startsAt: r.startsAt,
+    endsAt: r.endsAt,
+    location: r.joinUrl ?? undefined,
+    description: r.joinUrl ? `Join the Zoom class: ${r.joinUrl}` : undefined,
+  });
 
   return (
     <div className="mx-auto max-w-5xl space-y-8">

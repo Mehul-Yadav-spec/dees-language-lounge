@@ -6,6 +6,7 @@ import { Icon } from "@/components/ui/Icon";
 import { BatchRoster, type RosterRow } from "@/components/admin/BatchRoster";
 import { BatchClasses, type SessionRow } from "@/components/admin/BatchClasses";
 import { CollapsibleSection } from "@/components/admin/CollapsibleSection";
+import { ExportCalendarButton } from "@/components/admin/ExportCalendarButton";
 
 const ATTENDANCE_GRACE_MS = 24 * 3600 * 1000; // 24h tutor edit window
 
@@ -85,7 +86,10 @@ export default async function TutorBatchDetailPage({ params }: { params: { id: s
       </CollapsibleSection>
 
       <section className="space-y-4">
-        <h2 className="text-xl font-bold text-ink">Classes</h2>
+        <div className="flex items-center justify-between gap-3">
+          <h2 className="text-xl font-bold text-ink">Classes</h2>
+          <ExportCalendarButton sessions={sessions} filename={`${batch.title} classes.ics`} />
+        </div>
         <p className="text-xs text-muted">
           Generate a full schedule or add sessions one at a time — each gets a Zoom link automatically. You can also take attendance and upload materials &amp; recordings here.
         </p>

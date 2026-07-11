@@ -7,6 +7,7 @@ export interface IcsEvent {
   startsAt: string;
   endsAt: string | null;
   description?: string;
+  location?: string; // e.g. the Zoom join URL — calendars show it as a clickable join link
 }
 
 const pad = (n: number) => String(n).padStart(2, "0");
@@ -29,6 +30,7 @@ export function buildIcs(events: IcsEvent[]): string {
       `DTEND:${icsTime(end)}`,
       `SUMMARY:${esc(e.title)}`,
     );
+    if (e.location) L.push(`LOCATION:${esc(e.location)}`);
     if (e.description) L.push(`DESCRIPTION:${esc(e.description)}`);
     L.push("END:VEVENT");
   }
