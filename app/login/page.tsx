@@ -30,10 +30,20 @@ export default function LoginPage() {
     setError(undefined);
     setLoading(true);
     const supabase = createClient();
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) {
+    const { data: signIn, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error || !signIn.user) {
       // Generic message — never reveal whether the email exists.
       setError("The email or password you entered is incorrect.");
+      setLoading(false);
+      return;
+    }
+    // Admins have a dedicated console login — refuse them on the portal login and
+    // sign them back out so an admin account can't be used here. Students and
+    // tutors both belong on this page (the portal layout routes tutors to /tutor).
+    const { data: prof } = await supabase.from("profiles").select("role").eq("id", signIn.user.id).single();
+    if (prof?.role === "admin") {
+      await supabase.auth.signOut();
+      setError("Admins sign in from the admin login page.");
       setLoading(false);
       return;
     }
