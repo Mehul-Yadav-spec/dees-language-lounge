@@ -4,7 +4,7 @@
   "crons": [
     {
       "path": "/api/cron/zoom-transfer",
-      "schedule": "*/2 * * * *"
+      "schedule": "*/30 * * * *"
     }
   ]
 }

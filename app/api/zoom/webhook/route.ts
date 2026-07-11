@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { waitUntil } from "@vercel/functions";
 import { getServiceClient } from "@/lib/supabase";
 import { verifyWebhook, webhookValidation } from "@/lib/zoom";
 
@@ -6,9 +7,10 @@ export const runtime = "nodejs";
 
 // Zoom webhook receiver. Must ack within ~3s, so it does no heavy work: it
 // verifies the event, maps recording.completed → the matching session, and
-// inserts a 'processing' recording row. The cron worker (zoom-transfer) then
-// downloads the file into Supabase Storage. Idempotent via the unique index on
-// recordings.zoom_recording_id (phase0g) — duplicate deliveries are no-ops.
+// inserts a 'processing' recording row, then event-drives the transfer by
+// pinging the zoom-transfer worker (via waitUntil, so the 200 returns instantly).
+// The cron is now just a low-frequency retry net. Idempotent via the unique
+// index on recordings.zoom_recording_id (phase0g) — duplicate deliveries no-op.
 export async function POST(req: Request) {
   const raw = await req.text();
   let event: { event?: string; payload?: Record<string, unknown> };
@@ -54,8 +56,8 @@ export async function POST(req: Request) {
   }
   console.log("[zoom-webhook] enqueuing recording", { sessionId: session.id, meetingId });
 
-  // Enqueue a processing row. On the unique-index conflict (dup webhook) this is
-  // a no-op — swallow 23505 and still ack.
+  // Enqueue a processing row. On the unique-index conflict (dup webhook) it's a
+  // no-op — already enqueued/handled, so ack without re-triggering the worker.
   const { error } = await svc.from("recordings").insert({
     session_id: session.id,
     title: (obj.topic as string) || session.title,
@@ -63,8 +65,22 @@ export async function POST(req: Request) {
     zoom_recording_id: meetingUuid, // meeting instance uuid — the worker's handle
     recorded_at: (obj.start_time as string) ?? null,
   });
-  if (error && error.code !== "23505") {
+  if (error) {
+    if (error.code === "23505") return NextResponse.json({ ok: true }); // duplicate delivery
     return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
+  // Fresh row → event-drive the transfer now (don't wait for the cron poll). The
+  // transfer worker runs as its own 300s invocation; waitUntil keeps this handler
+  // alive just long enough to dispatch the request while the 200 returns to Zoom.
+  const proto = req.headers.get("x-forwarded-proto") ?? "https";
+  const host = req.headers.get("host");
+  if (host) {
+    waitUntil(
+      fetch(`${proto}://${host}/api/cron/zoom-transfer`, {
+        headers: { Authorization: `Bearer ${process.env.CRON_SECRET ?? ""}` },
+      }).catch(() => {}),
+    );
   }
 
   return NextResponse.json({ ok: true });
