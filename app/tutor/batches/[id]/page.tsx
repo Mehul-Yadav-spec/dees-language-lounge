@@ -5,6 +5,7 @@ import { getSessionUser } from "@/lib/portal";
 import { Icon } from "@/components/ui/Icon";
 import { BatchRoster, type RosterRow } from "@/components/admin/BatchRoster";
 import { BatchClasses, type SessionRow } from "@/components/admin/BatchClasses";
+import { CollapsibleSection } from "@/components/admin/CollapsibleSection";
 
 const ATTENDANCE_GRACE_MS = 24 * 3600 * 1000; // 24h tutor edit window
 
@@ -33,7 +34,7 @@ export default async function TutorBatchDetailPage({ params }: { params: { id: s
   const [{ data: enr }, { data: sess }] = await Promise.all([
     // Name-only: never pull student email/phone into a tutor's payload.
     supabase.from("enrollments").select("id,student_id,student:profiles(full_name)").eq("batch_id", params.id),
-    supabase.from("sessions").select("id,title,starts_at,ends_at,join_url,topic,status").eq("batch_id", params.id).order("starts_at"),
+    supabase.from("sessions").select("id,title,starts_at,ends_at,join_url,topic,status,actual_start").eq("batch_id", params.id).order("starts_at"),
   ]);
   const tz = user?.timezone || "UTC";
   const sessions = (sess ?? []) as SessionRow[];
@@ -79,15 +80,14 @@ export default async function TutorBatchDetailPage({ params }: { params: { id: s
         </div>
       </div>
 
-      <section className="space-y-4">
-        <h2 className="text-xl font-bold text-ink">Roster</h2>
+      <CollapsibleSection title="Roster" badge={`${roster.length} ${roster.length === 1 ? "student" : "students"}`}>
         <BatchRoster batchId={batch.id} courseId={batch.course_id} roster={roster} available={[]} canManage={false} />
-      </section>
+      </CollapsibleSection>
 
       <section className="space-y-4">
         <h2 className="text-xl font-bold text-ink">Classes</h2>
         <p className="text-xs text-muted">
-          The class schedule is managed by the admin — message them to add or change a session. You can take attendance and upload materials &amp; recordings here.
+          Generate a full schedule or add sessions one at a time — each gets a Zoom link automatically. You can also take attendance and upload materials &amp; recordings here.
         </p>
         <BatchClasses
           batchId={batch.id}
@@ -96,7 +96,7 @@ export default async function TutorBatchDetailPage({ params }: { params: { id: s
           tz={tz}
           recStatus={recStatus}
           materials={materials}
-          canSchedule={false}
+          canSchedule={true}
           attendanceGraceMs={ATTENDANCE_GRACE_MS}
         />
       </section>

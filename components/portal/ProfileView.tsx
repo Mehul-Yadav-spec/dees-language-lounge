@@ -4,8 +4,7 @@ import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Icon } from "@/components/ui/Icon";
 import { createClient } from "@/lib/supabaseClient";
-
-const COUNTRY_CODES = ["+1", "+91", "+44", "+61", "+971", "+65", "+33", "+49", "+81"];
+import { COUNTRY_CODES } from "@/lib/countryCodes";
 
 function tzList(): string[] {
   const sv = (Intl as unknown as { supportedValuesOf?: (k: string) => string[] }).supportedValuesOf;
@@ -38,7 +37,7 @@ export function ProfileView({
 
   const [name, setName] = useState(fullName ?? "");
   const parsed = (phone ?? "").trim().split(/\s+/);
-  const [cc, setCc] = useState(parsed[0]?.startsWith("+") ? parsed[0] : "+1");
+  const [cc, setCc] = useState(parsed[0]?.startsWith("+") ? parsed[0] : "+91");
   const [num, setNum] = useState(parsed[0]?.startsWith("+") ? parsed.slice(1).join(" ") : (phone ?? ""));
   const [tz, setTz] = useState(timezone ?? "");
   const [status, setStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
@@ -129,10 +128,10 @@ export function ProfileView({
                 value={cc}
                 onChange={(e) => setCc(e.target.value)}
                 aria-label="Country code"
-                className="min-h-[48px] w-24 shrink-0 rounded-input border border-hairline bg-canvas px-3 text-ink focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold"
+                className="min-h-[48px] w-40 shrink-0 rounded-input border border-hairline bg-canvas px-3 text-ink focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold"
               >
                 {COUNTRY_CODES.map((c) => (
-                  <option key={c} value={c}>{c}</option>
+                  <option key={c.name} value={c.code}>{c.name} ({c.code})</option>
                 ))}
               </select>
               <input id="pf-num" value={num} onChange={(e) => setNum(e.target.value)} inputMode="tel" placeholder="416 555 0187" className={inputClass} />

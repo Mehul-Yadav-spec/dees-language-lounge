@@ -15,6 +15,7 @@ export interface SessionRow {
   join_url: string | null;
   topic: string | null;
   status: string;
+  actual_start: string | null;
 }
 export interface RosterStudent {
   studentId: string;
@@ -131,6 +132,15 @@ export function BatchClasses({
     router.refresh();
   }
 
+  // Start a class early: stamps actual_start so the session flips to live now
+  // (attendance + End class appear) even before the scheduled start time.
+  async function startClass(id: string) {
+    setBusyId(id);
+    await fetch(`/api/sessions/${id}/start`, { method: "POST" });
+    setBusyId(null);
+    router.refresh();
+  }
+
   // Force a recording row to 'unavailable' (or back to 'processing') so students
   // stop seeing an eternal "Processing" state. Upserts on the session's recording.
   async function setRecording(sessionId: string, status: "unavailable" | "processing", title: string) {
@@ -197,7 +207,7 @@ export function BatchClasses({
             {visible.map((s) => {
             const cancelled = s.status === "cancelled";
             const rec = (recStatus[s.id] as "processing" | "ready" | "unavailable") ?? null;
-            const state = computeState(s.starts_at, s.ends_at, rec, Date.now());
+            const state = computeState(s.starts_at, s.ends_at, rec, Date.now(), s.actual_start);
             const ended = state === "processing" || state === "ready" || state === "unavailable";
             const busy = busyId === s.id;
 
@@ -236,134 +246,161 @@ export function BatchClasses({
             const durMin = s.ends_at ? Math.round((Date.parse(s.ends_at) - Date.parse(s.starts_at)) / 60000) : null;
             return (
               <div key={s.id} className="overflow-hidden rounded-card border border-hairline bg-surface">
-                {/* Collapsed header — click to expand */}
-                <button
-                  type="button"
-                  onClick={() => setExpandedId(expanded ? null : s.id)}
-                  aria-expanded={expanded}
-                  className="flex w-full items-center justify-between gap-3 p-4 text-left transition-colors hover:bg-canvas/40 focus-gold"
-                >
-                  <div className="min-w-0">
-                    <p className="font-bold text-ink">{s.title}</p>
+                {/* Collapsed header — title/badge toggle expand; Start class sits
+                    inline so a teacher can start without expanding. */}
+                <div className="flex w-full items-center justify-between gap-3 p-4 transition-colors hover:bg-canvas/40">
+                  <button
+                    type="button"
+                    onClick={() => setExpandedId(expanded ? null : s.id)}
+                    aria-expanded={expanded}
+                    className="flex min-w-0 flex-1 flex-col text-left focus-gold"
+                  >
+                    <p className="truncate font-bold text-ink">{s.title}</p>
                     <p className="text-xs text-muted">{fmt(s.starts_at, tz)}</p>
+                  </button>
+                  <div className="flex shrink-0 items-center gap-2">
+                    {confirmEndId === s.id ? (
+                      // Confirming an early end — compact confirm / cancel inline.
+                      <>
+                        <button
+                          type="button"
+                          disabled={busy}
+                          onClick={() => endClass(s.id)}
+                          className="flex items-center gap-1.5 rounded-pill border px-4 py-1.5 text-[11px] font-bold uppercase tracking-widest disabled:opacity-60 focus-gold"
+                          style={{ borderColor: "#ffb4ab", color: "#ffb4ab" }}
+                        >
+                          <Icon name="stop_circle" className="text-sm" /> {busy ? "Ending…" : "Confirm end"}
+                        </button>
+                        <button
+                          type="button"
+                          disabled={busy}
+                          onClick={() => setConfirmEndId(null)}
+                          className="rounded-pill border border-hairline px-4 py-1.5 text-[11px] font-bold uppercase tracking-widest text-muted hover:text-ink disabled:opacity-60 focus-gold"
+                        >
+                          Cancel
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        {state === "joinable" && !s.actual_start ? (
+                          <button
+                            type="button"
+                            disabled={busy}
+                            title="Opens the Zoom room and marks the class live"
+                            onClick={() => {
+                              // Open Zoom synchronously (survives popup blockers), then mark live.
+                              if (s.join_url) window.open(s.join_url, "_blank", "noopener,noreferrer");
+                              startClass(s.id);
+                            }}
+                            className="flex items-center gap-1.5 rounded-pill bg-cta-gradient px-4 py-1.5 text-[11px] font-bold uppercase tracking-widest text-canvas shadow-glow-btn disabled:opacity-60 focus-gold"
+                          >
+                            <Icon name="play_circle" filled className="text-sm" /> {busy ? "…" : "Start class"}
+                          </button>
+                        ) : null}
+                        {canTakeAttendance ? (
+                          <button
+                            type="button"
+                            title={attendanceLocked ? "View attendance" : "Take / edit attendance"}
+                            onClick={() => setAttendFor(s)}
+                            className="flex items-center gap-1.5 rounded-pill border border-gold/40 px-4 py-1.5 text-[11px] font-bold uppercase tracking-widest text-gold hover:bg-gold/10 focus-gold"
+                          >
+                            <Icon name={attendanceLocked ? "lock" : "fact_check"} className="text-sm" /> Attendance
+                          </button>
+                        ) : null}
+                        {state === "live" ? (
+                          <button
+                            type="button"
+                            title="End the class now for students"
+                            onClick={() => setConfirmEndId(s.id)}
+                            className="flex items-center gap-1.5 rounded-pill border border-gold/40 px-4 py-1.5 text-[11px] font-bold uppercase tracking-widest text-gold hover:bg-gold/10 focus-gold"
+                          >
+                            <Icon name="stop_circle" className="text-sm" /> End class
+                          </button>
+                        ) : null}
+                      </>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => setExpandedId(expanded ? null : s.id)}
+                      aria-expanded={expanded}
+                      aria-label={expanded ? "Collapse session" : "Expand session"}
+                      className="flex items-center gap-2.5 focus-gold"
+                    >
+                      <span className="rounded-pill bg-gold/10 px-2.5 py-0.5 text-[11px] font-bold text-gold">{STATE_LABEL[state]}</span>
+                      <Icon name={expanded ? "expand_less" : "expand_more"} className="text-lg text-muted" />
+                    </button>
                   </div>
-                  <div className="flex items-center gap-2.5">
-                    <span className="rounded-pill bg-gold/10 px-2.5 py-0.5 text-[11px] font-bold text-gold">{STATE_LABEL[state]}</span>
-                    <Icon name={expanded ? "expand_less" : "expand_more"} className="text-lg text-muted" />
-                  </div>
-                </button>
+                </div>
 
                 {/* Expanded detail */}
                 {expanded ? (
-                  <div className="space-y-5 border-t border-hairline px-4 py-4">
-                    <div className="grid grid-cols-2 gap-x-4 gap-y-3 sm:grid-cols-4">
+                  <div className="space-y-4 border-t border-hairline px-4 py-4">
+                    {/* Info panel */}
+                    <div className="grid grid-cols-2 gap-x-4 gap-y-4 rounded-card border border-hairline bg-canvas/40 p-4 sm:grid-cols-4">
                       <Meta label="Date & time" value={fmt(s.starts_at, tz)} />
                       <Meta label="Duration" value={durMin ? durationLabel(durMin) : "—"} />
                       <Meta label="Topic" value={s.topic || "—"} />
                       <Meta label="Join link" value="—" link={s.join_url} />
                     </div>
 
-                    {/* End class early — live only, for the batch tutor or admin */}
-                    {state === "live" ? (
-                      <div>
-                        <p className="mb-2 text-[10px] font-bold uppercase tracking-widest text-gold">Live class</p>
-                        {confirmEndId === s.id ? (
-                          <div className="flex flex-wrap items-center gap-2">
-                            <button
-                              type="button"
-                              disabled={busy}
-                              onClick={() => endClass(s.id)}
-                              className="flex items-center gap-1.5 rounded-input border px-4 py-2 text-xs font-bold uppercase tracking-widest disabled:opacity-60 focus-gold"
-                              style={{ borderColor: "#ffb4ab", color: "#ffb4ab" }}
-                            >
-                              <Icon name="stop_circle" className="text-sm" /> {busy ? "Ending…" : "Confirm end"}
-                            </button>
-                            <button
-                              type="button"
-                              disabled={busy}
-                              onClick={() => setConfirmEndId(null)}
-                              className="rounded-input border border-hairline px-4 py-2 text-xs font-bold uppercase tracking-widest text-muted hover:text-ink disabled:opacity-60 focus-gold"
-                            >
-                              Keep going
-                            </button>
-                          </div>
+                    {/* Materials + Recording — two balanced cards */}
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                      {/* Materials */}
+                      <div className="rounded-card border border-hairline bg-surface p-4">
+                        <div className="mb-3 flex items-center justify-between gap-2">
+                          <p className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-gold">
+                            <Icon name="folder_open" className="text-sm" /> Materials
+                          </p>
+                          <button type="button" onClick={() => setUploadFor({ session: s, kind: "material" })} className="flex items-center gap-1 text-xs font-bold text-gold hover:underline focus-gold">
+                            <Icon name="add" className="text-sm" /> Add
+                          </button>
+                        </div>
+                        {mats.length ? (
+                          <ul className="space-y-1.5">
+                            {mats.map((m) => (
+                              <li key={m.id} className="flex items-center justify-between gap-2 rounded-input border border-hairline bg-canvas px-3 py-2">
+                                <span className="flex min-w-0 items-center gap-2 text-sm text-ink">
+                                  <Icon name={MAT_ICON[m.type] ?? "description"} className="text-gold" />
+                                  <span className="truncate">{m.title}</span>
+                                </span>
+                                <button type="button" onClick={() => viewMaterial(m.id)} className="shrink-0 text-xs font-bold text-gold hover:underline focus-gold">
+                                  View
+                                </button>
+                              </li>
+                            ))}
+                          </ul>
                         ) : (
-                          <button
-                            type="button"
-                            onClick={() => setConfirmEndId(s.id)}
-                            className="flex items-center gap-1.5 rounded-input border border-gold/40 px-4 py-2 text-xs font-bold uppercase tracking-widest text-gold hover:bg-gold/10 focus-gold"
-                          >
-                            <Icon name="stop_circle" className="text-sm" /> End class now
-                          </button>
+                          <p className="text-xs text-muted">No materials uploaded yet.</p>
                         )}
-                        <p className="mt-1.5 text-xs text-muted">
-                          Ends the class immediately for students — the Join button disappears and recording upload opens.
-                        </p>
                       </div>
-                    ) : null}
 
-                    {/* Materials */}
-                    <div>
-                      <p className="mb-2 text-[10px] font-bold uppercase tracking-widest text-gold">Materials</p>
-                      {mats.length ? (
-                        <ul className="space-y-1.5">
-                          {mats.map((m) => (
-                            <li key={m.id} className="flex items-center justify-between gap-2 rounded-input border border-hairline bg-canvas px-3 py-2">
-                              <span className="flex min-w-0 items-center gap-2 text-sm text-ink">
-                                <Icon name={MAT_ICON[m.type] ?? "description"} className="text-gold" />
-                                <span className="truncate">{m.title}</span>
-                              </span>
-                              <button type="button" onClick={() => viewMaterial(m.id)} className="shrink-0 text-xs font-bold text-gold hover:underline focus-gold">
-                                View
-                              </button>
-                            </li>
-                          ))}
-                        </ul>
-                      ) : (
-                        <p className="text-xs text-muted">No materials uploaded yet.</p>
-                      )}
-                      <button type="button" onClick={() => setUploadFor({ session: s, kind: "material" })} className="mt-2 flex items-center gap-1 text-xs font-bold text-gold hover:underline focus-gold">
-                        <Icon name="upload_file" className="text-sm" /> Add material
-                      </button>
-                    </div>
-
-                    {/* Recording */}
-                    <div>
-                      <p className="mb-2 text-[10px] font-bold uppercase tracking-widest text-gold">Recording</p>
-                      <div className="flex flex-wrap items-center gap-3">
-                        <span className="rounded-pill px-2.5 py-0.5 text-[11px] font-bold" style={{ backgroundColor: "#8A93A31a", color: "#8A93A3" }}>
-                          {rec === "ready" ? "Available" : rec === "unavailable" ? "Not available" : ended ? "Processing" : "After class"}
-                        </span>
-                        <button type="button" onClick={() => setUploadFor({ session: s, kind: "recording" })} className="flex items-center gap-1 text-xs font-bold text-gold hover:underline focus-gold">
-                          <Icon name="video_call" className="text-sm" /> Add recording
-                        </button>
-                        {canMarkUnavailable ? (
-                          <button type="button" disabled={busy} onClick={() => setRecording(s.id, "unavailable", s.title)} className="flex items-center gap-1 text-xs font-bold text-muted hover:text-gold focus-gold disabled:opacity-60">
-                            <Icon name="videocam_off" className="text-sm" /> Mark unavailable
+                      {/* Recording */}
+                      <div className="rounded-card border border-hairline bg-surface p-4">
+                        <div className="mb-3 flex items-center justify-between gap-2">
+                          <p className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-gold">
+                            <Icon name="video_library" className="text-sm" /> Recording
+                          </p>
+                          <span className="rounded-pill px-2.5 py-0.5 text-[11px] font-bold" style={{ backgroundColor: "#8A93A31a", color: "#8A93A3" }}>
+                            {rec === "ready" ? "Available" : rec === "unavailable" ? "Not available" : ended ? "Processing" : "After class"}
+                          </span>
+                        </div>
+                        <div className="flex flex-wrap items-center gap-3">
+                          <button type="button" onClick={() => setUploadFor({ session: s, kind: "recording" })} className="flex items-center gap-1 text-xs font-bold text-gold hover:underline focus-gold">
+                            <Icon name="video_call" className="text-sm" /> Add recording
                           </button>
-                        ) : null}
-                        {rec === "unavailable" ? (
-                          <button type="button" disabled={busy} onClick={() => setRecording(s.id, "processing", s.title)} className="flex items-center gap-1 text-xs font-bold text-muted hover:text-gold focus-gold disabled:opacity-60">
-                            <Icon name="undo" className="text-sm" /> Undo
-                          </button>
-                        ) : null}
+                          {canMarkUnavailable ? (
+                            <button type="button" disabled={busy} onClick={() => setRecording(s.id, "unavailable", s.title)} className="flex items-center gap-1 text-xs font-bold text-muted hover:text-gold focus-gold disabled:opacity-60">
+                              <Icon name="videocam_off" className="text-sm" /> Mark unavailable
+                            </button>
+                          ) : null}
+                          {rec === "unavailable" ? (
+                            <button type="button" disabled={busy} onClick={() => setRecording(s.id, "processing", s.title)} className="flex items-center gap-1 text-xs font-bold text-muted hover:text-gold focus-gold disabled:opacity-60">
+                              <Icon name="undo" className="text-sm" /> Undo
+                            </button>
+                          ) : null}
+                        </div>
                       </div>
                     </div>
-
-                    {/* Attendance — live & ended; tutor edits within the grace window, admin always */}
-                    {canTakeAttendance ? (
-                      <div>
-                        <p className="mb-2 text-[10px] font-bold uppercase tracking-widest text-gold">Attendance</p>
-                        <button
-                          type="button"
-                          onClick={() => setAttendFor(s)}
-                          className="flex items-center gap-1.5 rounded-input border border-gold/40 px-4 py-2 text-xs font-bold uppercase tracking-widest text-gold hover:bg-gold/10 focus-gold"
-                        >
-                          <Icon name={attendanceLocked ? "lock" : "fact_check"} className="text-sm" />
-                          {attendanceLocked ? "View attendance" : "Take / edit attendance"}
-                        </button>
-                      </div>
-                    ) : null}
 
                     {/* Admin session actions */}
                     {canSchedule ? (
@@ -795,15 +832,20 @@ function AttendanceDialog({ session, roster, graceMs = null, onClose, onDone }: 
 
   async function save() {
     setLoading(true);
-    const rows = roster
-      .filter((r) => marks[r.studentId])
-      .map((r) => ({ session_id: session.id, student_id: r.studentId, status: marks[r.studentId] }));
+    // Binary attendance: each student is present (ticked) or absent.
+    const rows = roster.map((r) => ({
+      session_id: session.id,
+      student_id: r.studentId,
+      status: marks[r.studentId] === "present" ? "present" : "absent",
+    }));
     if (rows.length) {
       await createClient().from("attendance").upsert(rows, { onConflict: "session_id,student_id" });
     }
     setLoading(false);
     onDone();
   }
+
+  const presentCount = roster.filter((r) => marks[r.studentId] === "present").length;
 
   return (
     <Modal title="Attendance" onClose={onClose}>
@@ -814,29 +856,61 @@ function AttendanceDialog({ session, roster, graceMs = null, onClose, onDone }: 
           Locked — this class ended over 24h ago. Ask an admin to amend attendance.
         </p>
       ) : null}
-      <div className="space-y-2">
-        {roster.length === 0 ? (
-          <p className="text-sm text-muted">No students enrolled.</p>
-        ) : (
-          roster.map((r) => (
-            <div key={r.studentId} className="flex items-center justify-between gap-3 rounded-input border border-hairline bg-canvas px-3 py-2">
-              <span className="text-sm text-ink">{r.fullName ?? "Student"}</span>
-              <select
-                value={marks[r.studentId] ?? ""}
-                disabled={locked}
-                onChange={(e) => setMarks((m) => ({ ...m, [r.studentId]: e.target.value }))}
-                className="rounded-input border border-hairline bg-surface px-2 py-1 text-xs text-ink focus:border-gold focus:outline-none disabled:opacity-60"
+
+      {roster.length === 0 ? (
+        <p className="rounded-card border border-hairline bg-canvas p-6 text-center text-sm text-muted">No students enrolled.</p>
+      ) : (
+        <>
+          {!locked ? (
+            <div className="mb-3 flex items-center justify-between gap-3">
+              <p className="text-xs text-muted">
+                <span className="font-bold text-ink">{presentCount}</span> of {roster.length} present
+              </p>
+              <button
+                type="button"
+                onClick={() => setMarks(Object.fromEntries(roster.map((r) => [r.studentId, "present"])))}
+                className="flex items-center gap-1 text-xs font-bold text-gold hover:underline focus-gold"
               >
-                <option value="">—</option>
-                <option value="present">Present</option>
-                <option value="late">Late</option>
-                <option value="absent">Absent</option>
-                <option value="excused">Excused</option>
-              </select>
+                <Icon name="done_all" className="text-sm" /> Mark all present
+              </button>
             </div>
-          ))
-        )}
-      </div>
+          ) : null}
+
+          <div className="space-y-2">
+            {roster.map((r) => {
+              const present = marks[r.studentId] === "present";
+              return (
+                <button
+                  key={r.studentId}
+                  type="button"
+                  disabled={locked}
+                  onClick={() => setMarks((m) => ({ ...m, [r.studentId]: present ? "absent" : "present" }))}
+                  className="flex w-full items-center justify-between gap-3 rounded-input border border-hairline bg-canvas px-3 py-2.5 text-left transition-colors hover:border-gold/40 disabled:opacity-60 focus-gold"
+                >
+                  <span className="flex min-w-0 items-center gap-3">
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-gold/30 bg-surface text-xs font-bold text-gold">
+                      {(r.fullName || "S").trim().charAt(0).toUpperCase()}
+                    </span>
+                    <span className="min-w-0 truncate text-sm font-medium text-ink">{r.fullName ?? "Student"}</span>
+                  </span>
+                  <span className="flex shrink-0 items-center gap-2.5">
+                    <span className="text-xs font-bold" style={{ color: present ? "#22c55e" : "#8A93A3" }}>
+                      {present ? "Present" : "Absent"}
+                    </span>
+                    <span
+                      className={`flex h-5 w-5 items-center justify-center rounded border ${present ? "" : "border-hairline"}`}
+                      style={present ? { backgroundColor: "#22c55e", borderColor: "#22c55e" } : undefined}
+                    >
+                      {present ? <Icon name="check" className="text-sm text-canvas" /> : null}
+                    </span>
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </>
+      )}
+
       {locked ? (
         <button type="button" onClick={onClose} className="mt-5 w-full rounded-pill border border-hairline py-3 text-xs font-bold uppercase tracking-widest text-muted hover:text-ink focus-gold">
           Close

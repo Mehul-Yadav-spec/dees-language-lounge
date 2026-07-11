@@ -5,7 +5,7 @@ import { createMeeting, updateMeeting, deleteMeeting, zoomConfigured } from "@/l
 
 export const runtime = "nodejs";
 
-// Admin-only session mutations that must stay in sync with Zoom:
+// Admin or the batch's own tutor: session mutations that must stay in sync with Zoom:
 //   action "reschedule" → update the row + the Zoom meeting (time/title/topic)
 //   action "status" → cancel deletes the Zoom meeting (kills the join link);
 //                     restoring (scheduled) re-creates a fresh meeting.
@@ -17,17 +17,20 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
   } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "unauthenticated" }, { status: 401 });
   const { data: me } = await supabase.from("profiles").select("role").eq("id", user.id).single();
-  if (me?.role !== "admin") return NextResponse.json({ error: "forbidden" }, { status: 403 });
+  const isAdmin = me?.role === "admin";
 
   const svc = getServiceClient();
   if (!svc) return NextResponse.json({ error: "server_not_configured" }, { status: 500 });
 
   const { data: sess } = await svc
     .from("sessions")
-    .select("id,title,topic,zoom_meeting_id,batch_id")
+    .select("id,title,topic,zoom_meeting_id,batch_id,batch:batches(tutor_id)")
     .eq("id", params.id)
     .single();
   if (!sess) return NextResponse.json({ error: "not_found" }, { status: 404 });
+  // Authorize admin OR the batch's own tutor.
+  const batchTutorId = (sess as unknown as { batch: { tutor_id: string | null } | null }).batch?.tutor_id;
+  if (!isAdmin && batchTutorId !== user.id) return NextResponse.json({ error: "forbidden" }, { status: 403 });
 
   const body = await req.json().catch(() => null);
   const action = body?.action;

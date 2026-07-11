@@ -15,7 +15,7 @@ interface SessionInput {
   topic: string | null;
 }
 
-// Admin-only: create one or many sessions for a batch. Each session gets a real
+// Admin or the batch's own tutor: create one or many sessions for a batch. Each session gets a real
 // Zoom meeting auto-created under the teacher's licensed host (cloud auto-record
 // on), and the returned join_url / meeting id are stored on the row. Replaces the
 // old client-side insert + manually-pasted Zoom link. The client always POSTs an
@@ -27,7 +27,7 @@ export async function POST(req: Request) {
   } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "unauthenticated" }, { status: 401 });
   const { data: me } = await supabase.from("profiles").select("role").eq("id", user.id).single();
-  if (me?.role !== "admin") return NextResponse.json({ error: "forbidden" }, { status: 403 });
+  const isAdmin = me?.role === "admin";
 
   if (!zoomConfigured()) return NextResponse.json({ error: "zoom_not_configured" }, { status: 503 });
 
@@ -54,9 +54,11 @@ export async function POST(req: Request) {
   const svc = getServiceClient();
   if (!svc) return NextResponse.json({ error: "server_not_configured" }, { status: 500 });
 
-  // Guard: batch must exist.
-  const { data: batch } = await svc.from("batches").select("id").eq("id", batchId).single();
+  // Batch must exist; authorize admin OR the batch's own tutor (a tutor may only
+  // schedule for their own batch).
+  const { data: batch } = await svc.from("batches").select("id,tutor_id").eq("id", batchId).single();
   if (!batch) return NextResponse.json({ error: "bad_batch" }, { status: 400 });
+  if (!isAdmin && batch.tutor_id !== user.id) return NextResponse.json({ error: "forbidden" }, { status: 403 });
 
   // Create sequentially: one Zoom meeting per session, then insert the row. On
   // any failure we roll back the Zoom meeting we just made so no orphan meetings

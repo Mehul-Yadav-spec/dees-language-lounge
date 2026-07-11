@@ -2,13 +2,12 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabaseServer";
 import { getServiceClient } from "@/lib/supabase";
 
-// End a live class early: truncates ends_at to now so computeState reads the
-// session as ended everywhere at once — the student's Join button disappears,
-// the class moves to Past, and recording upload opens. Allowed for admins (any
-// session) or the batch tutor (their own), and only while the class is actually
-// in progress. Uses the service role because phase0f locked sessions_write to
-// admins; this narrow route is the sole tutor-writable path and can only end a
-// live session — never create or reschedule one.
+// Start a class early: stamps actual_start = now so computeState flips the
+// session to "live" before its scheduled starts_at — the teacher's attendance /
+// End class actions appear immediately. Allowed for admins (any session) or the
+// batch tutor (their own). No-op if already started; refused once the class has
+// ended or been cancelled. Mirrors the /end route (the sole tutor-writable
+// session paths, both via the service role since sessions_write is admin-only).
 export async function POST(_req: Request, { params }: { params: { id: string } }) {
   const supabase = createClient();
   const {
@@ -33,19 +32,16 @@ export async function POST(_req: Request, { params }: { params: { id: string } }
     return NextResponse.json({ error: "forbidden" }, { status: 403 });
   }
 
-  // Only a class that is actually in progress can be ended early. It's in
-  // progress if it was manually started (actual_start) OR its scheduled start has
-  // passed. Before either → cancel it instead; already past its end → nothing to do.
-  const now = Date.now();
-  const start = Date.parse(sess.starts_at);
-  const end = sess.ends_at ? Date.parse(sess.ends_at) : start + 2 * 3600_000;
   if (sess.status === "cancelled") return NextResponse.json({ error: "cancelled" }, { status: 400 });
-  if (!sess.actual_start && now < start) return NextResponse.json({ error: "not_started" }, { status: 400 });
+  if (sess.actual_start) return NextResponse.json({ ok: true }); // already started
+
+  const now = Date.now();
+  const end = sess.ends_at ? Date.parse(sess.ends_at) : Date.parse(sess.starts_at) + 2 * 3600_000;
   if (now > end) return NextResponse.json({ error: "already_ended" }, { status: 400 });
 
   const { error } = await svc
     .from("sessions")
-    .update({ ends_at: new Date().toISOString(), status: "ended" })
+    .update({ actual_start: new Date().toISOString(), status: "live" })
     .eq("id", params.id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 

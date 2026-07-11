@@ -6,6 +6,7 @@ import { Icon } from "@/components/ui/Icon";
 import { BatchRoster, type RosterRow } from "@/components/admin/BatchRoster";
 import { BatchClasses, type SessionRow } from "@/components/admin/BatchClasses";
 import { BatchStatusControl } from "@/components/admin/BatchStatusControl";
+import { CollapsibleSection } from "@/components/admin/CollapsibleSection";
 
 interface Batch {
   id: string;
@@ -36,7 +37,7 @@ export default async function BatchDetailPage({ params }: { params: { id: string
     // is completed reappears for later batches, including the same course (repeaters).
     supabase.from("enrollments").select("student_id").eq("status", "active"),
     supabase.from("profiles").select("id,full_name").eq("role", "student").eq("status", "active").order("full_name"),
-    supabase.from("sessions").select("id,title,starts_at,ends_at,join_url,topic,status").eq("batch_id", params.id).order("starts_at", { ascending: false }),
+    supabase.from("sessions").select("id,title,starts_at,ends_at,join_url,topic,status,actual_start").eq("batch_id", params.id).order("starts_at", { ascending: false }),
   ]);
   const tz = user?.timezone || "UTC";
   const sessions = (sess ?? []) as SessionRow[];
@@ -94,10 +95,9 @@ export default async function BatchDetailPage({ params }: { params: { id: string
         <BatchStatusControl batchId={batch.id} status={batch.status} />
       </div>
 
-      <section className="space-y-4">
-        <h2 className="text-xl font-bold text-ink">Roster</h2>
+      <CollapsibleSection title="Roster" badge={`${roster.length} ${roster.length === 1 ? "student" : "students"}`}>
         <BatchRoster batchId={batch.id} courseId={batch.course_id} roster={roster} available={available} />
-      </section>
+      </CollapsibleSection>
 
       <section className="space-y-4">
         <h2 className="text-xl font-bold text-ink">Classes</h2>

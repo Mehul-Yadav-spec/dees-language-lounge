@@ -228,34 +228,14 @@ export function AdminDashboardSkeleton() {
   );
 }
 
-// /tutor/batches — grid of batch cards
-export function BatchListSkeleton() {
+// /admin/{students,tutors,courses,batches} + /tutor/batches — header row + table.
+// withButton toggles the "Add" placeholder (tutors have no create button).
+export function TableSkeleton({ withButton = true }: { withButton?: boolean }) {
   return (
-    <div className="mx-auto max-w-5xl animate-pulse space-y-6" aria-hidden>
-      <Header w="w-52" />
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="space-y-3 rounded-card border border-hairline bg-surface p-6">
-            <div className="flex items-start justify-between gap-3">
-              <div className="h-5 w-40 rounded bg-canvas" />
-              <div className="h-5 w-16 shrink-0 rounded-pill bg-canvas" />
-            </div>
-            <div className="h-3 w-32 rounded bg-canvas" />
-            <div className="h-3 w-24 rounded bg-canvas" />
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-// /admin/{students,tutors,courses,batches} — header row + table
-export function TableSkeleton() {
-  return (
-    <div className="mx-auto max-w-5xl animate-pulse space-y-6" aria-hidden>
+    <div className="mx-auto max-w-6xl animate-pulse space-y-6" aria-hidden>
       <div className="flex items-center justify-between gap-4">
         <Header w="w-48" />
-        <div className="h-11 w-32 shrink-0 rounded-pill bg-surface" />
+        {withButton ? <div className="h-11 w-32 shrink-0 rounded-pill bg-surface" /> : null}
       </div>
       <div className="overflow-hidden rounded-card border border-hairline bg-surface">
         <div className="h-11 w-full border-b border-hairline bg-canvas" />
