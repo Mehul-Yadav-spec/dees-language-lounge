@@ -5,9 +5,11 @@ import { StakesSection } from "@/components/sections/StakesSection";
 import { ExamsSection } from "@/components/sections/ExamsSection";
 import { FeatureGrid } from "@/components/sections/FeatureGrid";
 import { BigClaim } from "@/components/sections/BigClaim";
+import { ProficiencyLevels } from "@/components/sections/ProficiencyLevels";
 import { Roadmap } from "@/components/sections/Roadmap";
 import { Curriculum } from "@/components/sections/Curriculum";
-import { Teachers } from "@/components/sections/Teachers";
+// Trainers section removed — curriculum flows straight into "Reserve your seat".
+// import { Teachers } from "@/components/sections/Teachers";
 import { BatchesV2 } from "@/components/sections/BatchesV2";
 import { TestimonialsV2 } from "@/components/sections/TestimonialsV2";
 import { FAQ } from "@/components/sections/FAQ";
@@ -28,10 +30,11 @@ import {
   fcCurriculumIntro,
   fcCurriculum,
   fcCurriculumClosing,
-  fcTeachersHeading,
-  fcTeachersIntro,
-  fcTeachers,
-  fcTeachersTrustLine,
+  // Trainer copy — unused since the trainers section was removed.
+  // fcTeachersHeading,
+  // fcTeachersIntro,
+  // fcTeachers,
+  // fcTeachersTrustLine,
   fcBatchesHeading,
   fcBatchesIntro,
   fcBatches,
@@ -62,6 +65,7 @@ export default function FrenchCanadaPage() {
       <StakesSection content={fcStakes} />
       <ExamsSection content={fcExams} />
       <FeatureGrid heading={fcFeaturesHeading} features={fcFeatures} />
+      <ProficiencyLevels />
       <BigClaim heading={fcBigClaim.heading} footnote={fcBigClaim.footnote} />
       <Roadmap heading={fcRoadmapHeading} steps={fcRoadmap} />
       <Curriculum
@@ -71,12 +75,15 @@ export default function FrenchCanadaPage() {
         closing={fcCurriculumClosing}
         variant="detail"
       />
+      {/* Trainers section ("Learn from trainers who've been there") removed —
+          the curriculum now flows straight into "Reserve your seat".
       <Teachers
         heading={fcTeachersHeading}
         intro={fcTeachersIntro}
         teachers={fcTeachers}
         trustLine={fcTeachersTrustLine}
       />
+      */}
       <BatchesV2
         heading={fcBatchesHeading}
         intro={fcBatchesIntro}

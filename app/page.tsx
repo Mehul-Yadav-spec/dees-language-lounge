@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Hero } from "@/components/sections/Hero";
+import { LanguageDestinations } from "@/components/sections/LanguageDestinations";
 import { StatsBar } from "@/components/sections/StatsBar";
 import { RecognitionStrip } from "@/components/sections/RecognitionStrip";
 import { GoalsCarouselV3 } from "@/components/sections/GoalsCarouselV3";
@@ -7,7 +8,8 @@ import { FeatureGrid } from "@/components/sections/FeatureGrid";
 import { BigClaim } from "@/components/sections/BigClaim";
 import { Roadmap } from "@/components/sections/Roadmap";
 import { CurriculumCarouselV2 } from "@/components/sections/CurriculumCarouselV2";
-import { Teachers } from "@/components/sections/Teachers";
+// Trainers section removed — level-check strip flows straight into "Reserve your seat".
+// import { Teachers } from "@/components/sections/Teachers";
 import { BatchesV2 } from "@/components/sections/BatchesV2";
 import { TestimonialsV2 } from "@/components/sections/TestimonialsV2";
 import { FAQ } from "@/components/sections/FAQ";
@@ -29,10 +31,11 @@ import {
   homeCurriculumSlides,
   homeCurriculumClosing,
   homeCurriculumClosingWaMessage,
-  homeTeachersHeading,
-  homeTeachersIntro,
-  homeTeachers,
-  homeTeachersTrustLine,
+  // Trainer copy — unused since the trainers section was removed.
+  // homeTeachersHeading,
+  // homeTeachersIntro,
+  // homeTeachers,
+  // homeTeachersTrustLine,
   homeBatchesHeading,
   homeBatchesIntro,
   homeBatches,
@@ -57,6 +60,7 @@ export default function HomePage() {
       <FaqJsonLd items={homeFaq} />
 
       <Hero content={homeHero} contextLabel={CTX} />
+      <LanguageDestinations />
       <StatsBar stats={homeStats} />
       <RecognitionStrip content={homeRecognition} />
       <GoalsCarouselV3 heading={homeGoalsHeading} slides={homeGoals} />
@@ -70,12 +74,15 @@ export default function HomePage() {
         closingCtaLabel="Message us about your level"
         closingWaMessage={homeCurriculumClosingWaMessage}
       />
+      {/* Trainers section ("Learn from trainers who've been there") removed —
+          the level-check WhatsApp strip now flows straight into "Reserve your seat".
       <Teachers
         heading={homeTeachersHeading}
         intro={homeTeachersIntro}
         teachers={homeTeachers}
         trustLine={homeTeachersTrustLine}
       />
+      */}
       <BatchesV2
         heading={homeBatchesHeading}
         intro={homeBatchesIntro}

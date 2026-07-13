@@ -315,7 +315,7 @@ export const homeBatches: Batch[] = [
     image: { src: "/images/batches/tef-fasttrack.jpg", alt: "TEF Canada fast-track cohort" },
     covered: "For B1+ learners · intensive exam strategy: one-play listening drills, timed writing, weekly graded mock orals.",
     level: "B1+ → exam-ready",
-    dates: "Starts July 24, 2026",
+    dates: "Starts July 15, 2026",
     schedule: "Mon & Wed 8–10 PM EST + Sat mock test",
     faculty: "[Name]",
     seatsLeft: "3 of 12 seats left",
