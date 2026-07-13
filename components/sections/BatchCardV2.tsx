@@ -16,8 +16,7 @@ export function BatchCardV2({ batch, ctaLabel }: { batch: Batch; ctaLabel: strin
   const rows = [
     { icon: "calendar_today", text: batch.dates },
     { icon: "schedule", text: batch.schedule },
-    batch.level ? { icon: "trending_up", text: batch.level } : null,
-  ].filter(Boolean) as { icon: string; text: string }[];
+  ];
 
   return (
     <div

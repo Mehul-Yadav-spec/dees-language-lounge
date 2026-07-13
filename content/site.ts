@@ -25,7 +25,7 @@ export const site = {
 
   socials: {
     facebook: "#",
-    instagram: "#",
+    instagram: "https://www.instagram.com/deeslanguagelounge/",
     linkedin: "#",
     x: "#",
     discord: "#",
@@ -43,6 +43,28 @@ export const nav: NavItem[] = [
       { label: "Spanish", href: "/courses/spanish" },
       { label: "German", href: "/courses/german" },
       { label: "IELTS English", href: "/courses/ielts" },
+    ],
+  },
+  {
+    label: "Services",
+    // Landing page is Home ("/") for now — repoint each to its own page later.
+    dropdown: [
+      { label: "Online Courses", href: "/" },
+      { label: "Online Classes", href: "/" },
+      { label: "Beginner's Classes", href: "/" },
+      { label: "Advanced Classes", href: "/" },
+      { label: "TEF Canada", href: "/" },
+      { label: "Language Learning", href: "/" },
+      { label: "French Tutor", href: "/" },
+      { label: "French Classes", href: "/" },
+      { label: "Group Lessons", href: "/" },
+      { label: "Leadership Coaching", href: "/" },
+      { label: "TEF Exam Preparation", href: "/" },
+      { label: "TCF Exam Preparation", href: "/" },
+      { label: "DELF Exam Preparation", href: "/" },
+      { label: "Language Training", href: "/" },
+      { label: "Online Learning", href: "/" },
+      { label: "Online Programs", href: "/" },
     ],
   },
   { label: "About Us", href: "/about" },

@@ -24,8 +24,8 @@ import type {
 
 export const homePromo: PromoBarContent = {
   id: "home-wa-2026-07",
-  text: "New live batches for French, Spanish, German & IELTS start July 21 — seats are limited. Message us on WhatsApp to reserve yours.",
-  mobileText: "New batches start July 21 — message us to reserve a seat.",
+  text: "New live batches for French, Spanish, German & IELTS start July 15 — seats are limited. Message us on WhatsApp to reserve yours.",
+  mobileText: "New batches start July 15 — message us to reserve a seat.",
 };
 
 export const homeHero: HeroContent = {
@@ -123,7 +123,7 @@ export const homeFeatures: Feature[] = [
   {
     icon: "groups",
     title: "Small groups. Your trainer knows your name.",
-    body: "Maximum 12 per batch. Your weak spots get personal attention, every class is recorded, and nobody gets left behind.",
+    body: "Maximum 10 per batch. Your weak spots get personal attention, every class is recorded, and nobody gets left behind.",
   },
 ];
 
@@ -298,27 +298,27 @@ export const homeBatchesIntro =
 // whiteboard art on BatchCardV2.
 export const homeBatches: Batch[] = [
   {
-    title: "TEF Canada Beginners — Batch 12",
-    examName: "TEF Canada",
+    title: "DELF Canada Prep — Batch 12",
+    examName: "DELF Canada",
     image: { src: "/images/batches/tef-beginners.jpg", alt: "TEF Canada beginners cohort" },
-    covered: "Grammar foundations, everyday conversation, exam format from month one.",
+    covered: "The complete DELF course — from your first words to exam-ready, covering all four skills: listening, reading, writing and speaking.",
     level: "A0 → CLB 7 full track",
-    dates: "Starts July 21, 2026",
-    schedule: "Tue & Thu 7–9 PM EST + Sat mock test",
+    dates: "Starts July 15, 2026 · Ends Dec 15, 2026",
+    schedule: "Mon & Sat, 7–9 PM EST",
     faculty: "[Name]",
-    seatsLeft: "4 of 12 seats left",
+    seatsLeft: "2 of 10 seats left",
     language: "french",
   },
   {
-    title: "TEF Canada Fast Track — Batch 7",
+    title: "TEF Canada Prep — Batch 7",
     examName: "TEF Canada",
     image: { src: "/images/batches/tef-fasttrack.jpg", alt: "TEF Canada fast-track cohort" },
-    covered: "For B1+ learners · intensive exam strategy: one-play listening drills, timed writing, weekly graded mock orals.",
+    covered: "The complete TEF Canada course — intensive exam strategy across all four skills: one-play listening drills, timed writing, and weekly graded mock orals.",
     level: "B1+ → exam-ready",
-    dates: "Starts July 15, 2026",
-    schedule: "Mon & Wed 8–10 PM EST + Sat mock test",
+    dates: "Starts July 15, 2026 · Ends Dec 15, 2026",
+    schedule: "Mon & Sat, 7–9 PM EST",
     faculty: "[Name]",
-    seatsLeft: "3 of 12 seats left",
+    seatsLeft: "3 of 10 seats left",
     featured: true,
     language: "french",
   },
@@ -326,12 +326,12 @@ export const homeBatches: Batch[] = [
     title: "TCF Canada Prep — Batch 4",
     examName: "TCF Canada",
     image: { src: "/images/batches/tcf-prep.jpg", alt: "TCF Canada prep cohort" },
-    covered: "For A2+ learners · all four TCF tasks, computer-based format practice, weekly graded mocks.",
+    covered: "The complete TCF Canada course — all four tasks with computer-based format practice and weekly graded mocks.",
     level: "A2+ → exam-ready",
-    dates: "Starts July 28, 2026",
-    schedule: "Weekends, 10 AM–1 PM EST",
+    dates: "Starts July 15, 2026 · Ends Dec 15, 2026",
+    schedule: "Mon & Sat, 7–9 PM EST",
     faculty: "[Name]",
-    seatsLeft: "6 of 12 seats left",
+    seatsLeft: "5 of 10 seats left",
     language: "french",
   },
 ];

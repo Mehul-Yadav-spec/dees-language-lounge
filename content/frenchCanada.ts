@@ -25,9 +25,9 @@ import type {
 } from "./types";
 
 export const fcPromo: PromoBarContent = {
-  id: "fc-wa-2026-07",
-  text: "🇨🇦 Latest French Express Entry draw: CRS 409 — the CEC draw needed 517. New TEF/TCF cohort starts July 21. Limited seats. Message us on WhatsApp.",
-  mobileText: "🇨🇦 French draw CRS 409 vs CEC 517 — new cohort July 21. Message us.",
+  id: "fc-wa-2026-07b",
+  text: "🇨🇦 Latest French Express Entry draw: CRS 420 — the CEC draw needed 517. New TEF/TCF cohort starts July 15. Limited seats. Message us on WhatsApp.",
+  mobileText: "🇨🇦 French draw CRS 420 vs CEC 517 — new cohort July 15. Message us.",
 };
 
 export const fcHero: HeroContent = {
@@ -59,9 +59,9 @@ export const fcStakes: StakesContent = {
   eyebrow: "THE MATH NOBODY TELLS YOU",
   heading: { before: "Two queues. One is", accent: "open." },
   general: { label: "CEC draw · CRS 517", value: "CRS 517", amount: 517 },
-  french: { label: "French draw · CRS 409", value: "CRS 409", amount: 409 },
+  french: { label: "French draw · CRS 420", value: "CRS 420", amount: 420 },
   caption:
-    "Stuck around CRS 420–470? General all-program draws have been paused since 2024, and the CEC draw now sits at 517. Strong French (NCLC 7 in all four skills) unlocks the French-language draws — which last cut off at 409 — and adds up to 50 bilingual CRS points on top. It's the single biggest lever left on the board.",
+    "Stuck around CRS 420–470? General all-program draws have been paused since 2024, and the CEC draw now sits at 517. Strong French (NCLC 7 in all four skills) unlocks the French-language draws — which last cut off at 420 — and adds up to 50 bilingual CRS points on top. It's the single biggest lever left on the board.",
   subline:
     "On a PGWP or work permit with an expiry date? Your window is real — and so is the plan. Message us your date and we'll tell you honestly what's achievable.",
   ctaLabel: "Message us your permit date",
@@ -242,27 +242,27 @@ export const fcBatchesIntro =
 // whiteboard art on BatchCardV2.
 export const fcBatches: Batch[] = [
   {
-    title: "TEF Canada Beginners — Batch 12",
-    examName: "TEF Canada",
+    title: "DELF Canada Prep — Batch 12",
+    examName: "DELF Canada",
     image: { src: "/images/batches/tef-beginners.jpg", alt: "TEF Canada beginners cohort" },
-    covered: "Grammar foundations, everyday conversation, exam format from month one.",
+    covered: "The complete DELF course — from your first words to exam-ready, covering all four skills: listening, reading, writing and speaking.",
     level: "A0 → CLB 7 full track",
-    dates: "Starts July 21, 2026 · Ends May 2027",
-    schedule: "Tue & Thu 7–9 PM EST + Sat mock",
+    dates: "Starts July 15, 2026 · Ends Dec 15, 2026",
+    schedule: "Mon & Sat, 7–9 PM EST",
     faculty: "[Name]",
-    seatsLeft: "4 of 12 seats left",
+    seatsLeft: "2 of 10 seats left",
     language: "french",
   },
   {
-    title: "TEF Canada Fast Track — Batch 7",
+    title: "TEF Canada Prep — Batch 7",
     examName: "TEF Canada",
     image: { src: "/images/batches/tef-fasttrack.jpg", alt: "TEF Canada fast-track cohort" },
-    covered: "For B1+ learners · intensive exam strategy: one-play listening drills, timed writing, weekly graded mock orals.",
+    covered: "The complete TEF Canada course — intensive exam strategy across all four skills: one-play listening drills, timed writing, and weekly graded mock orals.",
     level: "B1+ → exam-ready",
-    dates: "Starts July 24, 2026 · Ends Nov 2026",
-    schedule: "Mon & Wed 8–10 PM EST + Sat mock",
+    dates: "Starts July 15, 2026 · Ends Dec 15, 2026",
+    schedule: "Mon & Sat, 7–9 PM EST",
     faculty: "[Name]",
-    seatsLeft: "3 of 12 seats left",
+    seatsLeft: "3 of 10 seats left",
     featured: true,
     language: "french",
   },
@@ -270,12 +270,12 @@ export const fcBatches: Batch[] = [
     title: "TCF Canada Prep — Batch 4",
     examName: "TCF Canada",
     image: { src: "/images/batches/tcf-prep.jpg", alt: "TCF Canada prep cohort" },
-    covered: "A2+ learners · all four TCF tasks, computer-based format practice, weekly graded mocks.",
+    covered: "The complete TCF Canada course — all four tasks with computer-based format practice and weekly graded mocks.",
     level: "A2+ → exam-ready",
-    dates: "Starts July 28, 2026 · Ends Jan 2027",
-    schedule: "Weekends 10 AM–1 PM EST",
+    dates: "Starts July 15, 2026 · Ends Dec 15, 2026",
+    schedule: "Mon & Sat, 7–9 PM EST",
     faculty: "[Name]",
-    seatsLeft: "6 of 12 seats left",
+    seatsLeft: "5 of 10 seats left",
     language: "french",
   },
 ];

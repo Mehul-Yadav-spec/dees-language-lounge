@@ -52,7 +52,7 @@ export const aboutBeliefs: Feature[] = [
   {
     icon: "groups",
     title: "Small groups or it doesn't work.",
-    body: "Maximum 12 per batch. In a class of 40, you speak twice a month. In ours, you speak every session — and your trainer knows exactly where you're stuck.",
+    body: "Maximum 10 per batch. In a class of 40, you speak twice a month. In ours, you speak every session — and your trainer knows exactly where you're stuck.",
   },
   {
     icon: "diversity_3",
