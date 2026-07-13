@@ -4,9 +4,12 @@ import { CTAButton } from "@/components/ui/CTAButton";
 import { PillBadge } from "@/components/ui/PillBadge";
 import { GlowContainer } from "@/components/ui/GlowContainer";
 import { FeatureGrid } from "@/components/sections/FeatureGrid";
-import { StatsBar } from "@/components/sections/StatsBar";
-import { AboutFounder } from "@/components/sections/AboutFounder";
-import { Teachers } from "@/components/sections/Teachers";
+// Stats band removed from the About page.
+// import { StatsBar } from "@/components/sections/StatsBar";
+// Founder section ("Who's behind this" — Deepa Khatri) removed.
+// import { AboutFounder } from "@/components/sections/AboutFounder";
+// Trainers section ("The people who'll actually teach you") removed.
+// import { Teachers } from "@/components/sections/Teachers";
 import { AboutHonesty } from "@/components/sections/AboutHonesty";
 import { FinalCTABand } from "@/components/sections/FinalCTABand";
 import { buildMetadata } from "@/content/seo";
@@ -14,11 +17,14 @@ import {
   aboutHero,
   aboutBeliefsHeading,
   aboutBeliefs,
-  aboutStats,
-  aboutFounder,
-  aboutTeachersHeading,
-  aboutTeachers,
-  aboutTeachersTrustLine,
+  // Stats copy — unused since the stats band was removed.
+  // aboutStats,
+  // Founder copy — unused since the founder section was removed.
+  // aboutFounder,
+  // Trainer copy — unused since the trainers section was removed.
+  // aboutTeachersHeading,
+  // aboutTeachers,
+  // aboutTeachersTrustLine,
   aboutHonesty,
   aboutFinalCta,
 } from "@/content/about";
@@ -48,13 +54,19 @@ export default function AboutPage() {
       </GlowContainer>
 
       <FeatureGrid heading={aboutBeliefsHeading} features={aboutBeliefs} />
+      {/* Stats band removed from the About page.
       <StatsBar stats={aboutStats} />
+      */}
+      {/* Founder section ("Who's behind this" — Deepa Khatri) removed.
       <AboutFounder content={aboutFounder} />
+      */}
+      {/* Trainers section ("The people who'll actually teach you") removed.
       <Teachers
         heading={aboutTeachersHeading}
         teachers={aboutTeachers}
         trustLine={aboutTeachersTrustLine}
       />
+      */}
       <AboutHonesty content={aboutHonesty} />
       <FinalCTABand content={aboutFinalCta} context={CTX} />
     </main>

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Hero } from "@/components/sections/Hero";
 import { StatsBar } from "@/components/sections/StatsBar";
+import { GoalsCarouselV3 } from "@/components/sections/GoalsCarouselV3";
 import { StakesSection } from "@/components/sections/StakesSection";
 import { ExamsSection } from "@/components/sections/ExamsSection";
 import { FeatureGrid } from "@/components/sections/FeatureGrid";
@@ -19,6 +20,8 @@ import { buildMetadata, pageSeo } from "@/content/seo";
 import {
   fcHero,
   fcStats,
+  fcBenefitsHeading,
+  fcBenefits,
   fcStakes,
   fcExams,
   fcFeaturesHeading,
@@ -62,10 +65,11 @@ export default function FrenchCanadaPage() {
 
       <Hero content={fcHero} contextLabel={CTX} />
       <StatsBar stats={fcStats} />
+      <GoalsCarouselV3 heading={fcBenefitsHeading} slides={fcBenefits} />
       <StakesSection content={fcStakes} />
+      <ProficiencyLevels />
       <ExamsSection content={fcExams} />
       <FeatureGrid heading={fcFeaturesHeading} features={fcFeatures} />
-      <ProficiencyLevels />
       <BigClaim heading={fcBigClaim.heading} footnote={fcBigClaim.footnote} />
       <Roadmap heading={fcRoadmapHeading} steps={fcRoadmap} />
       <Curriculum

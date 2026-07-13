@@ -21,6 +21,7 @@ import type {
   FaqItem,
   FinalCtaContent,
   AccentHeading,
+  GoalSlide,
 } from "./types";
 
 export const fcPromo: PromoBarContent = {
@@ -375,3 +376,39 @@ export const fcFinalCta: FinalCtaContent = {
 // shared <Footer> as `complianceNote` — no separate footer variant.
 export const fcComplianceNote =
   "Dees Language Lounge is a language school and does not provide immigration advice or representation. Draw cut-offs and CRS figures reflect published IRCC data at time of writing and change frequently.";
+
+// "Why French pays off" — reuses the homepage GoalsCarouselV3 (image-top card,
+// gold rule, serif title, body; embla carousel + dots on mobile). Answers
+// "why French" before the page moves on to "why now". Hedged phrasing on the
+// streams card is intentional — no PR/program guarantees.
+export const fcBenefitsHeading: SectionHeadingContent = {
+  heading: { before: "Why learn", accent: "French?" },
+};
+
+export const fcBenefits: GoalSlide[] = [
+  {
+    title: "The fastest lane to Canada PR",
+    body: "French-language Express Entry draws cut off far below the CEC — and CLB 7 adds up to 50 bilingual points to your CRS. No other single skill moves your profile this much.",
+    image: { src: "/images/benefits/fc-pr.jpg", alt: "Canadian permanent residence pathway" },
+  },
+  {
+    title: "Bilingual jobs pay more",
+    body: "Federal government roles, banks, airlines, healthcare — bilingual positions across Canada shortlist French speakers first, and many pay a bilingualism premium.",
+    image: { src: "/images/benefits/fc-jobs.jpg", alt: "Bilingual professional at work in Canada" },
+  },
+  {
+    title: "More doors than one draw",
+    body: "Francophone streams in Ontario, New Brunswick and beyond favour French speakers too. If policy shifts, your French still counts — the skill outlives any single program.",
+    image: { src: "/images/benefits/fc-streams.jpg", alt: "Francophone community street in Canada" },
+  },
+  {
+    title: "Settle in, not just land",
+    body: "From Montréal cafés to francophone communities across Canada, French turns arrival into belonging — school runs, small talk, neighbours, life.",
+    image: { src: "/images/benefits/fc-settle.jpg", alt: "Montréal café street scene" },
+  },
+  {
+    title: "A skill the whole world recognises",
+    body: "300+ million speakers across five continents. Whatever happens with immigration policy, certified French stays on your CV forever.",
+    image: { src: "/images/benefits/fc-global.jpg", alt: "Global map of French-speaking regions" },
+  },
+];

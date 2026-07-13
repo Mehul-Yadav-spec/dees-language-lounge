@@ -85,10 +85,10 @@ export function LanguageDestinations() {
               ) : null}
             </div>
 
-            {/* Label bar on the card surface (#0B1220). */}
-            <div className="flex items-center justify-between gap-2 px-5 py-4">
-              <span className="text-xl font-bold text-gold">{d.language}</span>
-              <span className="flex items-center gap-1 text-eyebrow uppercase text-muted opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+            {/* Label bar — brand gold background with near-black (canvas) text. */}
+            <div className="flex items-center justify-between gap-2 bg-gold px-5 py-4">
+              <span className="text-xl font-bold text-canvas">{d.language}</span>
+              <span className="flex items-center gap-1 text-eyebrow uppercase text-canvas/70 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                 Explore <span aria-hidden="true">→</span>
               </span>
             </div>

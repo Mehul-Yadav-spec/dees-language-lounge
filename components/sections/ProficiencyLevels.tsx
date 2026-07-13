@@ -15,6 +15,8 @@ interface Level {
   id: string;
   descriptor: string;
   clb: string;
+  /** Optional lead paragraph shown above the can-do bullets. */
+  intro?: string;
   bullets: string[];
   /** Persistent chip shown on the tab itself (B2 = the PR level). */
   tabChip?: string;
@@ -27,11 +29,14 @@ const LEVELS: Level[] = [
     id: "A1",
     descriptor: "Beginner",
     clb: "≈ CLB 1–2",
+    intro:
+      "Basic level. One can understand and use everyday expressions. One can interact in a simple manner, using simple sentences.",
     bullets: [
-      "Introduce yourself",
-      "Understand slow, familiar phrases",
-      "Ask and answer basic personal questions",
-      "Follow short, simple directions",
+      "One can read a very short, rehearsed statement.",
+      "One can understand and use familiar words and everyday expressions, and very basic phrases aimed at the satisfaction of the needs of a concrete type.",
+      "One can introduce him/herself and others also.",
+      "One can ask and answer questions about personal details such as where he/she lives, people he/she knows and things he/she has.",
+      "Can understand instructions carefully and can address others slowly and follow short, simple directions.",
     ],
   },
   {
@@ -39,55 +44,63 @@ const LEVELS: Level[] = [
     descriptor: "Elementary",
     clb: "≈ CLB 3–4",
     bullets: [
-      "Handle routine everyday exchanges",
-      "Describe your background and immediate needs",
-      "Understand common expressions about family, work and shopping",
-      "Write short, simple notes",
+      "One can understand commonly used expressions. One can communicate in a simple manner, using simple sentences and common phrases.",
+      "One can describe or use simple phrases to talk about people, living conditions, daily activities, and likes and dislikes.",
+      "One can communicate in simple and routine tasks.",
+      "One can make short social exchanges where diction is clear, slow and well-articulated.",
+      "One can understand simple expressions and common phrases related to areas of most immediate relevance to me such as personal and family details, shopping, my local area, and the working environment.",
+      "One can pronounce words clearly enough to be understood during very simple exchanges even if the person to whom I am speaking asks me to repeat them.",
     ],
   },
   {
     id: "B1",
-    descriptor: "Intermediate",
+    descriptor: "Moderate",
     clb: "≈ CLB 5–6",
     bullets: [
-      "Hold independent conversations on familiar topics",
-      "Manage most travel situations",
-      "Describe experiences, opinions and plans",
-      "Write connected text on familiar subjects",
+      "One can understand and discuss various topics encountered in daily life and give their opinion about such topics.",
+      "One can deal with most situations likely to arise whilst traveling in an area where the language is spoken.",
+      "One can enter into a conversation on familiar topics (e.g. work, school, hobbies, etc).",
+      "One can express their personal opinion.",
+      "One can use simple terms to relate an experience, event, story in the books or films, and describe their own reactions to it.",
     ],
   },
   {
     id: "B2",
-    descriptor: "Upper Intermediate",
+    descriptor: "Pre-Intermediate",
     clb: "≈ CLB 7–8",
     tabChip: "≈ CLB 7 — the PR level",
     bullets: [
-      "Interact fluently and spontaneously",
-      "Argue a viewpoint with pros and cons",
-      "Understand extended speech and complex text",
-      "Write clear, detailed text on a wide range of subjects",
+      "One can understand more advanced topics. One can also speak about such topics more extensively and participate in such discussions.",
+      "One can interact with a degree of fluency and spontaneity that makes regular interaction with native speakers quite possible without strain from either party.",
+      "One can express and defend their opinions by giving relevant explanations and arguments.",
+      "One can actively sustain a discussion within a familiar context, accounting to justify their views.",
+      "One can understand the main points of standard speech on familiar topics and able to pronounce words clearly and use stress and intonation almost perfectly.",
     ],
     callout:
       "CLB 7 in all four skills is what the French-language Express Entry draws require — and exactly where our A0 → CLB 7 track is aimed.",
   },
   {
     id: "C1",
-    descriptor: "Advanced",
+    descriptor: "Intermediate",
     clb: "≈ CLB 9–10",
     bullets: [
-      "Express ideas fluently without searching for words",
-      "Use French flexibly for professional and academic purposes",
-      "Understand demanding texts and implicit meaning",
+      "One can understand more advanced topics. One can also speak about such topics more extensively and participate in such discussions.",
+      "One can express themselves fluently and spontaneously without much obvious searching for words or expressions.",
+      "One can present clear, detailed descriptions of complex subjects.",
+      "One can understand extended speech even when it is not clearly structured.",
+      "One can recognize a range of idiomatic expressions, common colloquialisms, and changes of register.",
+      "One can perfect their pronunciation of certain sounds and their melody of speech, where necessary.",
     ],
   },
   {
     id: "C2",
-    descriptor: "Mastery",
+    descriptor: "Expert",
     clb: "≈ CLB 11–12",
     bullets: [
-      "Understand virtually everything heard or read",
-      "Summarise from multiple sources",
-      "Express yourself with precision in complex situations",
+      "One can produce clear, fluent, logically structured, effective speech that helps the recipient notice and remember the significant points.",
+      "One can convey the finer shades of meaning related to complex subjects.",
+      "One can have a good familiarity with idiomatic expressions and colloquialisms.",
+      "One can understand with ease virtually all forms of spoken language, whether live or recorded, even when delivered at fast native speed.",
     ],
   },
 ];
@@ -190,6 +203,8 @@ export function ProficiencyLevels() {
           </span>
         </div>
 
+        {level.intro ? <p className="mb-6 font-medium text-ink">{level.intro}</p> : null}
+
         <ul className="space-y-4">
           {level.bullets.map((b) => (
             <li key={b} className="flex items-start gap-3">
@@ -251,6 +266,7 @@ export function ProficiencyLevels() {
               >
                 <div className="overflow-hidden">
                   <div className="border-t border-hairline px-4 pb-5 pt-4">
+                    {l.intro ? <p className="mb-4 font-medium text-ink">{l.intro}</p> : null}
                     <ul className="space-y-4">
                       {l.bullets.map((b) => (
                         <li key={b} className="flex items-start gap-3">
