@@ -56,23 +56,16 @@ export default function AboutPage() {
             </div>
           </div>
 
-          {/* Right — brand logo, lifted by a soft gold glow (no frame), nudged right */}
+          {/* Right — brand logo, nudged right */}
           <div className="relative flex h-full items-center justify-center md:justify-end">
-            <div className="relative md:translate-x-8">
-              {/* soft gold halo centered behind the mark */}
-              <div
-                aria-hidden="true"
-                className="pointer-events-none absolute left-1/2 top-1/2 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gold/20 blur-3xl md:h-80 md:w-80"
-              />
-              <Image
-                src="/images/about_us_hero_v1.png"
-                alt={`${site.name} logo`}
-                width={280}
-                height={134}
-                priority
-                className="relative block h-auto w-[300px] max-w-full drop-shadow-[0_0_35px_rgba(197,163,107,0.45)] md:w-[360px]"
-              />
-            </div>
+            <Image
+              src="/images/about_us_hero_v1.png"
+              alt={`${site.name} logo`}
+              width={280}
+              height={134}
+              priority
+              className="block h-auto w-[340px] max-w-full md:w-[440px] md:translate-x-8"
+            />
           </div>
         </div>
       </GlowContainer>
