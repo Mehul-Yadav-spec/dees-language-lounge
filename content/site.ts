@@ -24,7 +24,7 @@ export const site = {
   bookingPath: "/book-assessment",
 
   socials: {
-    facebook: "#",
+    facebook: "https://www.facebook.com/people/Dees-Language-Lounge/61591417082656/",
     instagram: "https://www.instagram.com/deeslanguagelounge/",
     linkedin: "#",
     x: "#",
