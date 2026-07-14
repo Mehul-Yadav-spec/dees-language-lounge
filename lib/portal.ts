@@ -70,9 +70,15 @@ export const getSessionUser = cache(async (): Promise<PortalUser | null> => {
     .eq("id", user.id)
     .single();
 
+  // Security: a valid auth session with NO profile row is treated as logged out.
+  // This prevents a deleted/deactivated account (its profile removed) from still
+  // reaching the portals on the strength of a lingering session cookie — and
+  // stops a profile-less session from silently defaulting into the student role.
+  if (!profile) return null;
+
   // avatar_url stores a path in the private 'avatars' bucket — sign it for
   // display (cached, so we don't re-sign on every navigation).
-  let avatarUrl: string | null = profile?.avatar_url ?? null;
+  let avatarUrl: string | null = profile.avatar_url ?? null;
   if (avatarUrl && !avatarUrl.startsWith("http")) {
     avatarUrl = await signedAvatarUrl(avatarUrl);
   }
@@ -80,10 +86,10 @@ export const getSessionUser = cache(async (): Promise<PortalUser | null> => {
   return {
     id: user.id,
     email: user.email ?? null,
-    role: (profile?.role as Role) ?? "student",
-    fullName: profile?.full_name ?? null,
-    timezone: profile?.timezone ?? null,
+    role: profile.role as Role,
+    fullName: profile.full_name ?? null,
+    timezone: profile.timezone ?? null,
     avatarUrl,
-    mustChangePassword: profile?.must_change_password ?? false,
+    mustChangePassword: profile.must_change_password ?? false,
   };
 });
