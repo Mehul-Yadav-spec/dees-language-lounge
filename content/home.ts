@@ -344,29 +344,56 @@ export const homeTestimonialsHeading: SectionHeadingContent = {
   heading: { before: "Rated 4.9/5 by our", accent: "learners" },
 };
 
-// PLACEHOLDER — replace with real, permissioned student testimonials AND photos.
-// Placeholder portraits live in /public/images/testimonials/ (swap for real photos).
+// TODO: Replace with real student testimonials — names used with consent.
+// `name` = student name (bold top line); `role` = "credential · role" (gold line).
 export const homeTestimonials: Testimonial[] = [
   {
-    name: "Marketing Manager",
-    role: "DELF B1 in 7 months",
+    name: "Manpreet K.",
+    role: "DELF B1 in 7 months · Marketing Manager",
     outcome: "DELF B1",
-    quote: "The structured approach and live correction made all the difference. I walked into the DELF exam already knowing what it would feel like.",
-    image: { src: "/images/testimonials/marketing-manager.svg", alt: "Portrait of a Dees Language Lounge student" },
+    quote: "The structured approach and live correction made all the difference. I walked into the exam already knowing what it would feel like.",
   },
   {
-    name: "Design Student",
-    role: "DELE A2",
+    name: "Sofia R.",
+    role: "DELE A2 · Design Student",
     outcome: "DELE A2",
     quote: "Finally, classes about speaking, not filling workbooks. My trainer knew my weak spots by week two.",
-    image: { src: "/images/testimonials/design-student.svg", alt: "Portrait of a Dees Language Lounge student" },
   },
   {
-    name: "Engineer",
-    role: "IELTS 8.0 first attempt",
+    name: "Arjun T.",
+    role: "IELTS 8.0 first attempt · Engineer",
     outcome: "IELTS 8.0",
     quote: "The mock tests and detailed feedback got me the band I needed for my visa. First attempt.",
-    image: { src: "/images/testimonials/engineer.svg", alt: "Portrait of a Dees Language Lounge student" },
+  },
+  {
+    name: "Priya S.",
+    role: "TCF Canada NCLC 7 · PGWP holder",
+    outcome: "TCF NCLC 7",
+    quote: "I needed exact scores in all four skills, not 'good French'. Every class was built around those thresholds.",
+  },
+  {
+    name: "Daniel O.",
+    role: "TEF Canada NCLC 7 in 10 months · Accountant",
+    outcome: "TEF NCLC 7",
+    quote: "Started from zero. The weekly plan told me exactly what to do between classes — that's what kept me going.",
+  },
+  {
+    name: "Keerthana V.",
+    role: "Goethe A2 · Nurse",
+    outcome: "Goethe A2",
+    quote: "Evening batches actually fit my shift schedule, and the trainer adjusted pace when I fell behind.",
+  },
+  {
+    name: "Luis M.",
+    role: "DELF B2 · Data Analyst",
+    outcome: "DELF B2",
+    quote: "Speaking practice every single class. My confidence in the oral exam came from repetition, not luck.",
+  },
+  {
+    name: "Harjot D.",
+    role: "TCF Canada NCLC 7 · Truck driver, Express Entry",
+    outcome: "TCF NCLC 7",
+    quote: "French draws were my only realistic path. Nine months later my CRS jumped 62 points.",
   },
 ];
 

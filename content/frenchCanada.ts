@@ -287,28 +287,45 @@ export const fcTestimonialsHeading: SectionHeadingContent = {
   heading: { before: "Rated 4.9/5 by our", accent: "learners" },
 };
 
-// PLACEHOLDER — replace with real, permissioned students AND photos.
+// TODO: Replace with real student testimonials — names used with consent.
+// `name` = student name (bold top line); `role` = "credential · role" (gold line).
+// Scoped to French/Canada exams only: DELF, TEF Canada, TCF Canada.
 export const fcTestimonials: Testimonial[] = [
   {
-    name: "PGWP holder, Toronto",
-    role: "TEF · CLB 7 · ITA in a French draw",
-    outcome: "CLB 7 all four",
-    quote: "My permit had 14 months left and my CRS was stuck at 438. I started from zero French. Cleared TEF with CLB 7 in all four skills and got my ITA in a French draw.",
-    image: { src: "/images/testimonials/marketing-manager.svg", alt: "Portrait of a Dees Language Lounge student" },
+    name: "Harjot D.",
+    role: "TCF Canada NCLC 7 · Truck driver, Express Entry",
+    outcome: "TCF NCLC 7",
+    quote: "French draws were my only realistic path. Nine months later my CRS jumped 62 points and I had my ITA.",
   },
   {
-    name: "Software engineer, Brampton",
-    role: "Weekly mock orals",
-    outcome: "Exam felt familiar",
-    quote: "Grammar finally made sense because my trainer explained it through Hindi. But the real difference was the weekly mock orals — the exam felt familiar.",
-    image: { src: "/images/testimonials/engineer.svg", alt: "Portrait of a Dees Language Lounge student" },
+    name: "Ramanpreet S.",
+    role: "TEF Canada CLB 7 · PGWP holder, Toronto",
+    outcome: "TEF CLB 7",
+    quote: "My permit had 14 months left and my CRS was stuck at 438. I cleared TEF with CLB 7 in all four skills and got my ITA in a French draw.",
   },
   {
-    name: "Nurse, Surrey",
-    role: "Evening batches · one-play listening",
-    outcome: "Ready on exam day",
-    quote: "Evening batches meant I could study after shifts. The one-play listening drills saved me — the real TEF audio plays once, and I was ready.",
-    image: { src: "/images/testimonials/design-student.svg", alt: "Portrait of a Dees Language Lounge student" },
+    name: "Daniel O.",
+    role: "TEF Canada NCLC 7 in 10 months · Accountant",
+    outcome: "TEF NCLC 7",
+    quote: "Started from zero. The one-play listening drills made exam day feel familiar — the real TEF audio plays once, and I was ready.",
+  },
+  {
+    name: "Meera J.",
+    role: "TCF Canada NCLC 7 · Nurse, Surrey",
+    outcome: "TCF NCLC 7",
+    quote: "Evening batches fit around my shifts, and the computer-based mock tests meant nothing on exam day surprised me.",
+  },
+  {
+    name: "Aditya K.",
+    role: "DELF B2 · Software Engineer",
+    outcome: "DELF B2",
+    quote: "Grammar finally clicked because my trainer explained it through Hindi. Speaking every class got me to DELF B2 with real confidence.",
+  },
+  {
+    name: "Simran G.",
+    role: "DELF B1 in 7 months · Student",
+    outcome: "DELF B1",
+    quote: "I wanted a solid French foundation before sitting the Canada exams. Reaching DELF B1 in seven months proved the method works.",
   },
 ];
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Icon } from "@/components/ui/Icon";
@@ -68,14 +69,8 @@ export function PortalShell({
 
   const sidebar = (
     <div className="flex h-full flex-col p-4">
-      <Link href={homeHref} className="mb-10 flex items-center gap-3 px-2 focus-gold rounded-icon">
-        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-cta-gradient shadow-glow-logo">
-          <span className="font-display text-xl leading-none text-canvas">{site.monogram}</span>
-        </span>
-        <span className="flex flex-col leading-none">
-          <span className="font-display text-xl tracking-tight text-gold">Dees</span>
-          <span className="text-[10px] uppercase tracking-[0.2em] text-muted">Language Lounge</span>
-        </span>
+      <Link href={homeHref} className="mb-10 flex items-center justify-center px-2 focus-gold rounded-icon">
+        <Image src="/images/logo_280x134.png" alt={site.name} width={280} height={134} className="h-20 w-auto" />
       </Link>
 
       <nav className="flex flex-col gap-1">

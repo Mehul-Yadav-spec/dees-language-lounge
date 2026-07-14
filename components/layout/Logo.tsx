@@ -1,22 +1,25 @@
+import Image from "next/image";
 import Link from "next/link";
 import { site } from "@/content/site";
 
-// Circular gold monogram + wordmark (DESIGN.md §4 navigation).
+// Brand logo image (winged DLL mark + "Dees Language Lounge" wordmark baked in),
+// on a transparent PNG so it sits on the dark canvas. `compact` renders it a
+// touch smaller for tight chrome.
 export function Logo({ compact = false }: { compact?: boolean }) {
   return (
     <Link
       href="/"
-      className="flex items-center gap-3 focus-gold rounded-icon"
+      className="flex items-center focus-gold rounded-icon"
       aria-label={`${site.name} — home`}
     >
-      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-cta-gradient shadow-glow-logo">
-        <span className="font-display text-lg leading-none text-canvas">{site.monogram}</span>
-      </span>
-      {!compact ? (
-        <span className="whitespace-nowrap text-lg font-bold uppercase tracking-widest text-gold md:text-xl">
-          {site.wordmark}
-        </span>
-      ) : null}
+      <Image
+        src="/images/logo_280x134.png"
+        alt={site.name}
+        width={280}
+        height={134}
+        priority
+        className={compact ? "h-12 w-auto" : "h-14 w-auto md:h-24"}
+      />
     </Link>
   );
 }

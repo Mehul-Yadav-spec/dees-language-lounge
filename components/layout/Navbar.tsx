@@ -38,7 +38,7 @@ export function Navbar() {
         <div
           className={cn(
             "mx-auto flex w-full max-w-container-wide items-center justify-between px-5 transition-all duration-300 md:px-16",
-            scrolled ? "h-16" : "h-20",
+            scrolled ? "h-16 md:h-28" : "h-20 md:h-28",
           )}
         >
           <Logo />

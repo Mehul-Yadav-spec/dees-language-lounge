@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { footer as defaultFooter, site } from "@/content/site";
 import { NewsletterForm } from "@/components/forms/NewsletterForm";
@@ -38,12 +39,9 @@ export function Footer({
         <div className="flex flex-col justify-between gap-12 md:flex-row">
           {/* Brand + blurb + newsletter */}
           <div className="max-w-sm space-y-6">
-            <div className="flex items-center gap-3">
-              <span className="flex h-11 w-11 items-center justify-center rounded-full bg-cta-gradient shadow-glow-logo">
-                <span className="font-display text-lg text-canvas">{site.monogram}</span>
-              </span>
-              <span className="font-display text-2xl tracking-wide text-ink">Dees Lounge</span>
-            </div>
+            <Link href="/" aria-label={`${site.name} — home`} className="block w-fit mx-auto md:mx-0 focus-gold rounded-icon">
+              <Image src="/images/logo_280x134.png" alt={site.name} width={280} height={134} className="h-24 w-auto" />
+            </Link>
             <p className="leading-relaxed text-muted">{content.blurb}</p>
             <NewsletterForm />
           </div>
