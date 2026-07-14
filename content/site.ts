@@ -98,7 +98,6 @@ export const footer: FooterContent = {
       links: [
         { label: "Privacy", href: "/privacy" },
         { label: "Terms", href: "/terms" },
-        { label: "Cookies", href: "/cookies" },
       ],
     },
   ],

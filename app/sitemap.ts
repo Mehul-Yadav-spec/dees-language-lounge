@@ -15,7 +15,6 @@ const paths = [
   "/courses/ielts",
   "/privacy",
   "/terms",
-  "/cookies",
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {

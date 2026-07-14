@@ -62,7 +62,6 @@ export const pageSeo = {
   },
   privacy: { title: "Privacy Policy | Dees Language Lounge", description: "How Dees Language Lounge collects and uses your information.", path: "/privacy" },
   terms: { title: "Terms of Service | Dees Language Lounge", description: "The terms for using the Dees Language Lounge website and services.", path: "/terms" },
-  cookies: { title: "Cookie Policy | Dees Language Lounge", description: "How Dees Language Lounge uses cookies and similar technologies.", path: "/cookies" },
 } satisfies Record<string, PageSeo>;
 
 export function buildMetadata(key: keyof typeof pageSeo): Metadata {

@@ -1,9 +1,9 @@
 // PLACEHOLDER — these are neutral placeholder legal texts for layout only.
-// Replace with the client's real, lawyer-reviewed Privacy Policy, Terms of
-// Service and Cookie Policy before launch (Phase-0 feature #20).
+// Replace with the client's real, lawyer-reviewed Privacy Policy and Terms of
+// Service before launch (Phase-0 feature #20).
 
 export interface LegalPage {
-  slug: "privacy" | "terms" | "cookies";
+  slug: "privacy" | "terms";
   title: string;
   updated: string;
   intro: string;
@@ -33,17 +33,6 @@ export const legalPages: Record<LegalPage["slug"], LegalPage> = {
       { heading: "Use of the site", body: "By using this website you agree to use it lawfully and not to misuse the content, forms or booking flow." },
       { heading: "No guarantees", body: "Dees Language Lounge is a language school. We teach French, Spanish, German and IELTS English and prepare students for recognised exams. We do not guarantee exam outcomes, immigration results, or permanent residency." },
       { heading: "Contact", body: "Questions about these terms can be sent through our contact page." },
-    ],
-  },
-  cookies: {
-    slug: "cookies",
-    title: "Cookie Policy",
-    updated: "Last updated: July 2026",
-    intro:
-      "This placeholder explains how we use cookies and similar technologies. Replace with your finalised policy before launch.",
-    sections: [
-      { heading: "What we use", body: "We use essential cookies to run the site and, where enabled, analytics cookies (Google Analytics 4, Meta Pixel) to understand how visitors use our pages." },
-      { heading: "Managing cookies", body: "You can control or delete cookies through your browser settings. Disabling some cookies may affect how the site works." },
     ],
   },
 };
