@@ -40,7 +40,7 @@ export default function AboutPage() {
     <main>
       {/* Hero — story text (left, left-aligned) + brand logo (right) */}
       <GlowContainer className="mx-auto max-w-container px-5 pb-12 pt-16 md:px-16 md:pt-24">
-        <div className="grid grid-cols-1 items-center gap-10 md:grid-cols-2 md:gap-12">
+        <div className="grid grid-cols-1 gap-10 md:grid-cols-2 md:gap-12 md:items-stretch">
           {/* Left — story copy */}
           <div className="flex flex-col items-start gap-6 text-left">
             <PillBadge>{aboutHero.eyebrow}</PillBadge>
@@ -56,16 +56,23 @@ export default function AboutPage() {
             </div>
           </div>
 
-          {/* Right — brand logo */}
-          <div className="flex justify-center md:justify-end">
-            <Image
-              src="/images/about_us_hero_v1.png"
-              alt={`${site.name} logo`}
-              width={280}
-              height={134}
-              priority
-              className="h-auto w-full max-w-[300px] md:max-w-sm"
-            />
+          {/* Right — brand logo, lifted by a soft gold glow (no frame), nudged right */}
+          <div className="relative flex h-full items-center justify-center md:justify-end">
+            <div className="relative md:translate-x-8">
+              {/* soft gold halo centered behind the mark */}
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute left-1/2 top-1/2 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gold/20 blur-3xl md:h-80 md:w-80"
+              />
+              <Image
+                src="/images/about_us_hero_v1.png"
+                alt={`${site.name} logo`}
+                width={280}
+                height={134}
+                priority
+                className="relative block h-auto w-[300px] max-w-full drop-shadow-[0_0_35px_rgba(197,163,107,0.45)] md:w-[360px]"
+              />
+            </div>
           </div>
         </div>
       </GlowContainer>
