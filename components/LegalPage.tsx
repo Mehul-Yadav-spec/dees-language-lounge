@@ -1,7 +1,8 @@
 import type { LegalPage as LegalPageContent } from "@/content/legal";
 
-// Shared layout for Privacy / Terms / Cookies. Readable body on canvas (white /
-// cool-grey, per accessibility rules).
+// Shared layout for Privacy / Terms. Readable body on canvas (white / cool-grey,
+// per accessibility rules). Sections render as paragraphs, an optional bulleted
+// list, then optional closing paragraphs.
 export function LegalPageView({ page }: { page: LegalPageContent }) {
   return (
     <main>
@@ -10,13 +11,47 @@ export function LegalPageView({ page }: { page: LegalPageContent }) {
         <h1 className="mb-6 text-[clamp(2.25rem,6vw,3.5rem)] font-bold leading-tight text-ink">
           {page.title}
         </h1>
-        <p className="mb-12 text-lg text-muted">{page.intro}</p>
+
+        {page.intro?.length ? (
+          <div className="mb-12 space-y-4">
+            {page.intro.map((p) => (
+              <p key={p} className="text-lg leading-relaxed text-muted">
+                {p}
+              </p>
+            ))}
+          </div>
+        ) : (
+          <div className="mb-12" />
+        )}
 
         <div className="space-y-10">
           {page.sections.map((s) => (
             <section key={s.heading}>
               <h2 className="mb-3 text-xl font-bold text-ink">{s.heading}</h2>
-              <p className="leading-relaxed text-muted">{s.body}</p>
+
+              <div className="space-y-4">
+                {s.body.map((p) => (
+                  <p key={p} className="leading-relaxed text-muted">
+                    {p}
+                  </p>
+                ))}
+
+                {s.bullets ? (
+                  <ul className="list-disc space-y-2 pl-5 marker:text-gold">
+                    {s.bullets.map((b) => (
+                      <li key={b} className="leading-relaxed text-muted">
+                        {b}
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
+
+                {s.outro?.map((p) => (
+                  <p key={p} className="leading-relaxed text-muted">
+                    {p}
+                  </p>
+                ))}
+              </div>
             </section>
           ))}
         </div>
